@@ -1,4 +1,6 @@
 /* Huynh Gia Bao */
+@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Manrope:wght@400;700&display=swap);
+
 :root {
     --color-bg-0: rgb(25, 26, 28);
     --color-bg-0i0: rgba(25, 26, 28, .0);
@@ -152,7 +154,8 @@ body {
 }
 
 * {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 16px;
+    font-family: Poppins, Manrope, sans-serif, Tahoma, Geneva, Verdana;
+    font-size: 14px;
+    font-weight: 400;
     color: white;
 }
