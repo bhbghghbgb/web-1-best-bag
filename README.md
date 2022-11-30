@@ -32,7 +32,7 @@
   9. Mo server voi folder vua clone (o day toi su dung extension Live Server tren VSCode)
   - ![image](https://user-images.githubusercontent.com/113711814/204797019-dc79f2d2-8bb8-488c-b098-0a551ac4fb07.png)
   10. Bao dam trang web mo len khong bi loi `` cross origin `` (mo DevTools)
-  - [image](https://user-images.githubusercontent.com/113711814/204797683-3a792e9b-faef-4d14-b331-15c28d6182af.png)
+  - ![image](https://user-images.githubusercontent.com/113711814/204797683-3a792e9b-faef-4d14-b331-15c28d6182af.png)
   11. Day la bi loi
   - ![image](https://user-images.githubusercontent.com/113711814/204797533-caf21b4b-f8ff-4670-8e65-44a311577f20.png)
     
