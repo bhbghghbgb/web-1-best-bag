@@ -11,9 +11,29 @@
 ##### Link deploy github pages: https://bhbghghbgb.github.io/miniature-octo-barnacle/index.html
 ## Disclaimer:
 - Trang nay co the se thay doi trong qua trinh cho doi cham bai, do nhom toi co the ban bac thay doi mot so chi tiet.
-- Neu can thiet, hay browse commit history va thuc hien:
-  - Sort by Older (de xem tu thoi diem nop bai lan dau tien)
-  - Nhan nut `` <> `` (Xem repo tai dung thoi diem da chon)
-  - Copy link tren thanh dia chi cua trinh duyet
-  - Clone git repo voi link da copy
-  - Mo `` index.html `` trong folder repo moi vua clone xong
+- Neu can thiet, thuc hien cac buoc sau de xem repo nay phien ban trong qua khu:
+  1. Browse repo nay va bao dam ban dang o nhanh main
+  - ![image](https://user-images.githubusercontent.com/113711814/204798294-01eaae41-c71f-470f-b291-e923de0bede2.png)
+  2. Clone repo
+    - ![image](https://user-images.githubusercontent.com/113711814/204794641-38528900-cd97-4ebc-bca2-77047b7deebd.png)
+    - ![image](https://user-images.githubusercontent.com/113711814/204795164-766f75bb-7eac-42aa-b253-549d693e606c.png)
+  3. Nhan xem commit history
+  - ![image](https://user-images.githubusercontent.com/113711814/204791604-13e62ab7-2543-4caf-881f-0867d90ecd68.png)
+  4. Keo xuong cuoi trang va nhan `` Older `` 
+  - ![image](https://user-images.githubusercontent.com/113711814/204792146-b8ab540e-d325-40dd-a692-99e926245d1a.png)
+  5. Lap lai den khi tim thay thoi diem can tim
+  - ![image](https://user-images.githubusercontent.com/113711814/204793271-8c04272a-ac83-4387-929b-3ce51720dc01.png)
+  6. Vi du thoi diem cu nhat (lan nop bai dau tien)
+  - ![image](https://user-images.githubusercontent.com/113711814/204794088-09ea0024-eade-41b5-b11b-7c96cb082cfb.png)
+  7. Nhan nut copy commit hash
+  - ![image](https://user-images.githubusercontent.com/113711814/204794364-9dcee4a9-9187-4c19-85db-74d279865f24.png)
+  8. Checkout sang commit nay
+  - ![image](https://user-images.githubusercontent.com/113711814/204795922-bbba5040-b235-4e68-945a-c12d6de6e85b.png)
+  9. Mo server voi folder vua clone (o day toi su dung extension Live Server tren VSCode)
+  - ![image](https://user-images.githubusercontent.com/113711814/204797019-dc79f2d2-8bb8-488c-b098-0a551ac4fb07.png)
+  10. Bao dam trang web mo len khong bi loi `` cross origin `` (mo DevTools)
+  - [image](https://user-images.githubusercontent.com/113711814/204797683-3a792e9b-faef-4d14-b331-15c28d6182af.png)
+  11. Day la bi loi
+  - ![image](https://user-images.githubusercontent.com/113711814/204797533-caf21b4b-f8ff-4670-8e65-44a311577f20.png)
+    
+    
