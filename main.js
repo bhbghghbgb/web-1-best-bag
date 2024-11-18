@@ -32,6 +32,19 @@ function layParamUrl() {
   };
 }
 
+// goi ham nay khi bam phan trang hoac sap xep/loc de tai lai trang voi param moi
+function caiParamUrlVaReload(page, start, sort, min, max) {
+  let url = new URL(document.location.toString());
+  url.search = "";
+  let params = url.searchParams;
+  if (page) params.set("page", page);
+  if (start) params.set("start", start);
+  if (sort) params.set("sort", sort);
+  if (min) params.set("min", min);
+  if (max) params.set("max", max);
+  window.location = url.toString();
+}
+
 function hienSanPham() {
   let { page, start, sort, min, max } = layParamUrl();
   let thuTu = null;
