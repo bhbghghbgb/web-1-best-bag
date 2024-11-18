@@ -1,14 +1,27 @@
-var g_dsTui;
-function layDsTui() {
+var g_sanPham;
+
+function taiSanPham() {
+  // san pham da co trong local storage
+  if (taiSanPhamLocalStorage()) {
+    hienSanPham();
+    return;
+  }
+  // chua co san pham trong local storage (lan dau mo web)
   fetch("./lynvn.json")
     .then((res) => res.text())
     .then((text) => {
-      let sanPhams = JSON.parse(text);
-      g_dsTui = sanPhams;
-      hienDsTui(sanPhams);
+      g_sanPham = JSON.parse(text);
+      luuSanPhamLocalStorage();
+      hienSanPham();
     });
 }
-function layParams() {
+
+// page: trang dang hien thi trong phan trang (set cai nay de di chuyen phan trang)
+// start: chi so bat dau mang trong phan trang (ko can quan tam)
+// sort: thu tu sap xep gia san pham
+// min: gia thap nhat khi loc san pham
+// max: gia cao nhat
+function layParamUrl() {
   let params = new URL(document.location.toString()).searchParams;
   return {
     page: params.get("page"),
@@ -18,54 +31,59 @@ function layParams() {
     max: params.get("max"),
   };
 }
-function hienDsTui(sanPhams) {
-  let { page, start, sort, min, max } = layParams();
-  let comp = null;
-  if (sort === "asc") comp = 1;
-  else if (sort === "desc") comp = -1;
-  let sanPhamsDaLoc = sanPhams
-    .filter((sanPham) => (min != null ? sanPham["price-sale-n"] >= min : true)) // loc gia thap nhat
-    .filter((sanPham) => (max != null ? sanPham["price-sale-n"] >= max : true)) // loc gia cao nhat
-    .sort((a, b) => (comp != null ? comp * (a["price-n"] - b["price-n"]) : 0)); // sap xep
-  let slSp = sanPhamsDaLoc.length;
-  let batDauTai = 0;
+
+function hienSanPham() {
+  let { page, start, sort, min, max } = layParamUrl();
+  let thuTu = null;
+  if (sort === "asc") thuTu = 1;
+  else if (sort === "desc") thuTu = -1;
+  let sanPhamsDaLoc = [...g_sanPham];
+  sanPhamsDaLoc = locGiaThapNhat(min, sanPhamsDaLoc);
+  sanPhamsDaLoc = locGiaCaoNhat(max, sanPhamsDaLoc);
+  sapXepSanPhamTheoGia(thuTu, sanPhamsDaLoc);
+  let soLuongSanPham = sanPhamsDaLoc.length;
+  let soPageToiDa = Math.max(1, 1 + Math.floor(soLuongSanPham / 21));
+  let chiSoBatDau = 0;
   if (page != null) {
-    batDauTai = page * 20;
+    chiSoBatDau = page * 20;
   } else if (start != null) {
-    batDauTai = start;
+    chiSoBatDau = start;
   }
-  if (batDauTai > slSp) {
-    bamLo();
+  // phan trang bam vuot gioi han so trang
+  if (chiSoBatDau > soLuongSanPham) {
     return;
   }
-  let sanPhamsHienThi = sanPhamsDaLoc.slice(batDauTai, batDauTai + 20);
+
+  // mang sau khi chia phan trang
+  let sanPhamsHienThi = sanPhamsDaLoc.slice(chiSoBatDau, chiSoBatDau + 20);
   hienThiSanPham(sanPhamsHienThi, {
-    page,
+    page, // trang phan trang hien tai
+    soPageToiDa, // so trang toi da phan trang
     start,
     sort,
     min,
     max,
-    comp,
-    slSp,
-    batDauTai,
+    thuTu,
+    soLuongSanPham,
+    chiSoBatDau,
   });
 }
+
 function hienTrangChiTiet(id) {
+  let sanPham = timSanPham(id);
   // TODO: mo trang chi tiet san pham
-  let sanPham = g_dsTui.find((sanPham) => sanPham["web-scraper-order"] === id);
   console.info(id, sanPham);
 }
-function bamLo() {
-  // TODO: bam lo so page
-}
-function hienThiSanPham(sanPhams, params) {
+function hienThiSanPham(sanPhamsHienThi, paramPhanTrang) {
   // TODO: hien thi danh sach san Pham sau khi load
-  let textParams = JSON.stringify(params, null, 4);
+  // lay page va soPageToiDa de xu ly hien thi phan trang
+  // code hien tai chi la demo de hien thi kiem tra, can phai sua lai theo cach minh lam
+  let textParams = JSON.stringify(paramPhanTrang, null, 4);
   let paramE = document.createElement("p");
   paramE.innerText = textParams;
   document.querySelector("body").prepend(paramE);
   let container = document.querySelector(".bar-container"); // thay thanh container
-  for (let s of sanPhams) {
+  for (let s of sanPhamsHienThi) {
     let item = document.createElement("div");
     item.className = "bar";
     let id = document.createElement("h4");
@@ -96,6 +114,87 @@ function hienThiSanPham(sanPhams, params) {
   }
 }
 
+function sapXepSanPhamTheoGia(thuTu, sanPhamsDaLoc) {
+  // thap den cao
+  if (thuTu === "asc")
+    return sanPhamsDaLoc.toSorted((a, b) => a["price-n"] - b["price-n"]);
+  // cao den thap
+  else if (thuTu === "desc")
+    return sanPhamsDaLoc.toSorted((a, b) => b["price-n"] - a["price-n"]);
+  return sanPhamsDaLoc;
+}
+
+function locGiaCaoNhat(max, sanPhamsDaLoc) {
+  if (max != null)
+    return sanPhamsDaLoc.filter((sanPham) => sanPham["price-sale-n"] <= max);
+  return sanPhamsDaLoc;
+}
+
+function locGiaThapNhat(min, sanPhamsDaLoc) {
+  if (min != null)
+    return sanPhamsDaLoc.filter((sanPham) => sanPham["price-sale-n"] >= min);
+  return sanPhamsDaLoc;
+}
+
+function luuSanPhamLocalStorage() {
+  localStorage.setItem("sanPham", JSON.stringify(g_sanPham));
+}
+
+function taiSanPhamLocalStorage() {
+  let stringSanPhams = localStorage.getItem("sanPham");
+  if (stringSanPhams == null) return false;
+  g_sanPham = JSON.parse(localStorage.getItem("sanPham"));
+  return true;
+}
+
+// xoa local storage de load lai danh sach san pham ban dau tu file data
+function xoaSanPhamLocalStorage() {
+  localStorage.removeItem("sanPham");
+}
+
+// them san pham, co the nhap id hoac khong
+// neu nhap id, kiem tra xem co bi trung id hay ko
+// neu ko nhap id, se duoc random 1 id ngau nhien
+function themSanPham(id, sanPham) {
+  if (id == null) {
+    sanPham["web-scraper-order"] = crypto.randomUUID();
+  } else if (timSanPham(id)) {
+    // TODO: xu ly id bi trung
+    return;
+  } else {
+    sanPham["web-scraper-order"] = id;
+  }
+  g_sanPham.push(sanPham);
+  luuSanPhamLocalStorage();
+}
+
+// sua san pham, phai nhap id de biet san pham can sua
+// san pham nhan vao se thay the san pham da co
+// dung timSanPhamTheoId de lay thong tin san pham cho nguoi dung sua
+function suaSanPham(id, sanPham) {
+  if (id == null) {
+    // TODO: xu ly chua nhap id
+  }
+  xoaSanPham(id);
+  themSanPham(id, sanPham);
+}
+
+function timSanPham(id) {
+  return g_sanPham.find((sanPham) => sanPham["web-scraper-order"] === id);
+}
+function xoaSanPham(id) {
+  if (!timSanPham(id)) {
+    // TODO: xu ly ko tim thay san pham co id nay
+    return;
+  }
+  g_sanPham.splice(
+    g_sanPham.findIndex((sanPham) => sanPham["web-scraper-order"] === id),
+    1
+  );
+  luuSanPhamLocalStorage();
+}
+
+// goi khi trang web load thanh cong
 window.addEventListener("load", () => {
-  layDsTui();
+  taiSanPham();
 });
