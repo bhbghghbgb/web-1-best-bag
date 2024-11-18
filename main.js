@@ -83,30 +83,30 @@ function hienThiSanPham(sanPhamsHienThi, paramPhanTrang) {
   paramE.innerText = textParams;
   document.querySelector("body").prepend(paramE);
   let container = document.querySelector(".bar-container"); // thay thanh container
-  for (let s of sanPhamsHienThi) {
+  for (let sanPham of sanPhamsHienThi) {
     let item = document.createElement("div");
     item.className = "bar";
     let id = document.createElement("h4");
-    id.innerText = s["web-scraper-order"];
+    id.innerText = sanPham["web-scraper-order"];
     item.appendChild(id);
     let name = document.createElement("h1");
-    name.innerText = s["name"];
+    name.innerText = sanPham["name"];
     item.appendChild(name);
     let price = document.createElement("p");
     price.style = "text-decoration: line-through; color: gray;";
-    price.innerText = s["price"];
+    price.innerText = sanPham["price"];
     item.appendChild(price);
     let sale = document.createElement("h3");
     sale.style = "color: red";
-    sale.innerText = s["price-sale-n"];
+    sale.innerText = sanPham["price-sale-n"];
     item.appendChild(sale);
     let img = document.createElement("img");
-    img.src = `./images/${s["image-file"]}`;
+    img.src = `./images/${sanPham["image-file"]}`;
     img.className = "bar-img";
     item.appendChild(img);
     let btn = document.createElement("button");
     btn.addEventListener("click", () =>
-      hienTrangChiTiet(s["web-scraper-order"])
+      hienTrangChiTiet(sanPham["web-scraper-order"])
     );
     btn.innerText = "Xem chi tiet";
     item.appendChild(btn);
