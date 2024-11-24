@@ -6,7 +6,7 @@ const sanPhamFile = "san-pham.json";
 const nguoiDungFile = "nguoi-dung.json";
 const hoaDonFile = "hoa-don.json";
 const theLoaiFile = "the-loai.json";
-var soSanPhamMoiTrang = 10;
+var soSanPhamMoiTrang = 12;
 
 async function taiDuLieu(datakey, datafile) {
   // du lieu key nay da co trong local storage
@@ -62,11 +62,16 @@ function layParamUrl() {
     min: parseInt(params.get("min"), 10),
     max: parseInt(params.get("max"), 10),
     search: params.get("search"),
+    tab: params.get("tab"),
+    disabled: params.get("disabled"),
   };
 }
 
 // goi ham nay khi bam phan trang hoac sap xep/loc de tai lai trang voi param moi
-function caiParamUrlVaReload({ page, sort, min, max, search }, resetParam) {
+function caiParamUrlVaReload(
+  { page, sort, min, max, search, tab, disabled },
+  resetParam
+) {
   const url = new URL(document.location.toString());
   if (resetParam) url.search = "";
   const params = url.searchParams;
@@ -78,6 +83,8 @@ function caiParamUrlVaReload({ page, sort, min, max, search }, resetParam) {
   setParam(min, "min");
   setParam(max, "max");
   setParam(search, "search");
+  setParam(tab, "tab");
+  setParam(disabled, "disabled");
   window.location = url.toString();
 }
 
