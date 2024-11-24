@@ -2,10 +2,10 @@ var g_sanPham, g_nguoiDung, g_hoaDon;
 const sanPhamKey = "sanPham";
 const nguoiDungKey = "nguoiDung";
 const hoaDonKey = "hoaDon";
-const sanPhamFile = "san-pham.json";
-const nguoiDungFile = "nguoi-dung.json";
-const hoaDonFile = "hoa-don.json";
-const theLoaiFile = "the-loai.json";
+var sanPhamFile = "/san-pham.json";
+var nguoiDungFile = "/nguoi-dung.json";
+var hoaDonFile = "/hoa-don.json";
+var theLoaiFile = "/the-loai.json";
 var soSanPhamMoiTrang = 12;
 
 async function taiDuLieu(datakey, datafile) {
@@ -218,9 +218,13 @@ function hienThiDanhSach(duLieusHienThi, hamRenderItem, wrapperSelector) {
   wrapper.appendChild(container);
 }
 
-function hienThiPagination(pageHienTai, pageToiDa) {
+function hienThiPagination(
+  pageHienTai,
+  pageToiDa,
+  wrapperSelector = ".pagination"
+) {
   if (pageToiDa === 0) return;
-  const wrapper = document.querySelector(".pagination");
+  const wrapper = document.querySelector(wrapperSelector);
   wrapper.innerHTML = "";
   const container = document.createElement("ul");
   container.classList.add("pagination-list");
