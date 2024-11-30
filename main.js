@@ -388,6 +388,10 @@ function hienThiPagination(
 ) {
   if (pageToiDa === 0) return;
   const wrapper = document.querySelector(wrapperSelector);
+  if (!wrapper) {
+    console.error(`Không tìm thấy phần tử với selector: ${wrapperSelector}`);
+    return; // Nếu không tìm thấy, dừng lại và không làm gì thêm
+  }
   wrapper.innerHTML = "";
   const container = document.createElement("ul");
   container.classList.add("pagination-list");
@@ -891,7 +895,7 @@ function themSanPham(id, sanPham) {
 }
 // tim san pham theo id
 function timSanPham(id) {
-  if (id == null) {
+  if (id == null ) {
     alert("timSanPham chua nhap id");
     return;
   }
@@ -1060,9 +1064,13 @@ async function taiDuLieuTongMainJs(sauKhiTai) {
     taoBoLocSanPham();
     tinhSanPhamHienThi();
   });
-  taiNguoiDung(() => tinhNguoiDungHienThi());
+  taiNguoiDung(() =>{ 
+    taoBoLocNguoiDung();
+    tinhNguoiDungHienThi();});
   taiGioHang(() => {});
-  taiHoaDon(() => tinhHoaDonHienThi());
+  taiHoaDon(() =>{ 
+    taoBoLocHoaDon();
+    tinhHoaDonHienThi()});
   sauKhiTai();
 }
 

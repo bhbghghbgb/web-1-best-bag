@@ -105,7 +105,7 @@ function thongKeGioHang() {
 
   g_gioHang.forEach((cart) => {
     cart["chi-tiet"].forEach((item) => {
-      uniqueProducts.add(item.san_pham);
+      uniqueProducts.add(item["san-pham"]);
       totalQuantity += item["so-luong"];
     });
   });
@@ -194,6 +194,7 @@ function thongKeThoiGian() {
       dayData["loai-da-ban-set"].add(chiTiet["san-pham"]);
       dayData["da-ban"] += chiTiet["so-luong"];
       const sanPham = timSanPham(chiTiet["san-pham"]);
+      if(sanPham!= null || sanPham != undefined)
       dayData["tong-thu"] +=
         (sanPham["price-sale-n"] || 0) * chiTiet["so-luong"];
     });
