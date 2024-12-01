@@ -762,7 +762,8 @@ function onPageLoad() {
       }
       break;
     case "nguoidung":
-      loadTabContent("nguoidung",()=>taiDuLieuTongMainJs(()=>taiNguoiDung(()=>{})));
+      loadTabContent("nguoidung",()=>taiDuLieuTongMainJs(()=>taiNguoiDung(()=>{taoBoLocNguoiDung();})));
+      
       tabnguoidung.classList.add("isActive");
       break;
     case "sanpham":
@@ -770,7 +771,8 @@ function onPageLoad() {
       tabsanpham.classList.add("isActive");
       break;
     case "hoadon":
-      loadTabContent("hoadon",()=>taiDuLieuTongMainJs(() => taiHoaDon(()=>{})));
+      loadTabContent("hoadon",()=>taiDuLieuTongMainJs(() => taiHoaDon(()=>{taoBoLocHoaDon();})));
+      
       tabhoadon.classList.add("isActive");
       break;
     case "bieudo-test":

@@ -1132,11 +1132,11 @@ async function taiDuLieuTongMainJs(sauKhiTai) {
     tinhSanPhamHienThi();
   });
   taiNguoiDung(() =>{ 
-    taoBoLocNguoiDung();
+    
     tinhNguoiDungHienThi();});
   taiGioHang(() => {});
   taiHoaDon(() =>{ 
-    taoBoLocHoaDon();
+    
     tinhHoaDonHienThi()});
   sauKhiTai();
 }
