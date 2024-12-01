@@ -95,8 +95,9 @@ function hienBieuDoDoanhThu() {
       yearGraphOptions
     );
     chart.render();
-    if(graphTime){
-    graphTime.textContent = `Nam ${nam}`;}
+    if (graphTime) {
+      graphTime.textContent = `Nam ${nam}`;
+    }
   });
 }
 

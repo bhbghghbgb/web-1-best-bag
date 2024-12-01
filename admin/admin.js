@@ -1,8 +1,9 @@
 const toggler = document.querySelector(".topbar-toggler");
 const collapse = document.querySelector(".topbar-collapse");
-if(toggler){
+if (toggler) {
   toggler.addEventListener("click", () => {
-    collapse.style.display = collapse.style.display === "flex" ? "none" : "flex";
+    collapse.style.display =
+      collapse.style.display === "flex" ? "none" : "flex";
   });
 }
 
@@ -28,10 +29,8 @@ function kichHoat(e) {
   }
 }
 
-
-
-function tinhSanPhamHienThi( wrapperSelector = ".product-list") {
-  if(!document.querySelector(wrapperSelector)){
+function tinhSanPhamHienThi(wrapperSelector = ".product-list") {
+  if (!document.querySelector(wrapperSelector)) {
     console.info("tinhSanPhamHienThi khong tim thay wrapper!");
     return;
   }
@@ -44,7 +43,7 @@ function tinhSanPhamHienThi( wrapperSelector = ".product-list") {
 
   const soLuongSanPham = sanPhamsDaLoc.length;
   const soPageToiDa = Math.ceil(soLuongSanPham / soSanPhamMoiTrang);
-  
+
   createPaginationDebugTable({
     soPageToiDa, // so trang toi da phan trang
     sort,
@@ -57,7 +56,7 @@ function tinhSanPhamHienThi( wrapperSelector = ".product-list") {
     soSanPhamMoiTrang,
   });
 
-  duLieuDaTinh = { duLieuDaLoc: sanPhamsDaLoc, soPageToiDa, pageHienTai: page};
+  duLieuDaTinh = { duLieuDaLoc: sanPhamsDaLoc, soPageToiDa, pageHienTai: page };
 
   hienThiSanPham(duLieuDaTinh, wrapperSelector);
 }
@@ -71,15 +70,15 @@ function hienThiDanhSach(duLieuDaTinh, hamRenderItem, wrapperSelector) {
   wrapper.innerHTML = "";
   const container = document.createElement("div");
   container.classList.add("grid-container");
-  const {duLieuDaLoc, soPageToiDa} = duLieuDaTinh;
-  let {pageHienTai}=duLieuDaTinh;
+  const { duLieuDaLoc, soPageToiDa } = duLieuDaTinh;
+  let { pageHienTai } = duLieuDaTinh;
   let chiSoBatDau = 0;
-  if(pageHienTai <1 || isNaN(pageHienTai) || pageHienTai == null){
-    pageHienTai=1;
+  if (pageHienTai < 1 || isNaN(pageHienTai) || pageHienTai == null) {
+    pageHienTai = 1;
   }
-  chiSoBatDau=(pageHienTai-1)*soSanPhamMoiTrang;
-  if(chiSoBatDau>duLieuDaTinh.length){
-    caiParamUrl({page:soPageToiDa},false,true);
+  chiSoBatDau = (pageHienTai - 1) * soSanPhamMoiTrang;
+  if (chiSoBatDau > duLieuDaTinh.length) {
+    caiParamUrl({ page: soPageToiDa }, false, true);
   }
   const duLieuPhanTrang = duLieuDaLoc.slice(
     chiSoBatDau,
@@ -148,28 +147,28 @@ function renderItemSanPham(sanPham) {
   wrapCart.appendChild(card);
   return wrapCart;
 }
-function hienThiSanPham(duLieuDaTinh,wrapperSelector) {
-  const khiBamTrang = () => hienThiDanhSach(duLieuDaTinh,renderItemSanPham, wrapperSelector);
+function hienThiSanPham(duLieuDaTinh, wrapperSelector) {
+  const khiBamTrang = () =>
+    hienThiDanhSach(duLieuDaTinh, renderItemSanPham, wrapperSelector);
   khiBamTrang();
-  hienThiPagination(duLieuDaTinh, ()=> khiBamTrang());
+  hienThiPagination(duLieuDaTinh, () => khiBamTrang());
 }
 
 function adminSuaSanPham(id) {
   const sanPham = timSanPham(id);
-  if(!sanPham){
-    alert("Khong tim thay san pham!")
+  if (!sanPham) {
+    alert("Khong tim thay san pham!");
   }
 
   // TODO: hien form chinh sua
-  
 
   updateSanPham(id, newSanPham);
 }
 
 function adminXoaSanPham(id) {
-  if(confirm("Bạn chắc chắn muốn xóa sản phẩm này?")){
+  if (confirm("Bạn chắc chắn muốn xóa sản phẩm này?")) {
     deleteSanPham(id);
-  };
+  }
 }
 var soNguoiDungMoiTrang = 25;
 function tinhNguoiDungHienThi(wrapperSelector = ".account-list") {
@@ -191,16 +190,27 @@ function tinhNguoiDungHienThi(wrapperSelector = ".account-list") {
     soLuongNguoiDung,
     tongSoNguoiDung: g_nguoiDung.length,
     soNguoiDungMoiTrang,
-  })
+  });
 
-  duLieuNguoiDungDaTinh = { duLieuNguoiDungDaLoc: nguoiDungsDaLoc, soPageToiDa, pageHienTai: page};
-  hienThiNguoiDung(duLieuNguoiDungDaTinh,wrapperSelector);
+  duLieuNguoiDungDaTinh = {
+    duLieuNguoiDungDaLoc: nguoiDungsDaLoc,
+    soPageToiDa,
+    pageHienTai: page,
+  };
+  hienThiNguoiDung(duLieuNguoiDungDaTinh, wrapperSelector);
 }
 function hienThiNguoiDung(duLieuNguoiDungDaTinh, wrapperSelector) {
-  const khiBamTrangNguoiDung = ()=>hienThiDanhSachNguoiDung(duLieuNguoiDungDaTinh,renderItemNguoiDung,wrapperSelector);
+  const khiBamTrangNguoiDung = () =>
+    hienThiDanhSachNguoiDung(
+      duLieuNguoiDungDaTinh,
+      renderItemNguoiDung,
+      wrapperSelector
+    );
   khiBamTrangNguoiDung();
   hienThiPagination(
-    duLieuNguoiDungDaTinh,()=> khiBamTrangNguoiDung(),".pagination2"
+    duLieuNguoiDungDaTinh,
+    () => khiBamTrangNguoiDung(),
+    ".pagination2"
   );
 }
 
@@ -264,7 +274,7 @@ function hienThiDanhSachNguoiDung(
   th2.textContent = "Tên khách hàng";
   th3.textContent = "Email";
   th4.textContent = "Password";
-  th5.textContent = "Trạng thái"; 
+  th5.textContent = "Trạng thái";
   tr.appendChild(th);
   tr.appendChild(th2);
   tr.appendChild(th3);
@@ -273,15 +283,15 @@ function hienThiDanhSachNguoiDung(
   thead.appendChild(tr);
   table.appendChild(thead);
   const tbody = document.createElement("tbody");
-  const {duLieuNguoiDungDaLoc, soPageToiDa} = duLieuNguoiDungDaTinh;
-  let{pageHienTai}=duLieuNguoiDungDaTinh;
+  const { duLieuNguoiDungDaLoc, soPageToiDa } = duLieuNguoiDungDaTinh;
+  let { pageHienTai } = duLieuNguoiDungDaTinh;
   let chiSoBatDau = 0;
   if (pageHienTai < 1 || isNaN(pageHienTai) || pageHienTai == null) {
     pageHienTai = 1;
   }
   chiSoBatDau = (pageHienTai - 1) * soNguoiDungMoiTrang;
   if (chiSoBatDau > duLieuNguoiDungDaTinh.length) {
-    caiParamUrl({ page: soPageToiDa }, false,true);
+    caiParamUrl({ page: soPageToiDa }, false, true);
   }
   const duLieuNguoiDungPhanTrang = duLieuNguoiDungDaLoc.slice(
     chiSoBatDau,
@@ -311,15 +321,17 @@ function sapXepNguoiDung(sort, nguoiDungsDaLoc) {
 
 //lọc những tài khoản bị khóa
 function locTrangThaiKhoa(disabled, nguoiDungsDaLoc) {
-  if(disabled===0){
+  if (disabled === 0) {
     return nguoiDungsDaLoc;
   }
-  if(disabled===1)
+  if (disabled === 1)
     return nguoiDungsDaLoc.filter(
-      (nguoiDung) => nguoiDung["disabled"] === true);
-  if(disabled===-1)
+      (nguoiDung) => nguoiDung["disabled"] === true
+    );
+  if (disabled === -1)
     return nguoiDungsDaLoc.filter(
-      (nguoiDung) => nguoiDung["disabled"] === false);
+      (nguoiDung) => nguoiDung["disabled"] === false
+    );
   return nguoiDungsDaLoc;
 }
 
@@ -332,7 +344,7 @@ function tinhHoaDonHienThi(wrapperSelector = ".order-list") {
   let { page, sort, handle } = layParamUrl();
   let hoaDonsDaLoc = [...g_hoaDon];
   hoaDonsDaLoc = locXuLyHoaDon(handle, hoaDonsDaLoc);
-  hoaDonsDaLoc = sapXepHoaDon(sort,hoaDonsDaLoc);
+  hoaDonsDaLoc = sapXepHoaDon(sort, hoaDonsDaLoc);
 
   const soLuongHoaDon = hoaDonsDaLoc.length;
   const soPageToiDa = Math.ceil(soLuongHoaDon / soHoaDonMoiTrang);
@@ -346,15 +358,28 @@ function tinhHoaDonHienThi(wrapperSelector = ".order-list") {
     soHoaDonMoiTrang,
   });
 
-  duLieuHoaDonDaTinh = {duLieuHoaDonDaLoc: hoaDonsDaLoc, soPageToiDa, pageHienTai: page};
+  duLieuHoaDonDaTinh = {
+    duLieuHoaDonDaLoc: hoaDonsDaLoc,
+    soPageToiDa,
+    pageHienTai: page,
+  };
 
   hienThiHoaDon(duLieuHoaDonDaTinh, wrapperSelector);
 }
 
 function hienThiHoaDon(duLieuHoaDonDaTinh, wrapperSelector) {
-  const khiBamTrangHoaDon = () =>hienThiDanhSachHoaDon(duLieuHoaDonDaTinh,renderItemHoaDon,wrapperSelector);
+  const khiBamTrangHoaDon = () =>
+    hienThiDanhSachHoaDon(
+      duLieuHoaDonDaTinh,
+      renderItemHoaDon,
+      wrapperSelector
+    );
   khiBamTrangHoaDon();
-  hienThiPagination(duLieuHoaDonDaTinh, () => khiBamTrangHoaDon(), ".pagination3");
+  hienThiPagination(
+    duLieuHoaDonDaTinh,
+    () => khiBamTrangHoaDon(),
+    ".pagination3"
+  );
 }
 
 function renderItemHoaDon(hoaDon) {
@@ -363,7 +388,7 @@ function renderItemHoaDon(hoaDon) {
   ngayTaoHoaDon.textContent = hoaDon["ngay-tao"];
   rowHoaDon.appendChild(ngayTaoHoaDon);
   const khachHang = document.createElement("td");
-  khachHang.textContent = timNguoiDung(hoaDon["nguoi-dung"])["name"]; 
+  khachHang.textContent = timNguoiDung(hoaDon["nguoi-dung"])["name"];
   rowHoaDon.appendChild(khachHang);
   const chiTietHoaDon = document.createElement("td");
   const minitable = document.createElement("table");
@@ -371,17 +396,20 @@ function renderItemHoaDon(hoaDon) {
   for (let i = 0; i < hoaDon["chi-tiet"].length; i++) {
     const trmini = document.createElement("tr");
     const tdmini = document.createElement("td");
-    const checksp =timSanPham(hoaDon["chi-tiet"][i]["san-pham"]);
-    if(checksp){
+    const checksp = timSanPham(hoaDon["chi-tiet"][i]["san-pham"]);
+    if (checksp) {
       tdmini.textContent = checksp["name"];
-    }else{
+    } else {
       tdmini.textContent = "!!! Khong tim thay san pham";
     }
-    
+
     trmini.appendChild(tdmini);
     const tdmini2 = document.createElement("td");
-    if(checksp){
-    tdmini2.textContent = hoaDon["chi-tiet"][i]["so-luong"];}else{tdmini2.textContent="#";}
+    if (checksp) {
+      tdmini2.textContent = hoaDon["chi-tiet"][i]["so-luong"];
+    } else {
+      tdmini2.textContent = "#";
+    }
     trmini.appendChild(tdmini2);
     minitable.appendChild(trmini);
   }
@@ -391,27 +419,27 @@ function renderItemHoaDon(hoaDon) {
   const select = document.createElement("select");
   select.classList.add("select-donhang");
   const chua = document.createElement("option");
-  chua.value="chua";
-  chua.textContent="Chưa";
+  chua.value = "chua";
+  chua.textContent = "Chưa";
   select.appendChild(chua);
   const dang = document.createElement("option");
   dang.value = "dang";
-  dang.textContent="Đang";
+  dang.textContent = "Đang";
   select.appendChild(dang);
   const huy = document.createElement("option");
-  huy.value="huy";
-  huy.textContent="Hủy";
+  huy.value = "huy";
+  huy.textContent = "Hủy";
   select.appendChild(huy);
   const roi = document.createElement("option");
-  roi.value="roi";
-  roi.textContent="Rồi";
+  roi.value = "roi";
+  roi.textContent = "Rồi";
   select.appendChild(roi);
   select.value = hoaDon["xu-ly"];
-  if(select.value==="roi") select.disabled = true;
+  if (select.value === "roi") select.disabled = true;
   xuly.classList.add(select.value);
   select.addEventListener("change", () => {
-    xuly.className="";
-    switch(select.value){
+    xuly.className = "";
+    switch (select.value) {
       case "chua":
         xuly.classList.add("chua");
         break;
@@ -423,7 +451,7 @@ function renderItemHoaDon(hoaDon) {
         break;
       case "roi":
         xuly.classList.add("roi");
-        select.disabled= true;
+        select.disabled = true;
         break;
     }
   });
@@ -432,7 +460,11 @@ function renderItemHoaDon(hoaDon) {
   return rowHoaDon;
 }
 
-function hienThiDanhSachHoaDon(duLieuHoaDonDaTinh, hamRenderItem, wrapperSelector) {
+function hienThiDanhSachHoaDon(
+  duLieuHoaDonDaTinh,
+  hamRenderItem,
+  wrapperSelector
+) {
   const wrapper = document.querySelector(wrapperSelector);
   if (!wrapper) {
     console.error(`Không tìm thấy phần tử với selector: ${wrapperSelector}`);
@@ -464,15 +496,15 @@ function hienThiDanhSachHoaDon(duLieuHoaDonDaTinh, hamRenderItem, wrapperSelecto
   thead.appendChild(tr);
   table.appendChild(thead);
   const tbody = document.createElement("tbody");
-  const {duLieuHoaDonDaLoc,soPageToiDa} = duLieuHoaDonDaTinh;
-  let{pageHienTai}=duLieuHoaDonDaTinh;
+  const { duLieuHoaDonDaLoc, soPageToiDa } = duLieuHoaDonDaTinh;
+  let { pageHienTai } = duLieuHoaDonDaTinh;
   let chiSoBatDau = 0;
   if (pageHienTai < 1 || isNaN(pageHienTai) || pageHienTai == null) {
     pageHienTai = 1;
   }
   chiSoBatDau = (pageHienTai - 1) * soHoaDonMoiTrang;
   if (chiSoBatDau > duLieuHoaDonDaTinh) {
-    caiParamUrl({ page: soPageToiDa }, false,true);
+    caiParamUrl({ page: soPageToiDa }, false, true);
   }
 
   const duLieuHoaDonPhanTrang = duLieuHoaDonDaLoc.slice(
@@ -501,17 +533,16 @@ function sapXepHoaDon(sort, hoaDonsDaLoc) {
   return hoaDonsDaLoc;
 }
 //lọc sản phẩm chưa hoặc đã được xử lý
-function locXuLyHoaDon(handle, hoaDonsDaLoc ){
-  if(handle===null)
-    return hoaDonsDaLoc;
-  if(handle==="chua")
-    return hoaDonsDaLoc.filter((hoaDon) => hoaDon["xu-ly"]==="chua");
-  if(handle==="dang")
-    return hoaDonsDaLoc.filter((hoaDon) => hoaDon["xu-ly"]==="dang");
-  if(handle==="huy")
-    return hoaDonsDaLoc.filter((hoaDon) => hoaDon["xu-ly"]==="huy");
-  if(handle==="roi")
-    return hoaDonsDaLoc.filter((hoaDon) => hoaDon["xu-ly"]==="roi");
+function locXuLyHoaDon(handle, hoaDonsDaLoc) {
+  if (handle === null) return hoaDonsDaLoc;
+  if (handle === "chua")
+    return hoaDonsDaLoc.filter((hoaDon) => hoaDon["xu-ly"] === "chua");
+  if (handle === "dang")
+    return hoaDonsDaLoc.filter((hoaDon) => hoaDon["xu-ly"] === "dang");
+  if (handle === "huy")
+    return hoaDonsDaLoc.filter((hoaDon) => hoaDon["xu-ly"] === "huy");
+  if (handle === "roi")
+    return hoaDonsDaLoc.filter((hoaDon) => hoaDon["xu-ly"] === "roi");
   return hoaDonsDaLoc;
 }
 
@@ -519,14 +550,14 @@ window.addEventListener("load", function () {
   onPageLoad();
 });
 
-function timNguoiDung(id){
-  return g_nguoiDung.find((nguoiDung)=> nguoiDung["id"]===id);
+function timNguoiDung(id) {
+  return g_nguoiDung.find((nguoiDung) => nguoiDung["id"] === id);
 }
 
 function renderItemTopSanPham(item) {
   const rowTopBanChay = document.createElement("tr");
   const tenSanPhamBanChay = document.createElement("td");
-  tenSanPhamBanChay.textContent =  item["san-pham"]["name"];
+  tenSanPhamBanChay.textContent = item["san-pham"]["name"];
   rowTopBanChay.appendChild(tenSanPhamBanChay);
   const daBan = document.createElement("td");
   daBan.textContent = item["so-luong"];
@@ -539,7 +570,7 @@ function renderItemTopSanPham(item) {
   rowTopBanChay.appendChild(tongThu);
   return rowTopBanChay;
 }
-function hienThiTopSanPham(topSanPham, hamRenderItem, wrapperSelector){
+function hienThiTopSanPham(topSanPham, hamRenderItem, wrapperSelector) {
   const wrapper = document.querySelector(wrapperSelector);
   wrapper.innerHTML = "";
   const container = document.createElement("div");
@@ -563,16 +594,16 @@ function hienThiTopSanPham(topSanPham, hamRenderItem, wrapperSelector){
   thead.appendChild(tr);
   table.appendChild(thead);
   const tbody = document.createElement("tbody");
-  for (let i = 0; i < Math.min(topSanPham.length,10);i++) {
+  for (let i = 0; i < Math.min(topSanPham.length, 10); i++) {
     tbody.appendChild(hamRenderItem(topSanPham[i]));
   }
   const khac = document.createElement("tr");
   const td = document.createElement("td");
-  td.textContent="...";
+  td.textContent = "...";
   const td2 = document.createElement("td");
-  td2.textContent="...";
+  td2.textContent = "...";
   const td3 = document.createElement("td");
-  td3.textContent="...";
+  td3.textContent = "...";
   khac.appendChild(td);
   khac.appendChild(td2);
   khac.appendChild(td3);
@@ -582,61 +613,61 @@ function hienThiTopSanPham(topSanPham, hamRenderItem, wrapperSelector){
   wrapper.appendChild(container);
 }
 
-function sapXepTopSanPham(topsp,topSanPhamsDaLoc){
-  if(topsp === "ban-chay"){
+function sapXepTopSanPham(topsp, topSanPhamsDaLoc) {
+  if (topsp === "ban-chay") {
     topSanPhamsDaLoc = topSanPhamBanChay();
   }
-  if(topsp === "doanh-thu")
-    topSanPhamsDaLoc = topSanPhamDoanhThu();
+  if (topsp === "doanh-thu") topSanPhamsDaLoc = topSanPhamDoanhThu();
   return topSanPhamsDaLoc;
 }
 
-function sapXepTopNguoiDung(topnd,topNguoiDungsDaLoc){
-  if(topnd==="nhieu-don-nhat"||topnd==="")
-    topNguoiDungsDaLoc=topKhachLenDon();
-  if(topnd==="nhieu-loai-nhat")
-    topNguoiDungsDaLoc=topKhachMuaNhieuLoai();
-  if(topnd==="nhieu-hang-nhat")
-    topNguoiDungsDaLoc=topKhachMuaNhieu();
-  if(topnd==="nhieu-tien-nhat")
-    topNguoiDungsDaLoc=topKhachChiTieu();
+function sapXepTopNguoiDung(topnd, topNguoiDungsDaLoc) {
+  if (topnd === "nhieu-don-nhat" || topnd === "")
+    topNguoiDungsDaLoc = topKhachLenDon();
+  if (topnd === "nhieu-loai-nhat") topNguoiDungsDaLoc = topKhachMuaNhieuLoai();
+  if (topnd === "nhieu-hang-nhat") topNguoiDungsDaLoc = topKhachMuaNhieu();
+  if (topnd === "nhieu-tien-nhat") topNguoiDungsDaLoc = topKhachChiTieu();
   return topNguoiDungsDaLoc;
 }
 
-function tinhTopHienThi(){
-  let { topsp, topnd}=layParamUrl();
-  console.log("đã lấy param")
+function tinhTopHienThi() {
+  let { topsp, topnd } = layParamUrl();
+  console.log("đã lấy param");
   let topSanPhamsDaLoc = thongKeSanPham();
   console.log("Thống kê sản phẩm:", topSanPhamsDaLoc);
-  topSanPhamsDaLoc = sapXepTopSanPham(topsp,topSanPhamsDaLoc);
-  const topSanPhamsHienThi = topSanPhamsDaLoc.slice(0,10);
-  let topNguoiDungsDaLoc  = thongKeNguoiDung();
-  topNguoiDungsDaLoc = sapXepTopNguoiDung(topnd,topNguoiDungsDaLoc);
-  const topNguoiDungsHienThi = topNguoiDungsDaLoc.slice(0,10);
-  hienThiTop(topNguoiDungsHienThi,topSanPhamsHienThi);
+  topSanPhamsDaLoc = sapXepTopSanPham(topsp, topSanPhamsDaLoc);
+  const topSanPhamsHienThi = topSanPhamsDaLoc.slice(0, 10);
+  let topNguoiDungsDaLoc = thongKeNguoiDung();
+  topNguoiDungsDaLoc = sapXepTopNguoiDung(topnd, topNguoiDungsDaLoc);
+  const topNguoiDungsHienThi = topNguoiDungsDaLoc.slice(0, 10);
+  hienThiTop(topNguoiDungsHienThi, topSanPhamsHienThi);
 }
 
-function hienThiTop(topNguoiDungsHienThi,topSanPhamsHienThi){
-  hienThiTopNguoiDung(topNguoiDungsHienThi,renderItemTopNguoiDung,".topkhachhang");
-  hienThiTopSanPham(topSanPhamsHienThi,renderItemTopSanPham,".topsanpham");
+function hienThiTop(topNguoiDungsHienThi, topSanPhamsHienThi) {
+  hienThiTopNguoiDung(
+    topNguoiDungsHienThi,
+    renderItemTopNguoiDung,
+    ".topkhachhang"
+  );
+  hienThiTopSanPham(topSanPhamsHienThi, renderItemTopSanPham, ".topsanpham");
 }
 
-function renderItemTopNguoiDung(item){
+function renderItemTopNguoiDung(item) {
   const rowTopNguoiDung = document.createElement("tr");
   const tenNguoiDung = document.createElement("td");
-  tenNguoiDung.textContent= item["nguoi-dung"]["name"];
+  tenNguoiDung.textContent = item["nguoi-dung"]["name"];
   rowTopNguoiDung.appendChild(tenNguoiDung);
   const soDon = document.createElement("td");
-  soDon.textContent=item["so-don"];
+  soDon.textContent = item["so-don"];
   rowTopNguoiDung.appendChild(soDon);
   const loaiDaMua = document.createElement("td");
-  loaiDaMua.textContent=item["loai-da-mua"];
+  loaiDaMua.textContent = item["loai-da-mua"];
   rowTopNguoiDung.appendChild(loaiDaMua);
   const daMua = document.createElement("td");
-  daMua.textContent=item["da-mua"];
+  daMua.textContent = item["da-mua"];
   rowTopNguoiDung.appendChild(daMua);
   const tongChi = document.createElement("td");
-  tongChi.textContent=item["tong-chi"].toLocaleString("vi-VN", {
+  tongChi.textContent = item["tong-chi"].toLocaleString("vi-VN", {
     style: "currency",
     currency: "VND",
   });
@@ -644,7 +675,7 @@ function renderItemTopNguoiDung(item){
   return rowTopNguoiDung;
 }
 
-function hienThiTopNguoiDung(topNguoiDung, hamRenderItem, wrapperSelector){
+function hienThiTopNguoiDung(topNguoiDung, hamRenderItem, wrapperSelector) {
   const wrapper = document.querySelector(wrapperSelector);
   wrapper.innerHTML = "";
   const container = document.createElement("div");
@@ -676,22 +707,22 @@ function hienThiTopNguoiDung(topNguoiDung, hamRenderItem, wrapperSelector){
   thead.appendChild(tr);
   table.appendChild(thead);
   const tbody = document.createElement("tbody");
-  if(topNguoiDung.length===0)
+  if (topNguoiDung.length === 0)
     container.appendChild(document.createTextNode("Khong co hoa don nao"));
-  for (let i = 0; i < Math.min(topNguoiDung.length,10);i++) {
+  for (let i = 0; i < Math.min(topNguoiDung.length, 10); i++) {
     tbody.appendChild(hamRenderItem(topNguoiDung[i]));
   }
   const khac = document.createElement("tr");
   const td = document.createElement("td");
-  td.textContent="...";
+  td.textContent = "...";
   const td2 = document.createElement("td");
-  td2.textContent="...";
+  td2.textContent = "...";
   const td3 = document.createElement("td");
-  td3.textContent="...";
+  td3.textContent = "...";
   const td4 = document.createElement("td");
-  td4.textContent="...";
+  td4.textContent = "...";
   const td5 = document.createElement("td");
-  td5.textContent="...";
+  td5.textContent = "...";
   khac.appendChild(td);
   khac.appendChild(td2);
   khac.appendChild(td3);
@@ -708,40 +739,38 @@ function loadTabContent(tabName, sauKhiTai) {
     .then((response) => response.text())
     .then((data) => {
       const content_area = document.getElementById("content-wrapper");
-      if(content_area){
+      if (content_area) {
         content_area.innerHTML = data;
       }
       sauKhiTai();
     });
 }
 
-
-
 var tabthongke = document.getElementById("thongke");
-if(tabthongke){
-  tabthongke.addEventListener("click", ()=>{
-    caiParamUrl({tab: "thongke"}, false);
+if (tabthongke) {
+  tabthongke.addEventListener("click", () => {
+    caiParamUrl({ tab: "thongke" }, false);
   });
 }
 
 var tabnguoidung = document.getElementById("nguoidung");
-if(tabnguoidung){
-  tabnguoidung.addEventListener("click",()=>{
+if (tabnguoidung) {
+  tabnguoidung.addEventListener("click", () => {
     caiParamUrl({ tab: "nguoidung" }, false);
   });
 }
 
-var tabsanpham = document.getElementById("sanpham")
-if(tabsanpham){
-  tabsanpham.addEventListener("click", () =>{
+var tabsanpham = document.getElementById("sanpham");
+if (tabsanpham) {
+  tabsanpham.addEventListener("click", () => {
     caiParamUrl({ tab: "sanpham" }, false);
   });
 }
 
 var tabhoadon = document.getElementById("hoadon");
-if(tabhoadon){
-  tabhoadon.addEventListener("click",()=>{
-    caiParamUrl({ tab: "hoadon" },false);
+if (tabhoadon) {
+  tabhoadon.addEventListener("click", () => {
+    caiParamUrl({ tab: "hoadon" }, false);
   });
 }
 
@@ -750,43 +779,65 @@ function onPageLoad() {
   const tab = params["tab"] || "thongke";
   switch (tab) {
     case "thongke":
-      loadTabContent("thongke",()=>taiDuLieuTongMainJs(()=>
-        taiHoaDon(()=>{
-          taoBoLocTop();
-          tinhTopHienThi();
-          themChuyenTrangVaoThongKe();
-          themDuLieuVaoTheThongKe();
-        })));
-      if(tabthongke){
+      loadTabContent("thongke", () =>
+        taiDuLieuTongMainJs(() =>
+          taiHoaDon(() => {
+            taoBoLocTop();
+            tinhTopHienThi();
+            themChuyenTrangVaoThongKe();
+            themDuLieuVaoTheThongKe();
+          })
+        )
+      );
+      if (tabthongke) {
         tabthongke.classList.add("isActive");
       }
       break;
     case "nguoidung":
-      loadTabContent("nguoidung",()=>taiDuLieuTongMainJs(()=>taiNguoiDung(()=>{taoBoLocNguoiDung();})));
-      
+      loadTabContent("nguoidung", () =>
+        taiDuLieuTongMainJs(() =>
+          taiNguoiDung(() => {
+            taoBoLocNguoiDung();
+          })
+        )
+      );
+
       tabnguoidung.classList.add("isActive");
       break;
     case "sanpham":
-      loadTabContent("sanpham",()=>taiDuLieuTongMainJs(()=>taiSanPham(()=>{})));
+      loadTabContent("sanpham", () =>
+        taiDuLieuTongMainJs(() => taiSanPham(() => {}))
+      );
       tabsanpham.classList.add("isActive");
       break;
     case "hoadon":
-      loadTabContent("hoadon",()=>taiDuLieuTongMainJs(() => taiHoaDon(()=>{taoBoLocHoaDon();})));
-      
+      loadTabContent("hoadon", () =>
+        taiDuLieuTongMainJs(() =>
+          taiHoaDon(() => {
+            taoBoLocHoaDon();
+          })
+        )
+      );
+
       tabhoadon.classList.add("isActive");
       break;
     case "bieudo-test":
-      loadTabContent("bieudo-test",()=>taiDuLieuTongMainJs(()=>taiHoaDon(()=>{})));
+      loadTabContent("bieudo-test", () =>
+        taiDuLieuTongMainJs(() => taiHoaDon(() => {}))
+      );
       doiMauBackGround();
       break;
     default:
-      loadTabContent("thongke",()=>taiDuLieuTongMainJs(()=>
-        taiHoaDon(()=>{
-          taoBoLocTop();
-          tinhTopHienThi();
-          themChuyenTrangVaoThongKe();
-          themDuLieuVaoTheThongKe();
-        })));
+      loadTabContent("thongke", () =>
+        taiDuLieuTongMainJs(() =>
+          taiHoaDon(() => {
+            taoBoLocTop();
+            tinhTopHienThi();
+            themChuyenTrangVaoThongKe();
+            themDuLieuVaoTheThongKe();
+          })
+        )
+      );
       tabnguoidung.classList.add("isActive");
   }
 }
@@ -868,7 +919,6 @@ function taoBoLocHoaDon() {
   });
 }
 
-
 function taoBoLocTop() {
   const form = document.getElementById("filterTop");
   if (!form) {
@@ -896,67 +946,66 @@ function taoBoLocTop() {
   });
 }
 
+function themChuyenTrangVaoThongKe() {
+  var chuyenTrangSanPham = document.getElementById("cardsanpham");
+  if (!chuyenTrangSanPham) {
+    console.error("Không tìm thấy id de chuyen trang san pham");
+    return;
+  }
+  chuyenTrangSanPham.addEventListener("click", () => {
+    caiParamUrl({ tab: "sanpham" }, false);
+  });
+  var chuyenTrangNguoiDung = document.getElementById("cardnguoidung");
+  if (!chuyenTrangNguoiDung) {
+    console.error("Không tìm thấy id de chuyen trang nguoi dung");
+    return;
+  }
+  chuyenTrangNguoiDung.addEventListener("click", () => {
+    caiParamUrl({ tab: "nguoidung" }, false);
+  });
+  var chuyenTrangHoaDon = document.getElementById("cardhoadon");
+  if (!chuyenTrangHoaDon) {
+    console.error("Không tìm thấy id de chuyen trang nguoi dung");
+    return;
+  }
+  chuyenTrangHoaDon.addEventListener("click", () => {
+    caiParamUrl({ tab: "hoadon" }, false);
+  });
+  var chuyenTrangBieuDo = document.getElementById("carddoanhthu");
+  if (!chuyenTrangBieuDo) {
+    console.error("khong tim thay id de chuyen trang bieu do");
+    return;
+  }
+  chuyenTrangBieuDo.addEventListener("click", () => {
+    caiParamUrl({ tab: "bieudo-test" }, false);
+  });
+}
 
- function themChuyenTrangVaoThongKe(){
-   var chuyenTrangSanPham=document.getElementById("cardsanpham");
-   if (!chuyenTrangSanPham) {
-     console.error("Không tìm thấy id de chuyen trang san pham");
-     return;
-   }
-   chuyenTrangSanPham.addEventListener("click",()=>{
-     caiParamUrl({ tab: "sanpham" }, false);
-   });
-   var chuyenTrangNguoiDung=document.getElementById("cardnguoidung");
-   if (!chuyenTrangNguoiDung) {
-     console.error("Không tìm thấy id de chuyen trang nguoi dung");
-     return;
-   }
-   chuyenTrangNguoiDung.addEventListener("click",()=>{
-     caiParamUrl({tab:"nguoidung"},false);
-   });
-   var chuyenTrangHoaDon=document.getElementById("cardhoadon");
-   if (!chuyenTrangHoaDon) {
-     console.error("Không tìm thấy id de chuyen trang nguoi dung");
-     return;
-   }
-   chuyenTrangHoaDon.addEventListener("click",()=>{
-     caiParamUrl({tab:"hoadon"},false);
-       });
-   var chuyenTrangBieuDo=document.getElementById("carddoanhthu");
-   if(!chuyenTrangBieuDo){
-     console.error("khong tim thay id de chuyen trang bieu do");
-     return;
-   }
-   chuyenTrangBieuDo.addEventListener("click",()=>{
-     caiParamUrl({tab:"bieudo-test"},false);
-   })
- }
-
-function doiMauBackGround(){
-  var bg =document.getElementById("content-wrapper");
-  if(!bg){
+function doiMauBackGround() {
+  var bg = document.getElementById("content-wrapper");
+  if (!bg) {
     console.error("khong tim thay content wrapper");
     return;
   }
   bg.classList.add("change-background");
 }
 
-function themDuLieuVaoTheThongKe(){
+function themDuLieuVaoTheThongKe() {
   const soLieuSp = thongKeGioHang();
   var soLieuSanPham = document.querySelector(".bg-mattRed .inner h3");
-  soLieuSanPham.textContent=soLieuSp["totalProductCount"];
+  soLieuSanPham.textContent = soLieuSp["totalProductCount"];
   var tenSoLieuSanPham = document.querySelector(".bg-mattRed .inner p");
-  tenSoLieuSanPham.textContent =  soLieuSp["uniqueProductCount"] + " mặt hàng";
+  tenSoLieuSanPham.textContent = soLieuSp["uniqueProductCount"] + " mặt hàng";
   const soLieuHd = thongKeDonHang();
   var soLieuHoaDon = document.querySelector(".bg-green .inner h3");
-  soLieuHoaDon.textContent=soLieuHd["orderCount"];
-  var tenSoLieuHoaDon =document.querySelector(".bg-green .inner p");
-  tenSoLieuHoaDon.textContent="Đơn hàng";
-  const soLieuTk=thongKeTaiKhoan();
+  soLieuHoaDon.textContent = soLieuHd["orderCount"];
+  var tenSoLieuHoaDon = document.querySelector(".bg-green .inner p");
+  tenSoLieuHoaDon.textContent = "Đơn hàng";
+  const soLieuTk = thongKeTaiKhoan();
   var soLieuTaiKhoan = document.querySelector(".bg-orange .inner h3");
-  soLieuTaiKhoan.textContent=soLieuTk["activeCount"];
-  var tenSoLieuTaiKhoan =document.querySelector(".bg-orange .inner p");
-  tenSoLieuTaiKhoan.textContent="Tài khoản đang hoạt động";
+  soLieuTaiKhoan.textContent = soLieuTk["activeCount"];
+  var tenSoLieuTaiKhoan = document.querySelector(".bg-orange .inner p");
+  tenSoLieuTaiKhoan.textContent = "Tài khoản đang hoạt động";
   const soLieuTc = thongKeTruyCap();
   var soLieuLuotXem = document.querySelector(".bg-blue .inner h3");
   soLieuLuotXem.textContent = soLieuTc["viewCountThisMonth"];
@@ -967,7 +1016,7 @@ function themDuLieuVaoTheThongKe(){
   var tenSoLieuXemAd = document.querySelector(".bg-maroon .inner p");
   tenSoLieuXemAd.textContent = "Lượt nhấn vào quảng cáo";
   const soLieuTg = thongKeThoiGian();
-  if(soLieuTg){
+  if (soLieuTg) {
     var soLieuDoanhThu = document.querySelector(".bg-red .inner h3");
     soLieuDoanhThu.textContent = thongKeDoanhThu().toLocaleString("vi-VN", {
       style: "currency",
@@ -977,8 +1026,6 @@ function themDuLieuVaoTheThongKe(){
     tenSoLieuDoanhThu.textContent = "Doanh thu tháng";
   }
 }
-
-
 
 // !!!  CHU Y --------------------------------------------------------------------------------------------
 /*function thongKeSanPham({ ngay, thang, nam } = {}) {
@@ -1235,4 +1282,3 @@ function thongKeThoiGian() {
   return allTimeResult;
 }
 */
-

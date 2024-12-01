@@ -665,8 +665,8 @@ table {
 tr {
   transition: all 0.5s ease-in;
 }
-h1{
-  color:#fff;
+h1 {
+  color: #fff;
   text-align: center;
 }
 /*-------------------------------------------------------*/
@@ -735,49 +735,45 @@ td {
   background-color: #212529;
 }
 
-
-
-#filterTop{
-  gap:10px;
-  right:20px;
+#filterTop {
+  gap: 10px;
+  right: 20px;
 }
 #filterTop label {
-  color:#fff;
+  color: #fff;
   font-size: 15px;
 }
 
-.best-seller{
-  display:flex;
+.best-seller {
+  display: flex;
   flex-direction: row;
   justify-content: space-around;
-
-  
 }
 
-#content-wrapper{
+#content-wrapper {
   margin-left: 80px;
   width: 100%;
 }
 
-.tieu-de h1{
+.tieu-de h1 {
   text-align: center;
   padding: 15px 15px;
-  color:#fff;
+  color: #fff;
 }
 
-table th{
+table th {
   background-color: #303232;
 }
 
-table tr:hover{
+table tr:hover {
   background-color: #6c757d;
 }
-form{
-  color:#fff;
+form {
+  color: #fff;
 }
 
-.change-background{
-  background-color: #D3D3D3;
+.change-background {
+  background-color: #d3d3d3;
 }
 /*-------------------------------------------------------*/
 .Dark {
@@ -898,7 +894,6 @@ html {
 }
 
 .topbar-toggler {
-  
   background: none;
   border: 1px solid #fff;
   color: white;
