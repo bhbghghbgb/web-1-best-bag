@@ -394,7 +394,7 @@ function hienThiDanhSach(duLieuDaTinh, hamRenderItem, wrapperSelector) {
   chiSoBatDau = chiSoPage * soSanPhamMoiTrang;
   // phan trang bam vuot gioi han so trang
   if (chiSoBatDau > duLieuDaTinh.length) {
-    caiParamUrlVaReload({ page: soPageToiDa }, false, true);
+    caiParamUrl({ page: soPageToiDa }, false, true);
   }
   // mang sau khi chia phan trang
   const duLieuPhanTrang = duLieuDaLoc.slice(

@@ -665,7 +665,10 @@ table {
 tr {
   transition: all 0.5s ease-in;
 }
-
+h1{
+  color:#fff;
+  text-align: center;
+}
 /*-------------------------------------------------------*/
 /*QUAN LY DON HANG*/
 #quanlydonhang {

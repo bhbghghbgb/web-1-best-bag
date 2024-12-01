@@ -1,10 +1,10 @@
-
 const toggler = document.querySelector(".topbar-toggler");
 const collapse = document.querySelector(".topbar-collapse");
-
-toggler.addEventListener("click", () => {
-  collapse.style.display = collapse.style.display === "flex" ? "none" : "flex";
-});
+if(toggler){
+  toggler.addEventListener("click", () => {
+    collapse.style.display = collapse.style.display === "flex" ? "none" : "flex";
+  });
+}
 
 function PhongSide() {
   sidebar.style.width = "200px";
@@ -30,36 +30,23 @@ function kichHoat(e) {
 
 
 
-function tinhSanPhamHienThi() {
+function tinhSanPhamHienThi( wrapperSelector = ".product-list") {
+  if(!document.querySelector(wrapperSelector)){
+    console.info("tinhSanPhamHienThi khong tim thay wrapper!");
+    return;
+  }
   let { page, sort, min, max, search, categories } = layParamUrl();
   let sanPhamsDaLoc = [...g_sanPham];
   sanPhamsDaLoc = locGiaSanPham(min, max, sanPhamsDaLoc);
   sanPhamsDaLoc = locTheLoaiSanPham(categories, sanPhamsDaLoc);
   if (search) sanPhamsDaLoc = timTheoTen(search, sanPhamsDaLoc);
   sanPhamsDaLoc = sapXepSanPham(sort, sanPhamsDaLoc);
+
   const soLuongSanPham = sanPhamsDaLoc.length;
   const soPageToiDa = Math.ceil(soLuongSanPham / soSanPhamMoiTrang);
-  let chiSoBatDau = 0;
-  let chiSoPage = 0;
-  if (page < 1 || isNaN(page) || page == null) {
-    page = 1;
-  }
-  chiSoPage = page - 1;
-  chiSoBatDau = chiSoPage * soSanPhamMoiTrang;
-  // phan trang bam vuot gioi han so trang
-  if (chiSoBatDau > soLuongSanPham) {
-    caiParamUrlVaReload({ page: soPageToiDa }, false);
-  }
-
-  // mang sau khi chia phan trang
-  const sanPhamsHienThi = sanPhamsDaLoc.slice(
-    chiSoBatDau,
-    chiSoBatDau + soSanPhamMoiTrang
-  );
-  hienThiSanPham(sanPhamsHienThi, {
-    page, // trang phan trang hien tai
+  
+  createPaginationDebugTable({
     soPageToiDa, // so trang toi da phan trang
-    chiSoPage,
     sort,
     min,
     max,
@@ -67,12 +54,15 @@ function tinhSanPhamHienThi() {
     categories,
     soLuongSanPham,
     tongSoSanPham: g_sanPham.length,
-    chiSoBatDau,
     soSanPhamMoiTrang,
   });
+
+  duLieuDaTinh = { duLieuDaLoc: sanPhamsDaLoc, soPageToiDa, pageHienTai: page};
+
+  hienThiSanPham(duLieuDaTinh, wrapperSelector);
 }
 
-function hienThiDanhSach(duLieusHienThi, hamRenderItem, wrapperSelector) {
+function hienThiDanhSach(duLieuDaTinh, hamRenderItem, wrapperSelector) {
   const wrapper = document.querySelector(wrapperSelector);
   if (!wrapper) {
     console.error(`Không tìm thấy phần tử với selector: ${wrapperSelector}`);
@@ -81,14 +71,27 @@ function hienThiDanhSach(duLieusHienThi, hamRenderItem, wrapperSelector) {
   wrapper.innerHTML = "";
   const container = document.createElement("div");
   container.classList.add("grid-container");
-  if (duLieusHienThi.length === 0)
+  const {duLieuDaLoc, soPageToiDa} = duLieuDaTinh;
+  let {pageHienTai}=duLieuDaTinh;
+  let chiSoBatDau = 0;
+  if(pageHienTai <1 || isNaN(pageHienTai) || pageHienTai == null){
+    pageHienTai=1;
+  }
+  chiSoBatDau=(pageHienTai-1)*soSanPhamMoiTrang;
+  if(chiSoBatDau>duLieuDaTinh.length){
+    caiParamUrl({page:soPageToiDa},false,true);
+  }
+  const duLieuPhanTrang = duLieuDaLoc.slice(
+    chiSoBatDau,
+    chiSoBatDau + soSanPhamMoiTrang
+  );
+  if (duLieuDaTinh.length === 0)
     container.appendChild(
       document.createTextNode("Khong co san pham dap ung tieu chi")
     );
-  for (const item of duLieusHienThi) {
+  for (const item of duLieuPhanTrang) {
     container.appendChild(hamRenderItem(item));
   }
-
   wrapper.appendChild(container);
 }
 function renderItemSanPham(sanPham) {
@@ -145,21 +148,28 @@ function renderItemSanPham(sanPham) {
   wrapCart.appendChild(card);
   return wrapCart;
 }
-function hienThiSanPham(sanPhamsHienThi, paramPhanTrang) {
-  createPaginationDebugTable(paramPhanTrang);
-  hienThiDanhSach(sanPhamsHienThi, renderItemSanPham, ".product-list");
-  hienThiPagination(paramPhanTrang.page, paramPhanTrang.soPageToiDa);
+function hienThiSanPham(duLieuDaTinh,wrapperSelector) {
+  const khiBamTrang = () => hienThiDanhSach(duLieuDaTinh,renderItemSanPham, wrapperSelector);
+  khiBamTrang();
+  hienThiPagination(duLieuDaTinh, ()=> khiBamTrang());
 }
 
 function adminSuaSanPham(id) {
   const sanPham = timSanPham(id);
-  // TODO: hien form chinh sua
+  if(!sanPham){
+    alert("Khong tim thay san pham!")
+  }
 
-  //   suaSanPham(id, newSanPham);
+  // TODO: hien form chinh sua
+  
+
+  updateSanPham(id, newSanPham);
 }
 
 function adminXoaSanPham(id) {
-  xoaSanPham(id);
+  if(confirm("Bạn chắc chắn muốn xóa sản phẩm này?")){
+    deleteSanPham(id);
+  };
 }
 var soNguoiDungMoiTrang = 25;
 function tinhNguoiDungHienThi(wrapperSelector = ".account-list") {
@@ -171,41 +181,26 @@ function tinhNguoiDungHienThi(wrapperSelector = ".account-list") {
   let nguoiDungsDaLoc = [...g_nguoiDung];
   nguoiDungsDaLoc = locTrangThaiKhoa(disabled, nguoiDungsDaLoc);
   nguoiDungsDaLoc = sapXepNguoiDung(sort, nguoiDungsDaLoc);
+
   const soLuongNguoiDung = nguoiDungsDaLoc.length;
   const soPageToiDa = Math.ceil(soLuongNguoiDung / soNguoiDungMoiTrang);
-  let chiSoBatDau = 0;
-  if (page < 1 || isNaN(page) || page == null) {
-    page = 1;
-  }
-  chiSoBatDau = (page - 1) * soNguoiDungMoiTrang;
-  if (chiSoBatDau > soLuongNguoiDung) {
-    caiParamUrlVaReload({ page: soPageToiDa }, false);
-  }
-  const nguoiDungsHienThi = nguoiDungsDaLoc.slice(
-    chiSoBatDau,
-    Math.min(chiSoBatDau + soNguoiDungMoiTrang, soLuongNguoiDung)
-  );
-  hienThiNguoiDung(nguoiDungsHienThi, {
-    page,
+  createPaginationDebugTable({
     soPageToiDa,
     sort,
+    disabled,
     soLuongNguoiDung,
     tongSoNguoiDung: g_nguoiDung.length,
-    chiSoBatDau,
     soNguoiDungMoiTrang,
-  });
+  })
+
+  duLieuNguoiDungDaTinh = { duLieuNguoiDungDaLoc: nguoiDungsDaLoc, soPageToiDa, pageHienTai: page};
+  hienThiNguoiDung(duLieuNguoiDungDaTinh,wrapperSelector);
 }
-function hienThiNguoiDung(nguoiDungsHienThi, paramPhanTrang) {
-  createPaginationDebugTable(paramPhanTrang);
-  hienThiDanhSachNguoiDung(
-    nguoiDungsHienThi,
-    renderItemNguoiDung,
-    ".account-list"
-  );
+function hienThiNguoiDung(duLieuNguoiDungDaTinh, wrapperSelector) {
+  const khiBamTrangNguoiDung = ()=>hienThiDanhSachNguoiDung(duLieuNguoiDungDaTinh,renderItemNguoiDung,wrapperSelector);
+  khiBamTrangNguoiDung();
   hienThiPagination(
-    paramPhanTrang.page,
-    paramPhanTrang.soPageToiDa,
-    ".pagination2"
+    duLieuNguoiDungDaTinh,()=> khiBamTrangNguoiDung(),".pagination2"
   );
 }
 
@@ -239,11 +234,15 @@ function renderItemNguoiDung(nguoiDung) {
   return rowNguoiDung;
 }
 function hienThiDanhSachNguoiDung(
-  duLieusHienThi,
+  duLieuNguoiDungDaTinh,
   hamRenderItem,
   wrapperSelector
 ) {
   const wrapper = document.querySelector(wrapperSelector);
+  if (!wrapper) {
+    console.error(`Không tìm thấy phần tử với selector: ${wrapperSelector}`);
+    return; // Nếu không tìm thấy, dừng lại và không làm gì thêm
+  }
   wrapper.innerHTML = "";
   const container = document.createElement("div");
   container.classList.add("container-nguoidung");
@@ -274,9 +273,23 @@ function hienThiDanhSachNguoiDung(
   thead.appendChild(tr);
   table.appendChild(thead);
   const tbody = document.createElement("tbody");
-  if (duLieusHienThi === 0)
+  const {duLieuNguoiDungDaLoc, soPageToiDa} = duLieuNguoiDungDaTinh;
+  let{pageHienTai}=duLieuNguoiDungDaTinh;
+  let chiSoBatDau = 0;
+  if (pageHienTai < 1 || isNaN(pageHienTai) || pageHienTai == null) {
+    pageHienTai = 1;
+  }
+  chiSoBatDau = (pageHienTai - 1) * soNguoiDungMoiTrang;
+  if (chiSoBatDau > duLieuNguoiDungDaTinh.length) {
+    caiParamUrl({ page: soPageToiDa }, false,true);
+  }
+  const duLieuNguoiDungPhanTrang = duLieuNguoiDungDaLoc.slice(
+    chiSoBatDau,
+    chiSoBatDau + soNguoiDungMoiTrang
+  );
+  if (duLieuNguoiDungDaTinh.length === 0)
     container.appendChild(document.createTextNode("Khong co khach hang nao"));
-  for (const item of duLieusHienThi) {
+  for (const item of duLieuNguoiDungPhanTrang) {
     tbody.appendChild(hamRenderItem(item));
   }
   table.appendChild(tbody);
@@ -320,36 +333,28 @@ function tinhHoaDonHienThi(wrapperSelector = ".order-list") {
   let hoaDonsDaLoc = [...g_hoaDon];
   hoaDonsDaLoc = locXuLyHoaDon(handle, hoaDonsDaLoc);
   hoaDonsDaLoc = sapXepHoaDon(sort,hoaDonsDaLoc);
+
   const soLuongHoaDon = hoaDonsDaLoc.length;
   const soPageToiDa = Math.ceil(soLuongHoaDon / soHoaDonMoiTrang);
-  let chiSoBatDau = 0;
-  if (page < 1 || isNaN(page) || page == null) {
-    page = 1;
-  }
-  chiSoBatDau = (page - 1) * soHoaDonMoiTrang;
-  if (chiSoBatDau > soLuongHoaDon) {
-    caiParamUrlVaReload({ page: soPageToiDa }, false);
-  }
 
-  const hoaDonsHienThi = hoaDonsDaLoc.slice(
-    chiSoBatDau,
-    Math.min(chiSoBatDau + soHoaDonMoiTrang, soLuongHoaDon)
-  );
-  hienThiHoaDon(hoaDonsHienThi, {
-    page,
+  createPaginationDebugTable({
     soPageToiDa,
     sort,
+    handle,
     soLuongHoaDon,
     tongSoHoaDon: g_hoaDon.length,
-    chiSoBatDau,
     soHoaDonMoiTrang,
   });
+
+  duLieuHoaDonDaTinh = {duLieuHoaDonDaLoc: hoaDonsDaLoc, soPageToiDa, pageHienTai: page};
+
+  hienThiHoaDon(duLieuHoaDonDaTinh, wrapperSelector);
 }
 
-function hienThiHoaDon(hoaDonsHienThi, paramPhanTrang) {
-  createPaginationDebugTable(paramPhanTrang);
-  hienThiDanhSachHoaDon(hoaDonsHienThi, renderItemHoaDon, ".order-list");
-  hienThiPagination(paramPhanTrang.page, paramPhanTrang.soPageToiDa,".pagination3");
+function hienThiHoaDon(duLieuHoaDonDaTinh, wrapperSelector) {
+  const khiBamTrangHoaDon = () =>hienThiDanhSachHoaDon(duLieuHoaDonDaTinh,renderItemHoaDon,wrapperSelector);
+  khiBamTrangHoaDon();
+  hienThiPagination(duLieuHoaDonDaTinh, () => khiBamTrangHoaDon(), ".pagination3");
 }
 
 function renderItemHoaDon(hoaDon) {
@@ -427,8 +432,12 @@ function renderItemHoaDon(hoaDon) {
   return rowHoaDon;
 }
 
-function hienThiDanhSachHoaDon(duLieusHienThi, hamRenderItem, wrapperSelector) {
+function hienThiDanhSachHoaDon(duLieuHoaDonDaTinh, hamRenderItem, wrapperSelector) {
   const wrapper = document.querySelector(wrapperSelector);
+  if (!wrapper) {
+    console.error(`Không tìm thấy phần tử với selector: ${wrapperSelector}`);
+    return; // Nếu không tìm thấy, dừng lại và không làm gì thêm
+  }
   wrapper.innerHTML = "";
   const container = document.createElement("div");
   container.classList.add("container-hoadon");
@@ -455,9 +464,24 @@ function hienThiDanhSachHoaDon(duLieusHienThi, hamRenderItem, wrapperSelector) {
   thead.appendChild(tr);
   table.appendChild(thead);
   const tbody = document.createElement("tbody");
-  if (duLieusHienThi === 0)
+  const {duLieuHoaDonDaLoc,soPageToiDa} = duLieuHoaDonDaTinh;
+  let{pageHienTai}=duLieuHoaDonDaTinh;
+  let chiSoBatDau = 0;
+  if (pageHienTai < 1 || isNaN(pageHienTai) || pageHienTai == null) {
+    pageHienTai = 1;
+  }
+  chiSoBatDau = (pageHienTai - 1) * soHoaDonMoiTrang;
+  if (chiSoBatDau > duLieuHoaDonDaTinh) {
+    caiParamUrl({ page: soPageToiDa }, false,true);
+  }
+
+  const duLieuHoaDonPhanTrang = duLieuHoaDonDaLoc.slice(
+    chiSoBatDau,
+    chiSoBatDau + soHoaDonMoiTrang
+  );
+  if (duLieuHoaDonDaTinh.length === 0)
     container.appendChild(document.createTextNode("Khong co hoa don nao"));
-  for (const item of duLieusHienThi) {
+  for (const item of duLieuHoaDonPhanTrang) {
     tbody.appendChild(hamRenderItem(item));
   }
   table.appendChild(tbody);
@@ -502,7 +526,7 @@ function timNguoiDung(id){
 function renderItemTopSanPham(item) {
   const rowTopBanChay = document.createElement("tr");
   const tenSanPhamBanChay = document.createElement("td");
-  tenSanPhamBanChay.textContent =  item.name;
+  tenSanPhamBanChay.textContent =  item["san-pham"]["name"];
   rowTopBanChay.appendChild(tenSanPhamBanChay);
   const daBan = document.createElement("td");
   daBan.textContent = item["so-luong"];
@@ -600,7 +624,7 @@ function hienThiTop(topNguoiDungsHienThi,topSanPhamsHienThi){
 function renderItemTopNguoiDung(item){
   const rowTopNguoiDung = document.createElement("tr");
   const tenNguoiDung = document.createElement("td");
-  tenNguoiDung.textContent= item["name"];
+  tenNguoiDung.textContent= item["nguoi-dung"]["name"];
   rowTopNguoiDung.appendChild(tenNguoiDung);
   const soDon = document.createElement("td");
   soDon.textContent=item["so-don"];
@@ -683,7 +707,10 @@ function loadTabContent(tabName, sauKhiTai) {
   fetch(`${tabName}.html`)
     .then((response) => response.text())
     .then((data) => {
-      document.getElementById("content-wrapper").innerHTML = data;
+      const content_area = document.getElementById("content-wrapper");
+      if(content_area){
+        content_area.innerHTML = data;
+      }
       sauKhiTai();
     });
 }
@@ -691,24 +718,32 @@ function loadTabContent(tabName, sauKhiTai) {
 
 
 var tabthongke = document.getElementById("thongke");
-tabthongke.addEventListener("click", ()=>{
-  caiParamUrlVaReload({tab: "thongke"}, false);
-});
+if(tabthongke){
+  tabthongke.addEventListener("click", ()=>{
+    caiParamUrl({tab: "thongke"}, false);
+  });
+}
 
 var tabnguoidung = document.getElementById("nguoidung");
-tabnguoidung.addEventListener("click",()=>{
-  caiParamUrlVaReload({ tab: "nguoidung" }, false);
-});
+if(tabnguoidung){
+  tabnguoidung.addEventListener("click",()=>{
+    caiParamUrl({ tab: "nguoidung" }, false);
+  });
+}
 
 var tabsanpham = document.getElementById("sanpham")
-tabsanpham.addEventListener("click", () =>{
-  caiParamUrlVaReload({ tab: "sanpham" }, false);
-});
+if(tabsanpham){
+  tabsanpham.addEventListener("click", () =>{
+    caiParamUrl({ tab: "sanpham" }, false);
+  });
+}
 
 var tabhoadon = document.getElementById("hoadon");
-tabhoadon.addEventListener("click",()=>{
-  caiParamUrlVaReload({ tab: "hoadon" },false);
-});
+if(tabhoadon){
+  tabhoadon.addEventListener("click",()=>{
+    caiParamUrl({ tab: "hoadon" },false);
+  });
+}
 
 function onPageLoad() {
   const params = layParamUrl();
@@ -722,7 +757,9 @@ function onPageLoad() {
           themChuyenTrangVaoThongKe();
           themDuLieuVaoTheThongKe();
         })));
-      tabthongke.classList.add("isActive");
+      if(tabthongke){
+        tabthongke.classList.add("isActive");
+      }
       break;
     case "nguoidung":
       loadTabContent("nguoidung",()=>taiDuLieuTongMainJs(()=>taiNguoiDung(()=>{})));
@@ -787,7 +824,7 @@ function taoBoLocNguoiDung() {
     }
 
     // Cập nhật URL hoặc gửi dữ liệu qua AJAX
-    caiParamUrlVaReload(filterParams); // Hàm giả định cập nhật URL hoặc gửi request
+    caiParamUrl(filterParams); // Hàm giả định cập nhật URL hoặc gửi request
   });
 }
 
@@ -825,7 +862,7 @@ function taoBoLocHoaDon() {
     }
 
     // Gửi dữ liệu hoặc cập nhật URL
-    caiParamUrlVaReload(filterParams); // Hàm giả định gửi request hoặc reload trang
+    caiParamUrl(filterParams); // Hàm giả định gửi request hoặc reload trang
   });
 }
 
@@ -853,45 +890,45 @@ function taoBoLocTop() {
     params.forEach((value, key) => {
       filterParams[key] = value;
     });
-    caiParamUrlVaReload(filterParams);
+    caiParamUrl(filterParams);
   });
 }
 
 
-function themChuyenTrangVaoThongKe(){
-  var chuyenTrangSanPham=document.getElementById("cardsanpham");
-  if (!chuyenTrangSanPham) {
-    console.error("Không tìm thấy id de chuyen trang san pham");
-    return;
-  }
-  chuyenTrangSanPham.addEventListener("click",()=>{
-    caiParamUrlVaReload({ tab: "sanpham" }, false);
-  });
-  var chuyenTrangNguoiDung=document.getElementById("cardnguoidung");
-  if (!chuyenTrangNguoiDung) {
-    console.error("Không tìm thấy id de chuyen trang nguoi dung");
-    return;
-  }
-  chuyenTrangNguoiDung.addEventListener("click",()=>{
-    caiParamUrlVaReload({tab:"nguoidung"},false);
-  });
-  var chuyenTrangHoaDon=document.getElementById("cardhoadon");
-  if (!chuyenTrangHoaDon) {
-    console.error("Không tìm thấy id de chuyen trang nguoi dung");
-    return;
-  }
-  chuyenTrangHoaDon.addEventListener("click",()=>{
-    caiParamUrlVaReload({tab:"hoadon"},false);
-  });
-  var chuyenTrangBieuDo=document.getElementById("carddoanhthu");
-  if(!chuyenTrangBieuDo){
-    console.error("khong tim thay id de chuyen trang bieu do");
-    return;
-  }
-  chuyenTrangBieuDo.addEventListener("click",()=>{
-    caiParamUrlVaReload({tab:"bieudo-test"},false);
-  })
-}
+ function themChuyenTrangVaoThongKe(){
+   var chuyenTrangSanPham=document.getElementById("cardsanpham");
+   if (!chuyenTrangSanPham) {
+     console.error("Không tìm thấy id de chuyen trang san pham");
+     return;
+   }
+   chuyenTrangSanPham.addEventListener("click",()=>{
+     caiParamUrl({ tab: "sanpham" }, false);
+   });
+   var chuyenTrangNguoiDung=document.getElementById("cardnguoidung");
+   if (!chuyenTrangNguoiDung) {
+     console.error("Không tìm thấy id de chuyen trang nguoi dung");
+     return;
+   }
+   chuyenTrangNguoiDung.addEventListener("click",()=>{
+     caiParamUrl({tab:"nguoidung"},false);
+   });
+   var chuyenTrangHoaDon=document.getElementById("cardhoadon");
+   if (!chuyenTrangHoaDon) {
+     console.error("Không tìm thấy id de chuyen trang nguoi dung");
+     return;
+   }
+   chuyenTrangHoaDon.addEventListener("click",()=>{
+     caiParamUrl({tab:"hoadon"},false);
+       });
+   var chuyenTrangBieuDo=document.getElementById("carddoanhthu");
+   if(!chuyenTrangBieuDo){
+     console.error("khong tim thay id de chuyen trang bieu do");
+     return;
+   }
+   chuyenTrangBieuDo.addEventListener("click",()=>{
+     caiParamUrl({tab:"bieudo-test"},false);
+   })
+ }
 
 function doiMauBackGround(){
   var bg =document.getElementById("content-wrapper");
@@ -942,7 +979,7 @@ function themDuLieuVaoTheThongKe(){
 
 
 // !!!  CHU Y --------------------------------------------------------------------------------------------
-function thongKeSanPham({ ngay, thang, nam } = {}) {
+/*function thongKeSanPham({ ngay, thang, nam } = {}) {
   return Object.entries(
     g_hoaDon.reduce((spSl, hd) => {
       // Kiểm tra điều kiện lọc ngày
@@ -1195,5 +1232,5 @@ function thongKeThoiGian() {
 
   return allTimeResult;
 }
-
+*/
 

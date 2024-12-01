@@ -198,12 +198,7 @@ function thongKeThoiGian() {
     hoaDon["chi-tiet"].forEach((chiTiet) => {
       dayData["loai-da-ban-set"].add(chiTiet["san-pham"]);
       dayData["da-ban"] += chiTiet["so-luong"];
-
-      const sanPham = timSanPham(chiTiet["san-pham"]);
-      if(sanPham!= null && sanPham != undefined)
-
-      //const sanPham = readSanPham(chiTiet["san-pham"]);
-
+      const sanPham = readSanPham(chiTiet["san-pham"]);
       dayData["tong-thu"] +=
         (sanPham["price-sale-n"] || 0) * chiTiet["so-luong"];
     });
@@ -316,28 +311,3 @@ function thongKeThoiGian() {
 async function thongKeThoiGian2() {
   return await (await fetch("./tktgv18.json")).json();
 }
-
-// JSON.parse(
-//   JSON.stringify({ dataVersion, ...thongKeThoiGian() }, (key, value) =>
-//     value instanceof Set ? [...value] : value
-//   )
-// );
-
-// taiDuLieu(nguoiDungKey, nguoiDungFile).then((data) => {
-//     g_nguoiDung = data;
-//     i_nguoiDung =
-//       taiDuLieuLocalStorage(nguoiDungImKey) ??
-//       createIndexMapping(g_nguoiDung, nguoiDungIdKey);
-//   });
-//   taiDuLieu(sanPhamKey, sanPhamFile).then((data) => {
-//     g_sanPham = data;
-//     i_sanPham =
-//       taiDuLieuLocalStorage(sanPhamImKey) ??
-//       createIndexMapping(g_sanPham, sanPhamIdKey);
-//   });
-//   taiDuLieu(hoaDonKey, hoaDonFile).then((data) => {
-//     g_hoaDon = data;
-//     i_hoaDon =
-//       taiDuLieuLocalStorage(hoaDonImKey) ??
-//       createIndexMapping(g_hoaDon, hoaDonIdKey);
-//   });
