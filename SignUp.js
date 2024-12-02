@@ -34,12 +34,44 @@ function SignUp() {
 
 }
 
+function kiemTraInput() {
+  const name = document.getElementById("name");
+  const username = document.getElementById("username");
+  const passwordField = document.getElementById("password_signup");
+  const email = document.getElementById("email");
+
+  if (name.value === "") {
+    alert("Name is required");
+    return false;
+  }
+
+  if (username.value === "") {
+    alert("Username is required");
+    return false;
+  }
+
+  if (email.value === "") {
+    alert("Email is required");
+    return false;
+  }
+
+  if (passwordField.value === "") {
+    alert("Password is required");
+    return false;
+  }
+
+  return true;
+}
+
 window.addEventListener("load", () => {
   taiDuLieuTongMainJs(() => taiNguoiDung(() => {
 
     const signUpForm = document.getElementById("signUpForm");
     signUpForm.addEventListener("submit", (event) => {
       event.preventDefault();
+      if (!kiemTraInput()) {
+        return;
+      }
       SignUp();
     });
 
