@@ -12,7 +12,7 @@ function SignIn() {
     if (userEntity.password === passwordValue) {
       alert("Login success");
       localStorage.setItem("currentUserId", userEntity.id);
-      window.location = "./index.html";
+      window.location = "index.html";
     }
   } else {
     alert("Login failed: Username or password is incorrect");
@@ -20,7 +20,7 @@ function SignIn() {
   }
 }
 
-function kiemTraInput() {
+function kiemTraInputSignIn() {
   const emailOrUserNameField = document.getElementById("emailOrUsernameField");
   const passwordField = document.getElementById("password_signin");
 
@@ -43,7 +43,7 @@ window.addEventListener("load", () => {
     const signInForm = document.getElementById("signInForm");
     signInForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      if (!kiemTraInput()) {
+      if (!kiemTraInputSignIn()) {
         return;
       }
       SignIn();

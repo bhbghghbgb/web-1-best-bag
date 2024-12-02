@@ -34,7 +34,7 @@ function SignUp() {
 
 }
 
-function kiemTraInput() {
+function kiemTraInputSignUp() {
   const name = document.getElementById("name");
   const username = document.getElementById("username");
   const passwordField = document.getElementById("password_signup");
@@ -68,8 +68,9 @@ window.addEventListener("load", () => {
 
     const signUpForm = document.getElementById("signUpForm");
     signUpForm.addEventListener("submit", (event) => {
+      console.log("submit signup");
       event.preventDefault();
-      if (!kiemTraInput()) {
+      if (!kiemTraInputSignUp()) {
         return;
       }
       SignUp();
