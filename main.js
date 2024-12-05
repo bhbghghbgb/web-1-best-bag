@@ -205,7 +205,7 @@ function layParamUrl() {
     categories: params.getAll("categories[]") || [],
     tab: params.get("tab") || "thongke",
     disabled: parseInt(params.get("disabled"), 2) || 0,
-    handle: params.get("handle"),
+    handle: params.get("handle")||"",
     topsp: params.get("topsp") || "",
     topnd: params.get("topnd") || "",
   };
