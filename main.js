@@ -18,7 +18,7 @@ const hoaDonFile = "hoa-don.json";
 const theLoaiSanPhamFile = "the-loai.json";
 
 // tang bien nay khi muon reset localStorage hoac update du lieu moi tu file
-const dataVersion = 26;
+const dataVersion = 27;
 
 const soSanPhamMoiTrang = 12;
 
