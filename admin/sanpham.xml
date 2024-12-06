@@ -64,7 +64,10 @@
     <textarea name="moTaSanPham" id="moTaSanPham" placeholder="Nhập mô tả sản phẩm"></textarea>
 
     <label for="hinhAnhSanPham">Hình ảnh sản phẩm</label>
-    <input type="file" id="hinhAnhSanPham" name="hinhAnhSanPham" accept="image/*"/>
+    <input type="file" id="hinhAnhSanPham" name="hinhAnhSanPham" accept="image/*"/><br>
+
+    <label for="linkHinhAnh">Đường dẫn hình ảnh</label>
+    <input type="text" id="linkHinhAnh" name="linkHinhAnh" placeholder="Nhập đường dẫn hình ảnh"/>
 
     <button type="submit">Lưu</button>
     <button type="button" id="cancel-button">Thoát</button>

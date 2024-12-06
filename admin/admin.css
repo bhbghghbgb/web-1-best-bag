@@ -1235,6 +1235,7 @@ dialog {
   display: flex;
   flex-wrap: wrap;
   gap:20px;
+  width:100%;
 }
 .left-invoice input[type="number"]{
   text-align: center;
