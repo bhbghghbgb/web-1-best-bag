@@ -562,6 +562,30 @@ td {
   color: #fff;
 }
 
+/*.pagination-list{
+  display:flex;
+  justify-content: center;
+  gap:20px;
+}
+.pagination-list li{
+  display: inline-block;
+  list-style: none;
+  padding: 10px;
+}
+.pagination-list button:hover{
+  background:var(--mattRed);
+}
+.pagination-list button.active{
+  background:var(--mattRed);
+  border: 2px double var(--mattRed);
+}
+.pagination-list button{
+  background-color: #343a40;
+  border: solid 1px #fff;
+  border-radius: 5px;
+  padding: 12px 15px;
+  color: #fff;
+}*/
 /*-------------------------------------------------------*/
 /*QUAN LY PHAN TRANG TAI KHOAN*/
 .pagination-user {

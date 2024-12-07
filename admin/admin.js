@@ -1608,7 +1608,7 @@ function themDuLieuVaoTheThongKe() {
   var soLieuSanPham = document.querySelector(".bg-mattRed .inner h3");
   soLieuSanPham.textContent = soLieuSp["totalProductCount"];
   var tenSoLieuSanPham = document.querySelector(".bg-mattRed .inner p");
-  tenSoLieuSanPham.textContent = soLieuSp["uniqueProductCount"] + " mặt hàng";
+  tenSoLieuSanPham.textContent ="Sản phẩm, " + soLieuSp["uniqueProductCount"] + " mặt hàng";
   const soLieuHd = thongKeDonHang();
   var soLieuHoaDon = document.querySelector(".bg-green .inner h3");
   soLieuHoaDon.textContent = soLieuHd["orderCount"];
