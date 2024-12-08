@@ -205,9 +205,11 @@ function layParamUrl() {
     categories: params.getAll("categories[]") || [],
     tab: params.get("tab") || "thongke",
     disabled: parseInt(params.get("disabled"), 2) || 0,
-    handle: params.get("handle")||"",
+    handle: params.get("handle") || "",
     topsp: params.get("topsp") || "",
     topnd: params.get("topnd") || "",
+    chart: params.get("chart"),
+    idtrangchitietsanpham: params.get("idtrangchitietsanpham"),
   };
 }
 
@@ -225,12 +227,15 @@ function caiParamUrl(
     handle,
     topsp,
     topnd,
+    chart,
+    idtrangchitietsanpham,
   },
   resetParam = false,
-  reload = true
+  reload = true,
+  newUrl
 ) {
-  const url = new URL(document.location.toString());
-  if (resetParam) url.search = "";
+  const url = newUrl ?? new URL(document.location.toString());
+  if (resetParam || newUrl) url.search = "";
   const params = url.searchParams;
   const setParam = (param, name) => {
     if (param !== undefined) params.set(name, param);
@@ -251,7 +256,9 @@ function caiParamUrl(
   setParam(handle, "handle");
   setParam(topsp, "topsp");
   setParam(topnd, "topnd");
-  if (reload) window.location = url.toString();
+  setParam(chart, "chart");
+  setParam(idtrangchitietsanpham, "idtrangchitietsanpham");
+  if (reload || newUrl) window.location = url.toString();
   else window.history.replaceState({}, "", url.toString());
 }
 
@@ -1225,6 +1232,19 @@ function formatDateLocaleVn(dateString) {
     month: "numeric",
     year: "2-digit",
   });
+}
+
+function loadScriptModule(urlScript, urlTextInScript, callback) {
+  const script = document.createElement("script");
+  script.type = "module";
+  script.onload = callback;
+  script.src = urlScript;
+  fetch(urlTextInScript)
+    .then((res) => res.text())
+    .then((text) => {
+      script.append(text);
+      document.head.appendChild(script);
+    });
 }
 
 function showDebugMenu() {
