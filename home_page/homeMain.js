@@ -320,7 +320,7 @@ function hienThiSanPham(duLieuDaTinh, wrapperSelector) {
 
 function renderItemSanPham(sanPham) {
   const item = document.createElement("div");
-  item.classList.add("grid");
+  item.classList.add("homepage-grid");
 
   if (sanPham.matchScore) {
     const matchScore = document.createElement("p");
@@ -334,7 +334,7 @@ function renderItemSanPham(sanPham) {
   }
   const img = document.createElement("img");
   img.src = `../images/${sanPham["image-file"]}`;
-  img.className = "grid-img";
+  img.className = "homepage-grid-img";
   item.appendChild(img);
 
   const content = document.createElement("div");
@@ -349,13 +349,9 @@ function renderItemSanPham(sanPham) {
   name.innerText = sanPham["name"];
   content.appendChild(name);
 
-  const spacer = document.createElement("div");
-  spacer.classList.add("grid-spacer");
-  item.appendChild(spacer);
-
   const checkPrice = document.createElement("div");
   item.appendChild(checkPrice);
-  checkPrice.className = "checkPrice";
+  checkPrice.className = "homepage-checkPrice";
 
   const price = document.createElement("h5");
   price.style = "text-decoration: line-through; color: gray;";
