@@ -321,17 +321,7 @@ function hienThiSanPham(duLieuDaTinh, wrapperSelector) {
 function renderItemSanPham(sanPham) {
   const item = document.createElement("div");
   item.classList.add("homepage-grid");
-
-  if (sanPham.matchScore) {
-    const matchScore = document.createElement("p");
-    matchScore.style.setProperty("color", "green");
-
-    const matchScore1 = document.createElement("small");
-    matchScore1.textContent = `Match score: ${sanPham.matchScore}`;
-    matchScore.appendChild(matchScore1);
-
-    item.appendChild(matchScore);
-  }
+  
   const img = document.createElement("img");
   img.src = `../images/${sanPham["image-file"]}`;
   img.className = "homepage-grid-img";
@@ -374,6 +364,7 @@ function renderItemSanPham(sanPham) {
   btn.addEventListener("click", () =>
     hienTrangChiTiet(sanPham["web-scraper-order"])
   );
+  btn.className="homepage-button"
   btn.textContent = "Xem Chi Tiết";
   item.appendChild(btn);
   return item;
@@ -383,7 +374,7 @@ function hienThiDanhSach(duLieuDaTinh, hamRenderItem, wrapperSelector) {
   const wrapper = document.querySelector(wrapperSelector);
   wrapper.innerHTML = "";
   const container = document.createElement("div");
-  container.classList.add("grid-container");
+  container.classList.add("homepage-grid-container");
   const { duLieuDaLoc, soPageToiDa } = duLieuDaTinh;
   let { pageHienTai } = duLieuDaTinh;
   let chiSoBatDau = 0;
