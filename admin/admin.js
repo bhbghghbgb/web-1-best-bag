@@ -1171,7 +1171,7 @@ function adminXoaHoaDon() {
 }
 
 window.addEventListener("load", function () {
-  
+  if(window.daylaTrangAdmin)
     onPageAdminLoad();
   
 });
@@ -1404,7 +1404,7 @@ if (tabhoadon) {
 }
 
 function onPageAdminLoad() {
-  if(window.daylaTrangAdmin){
+  
   const params = layParamUrl();
   const tab = params["tab"] || "thongke";
   switch (tab) {
@@ -1460,7 +1460,7 @@ function onPageAdminLoad() {
       );
       tabthongke.classList.add("isActive");
   }
-}
+
 }
 
 function taoBoLocNguoiDung() {
