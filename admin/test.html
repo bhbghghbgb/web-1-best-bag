@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="./admin.css" />
+    <link
+      rel="shortcut icon"
+      href="images/icons8-bag-96.png"
+      type="image/png"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <title>Web 1 Best Bag</title>
+  </head>
+  <body>
+    <form id="filterHoaDon">
+      <label for="xu-ly">Lọc hóa đơn:</label>
+      <select id="handle" name="handle">
+        <option>Chưa chọn</option>
+        <option value="chua">Chưa xử lý</option>
+        <option value="dang">Đang xử lý</option>
+        <option value="huy">Chờ thanh toán</option>
+        <option value="roi">Đã xử lý</option>
+      </select>
+      <label for="sort">&nbsp; Sắp xếp theo:</label>
+      <select id="sort" name="sort">
+        <option value="">Chưa chọn</option>
+        <option value="asc">Đầu tiên</option>
+        <option value="desc">Gần đây</option>
+      </select>
+      <button type="submit" id="applyFilter">Áp dụng</button>
+    </form>
+    <form id="filter">
+      <label for="disabled">&nbsp; Lọc tài khoản:</label>
+      <select id="disabled" name="disabled">
+        <option value="0">Chưa chọn</option>
+        <option value="1">Bị Khóa</option>
+        <option value="-1">Không Khóa</option>
+      </select>
+      <label for="sort">&nbsp; Sắp xếp theo:</label>
+      <select id="sort" name="sort">
+        <option value="">Chưa chọn</option>
+        <option value="asc">Khách hàng lâu năm</option>
+        <option value="desc">Khách hàng mới</option>
+      </select>
+      <button type="submit" id="apply">Áp dụng</button>
+    </form>
+    <form id="productForm" style="border: 1px solid green">
+      <label for="search">Name:</label>
+      <input type="text" id="search" name="search" placeholder="Product Name" />
+
+      <label for="priceRange">Price Range:</label>
+      <input type="number" id="minPrice" name="min" placeholder="Min Price" />
+      <input type="number" id="maxPrice" name="max" placeholder="Max Price" />
+
+      <label for="categories">Categories:</label>
+      <div id="categories"></div>
+
+      <label for="sortBy">Sort By:</label>
+      <select id="sortBy" name="sort">
+        <option value selected>(Chua chon)</option>
+        <option value="asc">Price Ascending</option>
+        <option value="desc">Price Descending</option>
+        <option value="best">Best Match</option>
+      </select>
+
+      <button type="submit">Search</button>
+    </form>
+    <form id="filterTop">
+      <label for="topsp">Top Sản Phẩm</label>
+      <select name="topsp" id="topsp">
+        <option value="ban-chay">Top Sản Phẩm Bán Chạy</option>
+        <option value="doanh-thu">Top Sản Phẩm Doanh Thu</option>
+      </select>
+      <label for="topnd">Top Khách Hàng</label>
+      <select name="topnd" id="topnd">
+        <option value="nhieu-don-nhat">Top Khách Lên Đơn</option>
+        <option value="nhieu-loai-nhat">Top Khách Mua Nhiều Loại</option>
+        <option value="nhieu-hang-nhat">Top Khách Mua Nhiều</option>
+        <option value="nhieu-tien-nhat">Top Khách Chi Tiêu</option>
+      </select>
+      <button type="submit" id="applyFilterTop">Hiển Thị</button>
+    </form>
+
+    <dialog id="infoFormDialog">
+      <h2>Thông tin sản phẩm</h2>
+      <form id="infoForm">
+        <label for="tenSanPham">Tên sản phẩm:</label>
+        <input type="text" id="tenSanPham" name="tenSanPham" placeholder="Nhập tên" required/><br><br>
+    
+        <label for="giaSanPham">Giá sản phẩm:</label>
+        <input id="giaSanPham" type="number" name="giaSanPham" placeholder="Nhập giá sản phẩm" required/><br><br>
+    
+        <label for="loaiSanPham">Loại sản phẩm:</label>
+        <select name="loaiSanPham" id="loaiSanPham">
+          <option value="" disabled selected>--Chọn loại--</option>
+          <option value="tote">Tote</option>
+          <option value="standard">Standard</option>
+          <option value="sling">Sling</option>
+          <option value="messsenger">Messenger</option>
+          <option value="laptop">Laptop</option>
+          <option value="duffle">Duffle</option>
+        </select>
+    
+        <label for="moTaSanPham">Mô tả sản phẩm</label>
+        <textarea name="moTaSanPham" id="moTaSanPham" placeholder="Nhập mô tả sản phẩm"></textarea>
+    
+        <label for="hinhAnhSanPham">Hình ảnh sản phẩm</label>
+        <input type="file" id="hinhAnhSanPham" name="hinhAnhSanPham" accept="image/*"/>
+    
+        <button type="submit">Lưu</button>
+        <button type="button" id="cancel-button">Thoát</button>
+      </form>
+    </dialog>
+    <dialog id="invoiceDialog">
+      <form id="invoiceForm">
+        <div class="left-invoice">
+          <h2>Chi tiết hóa đơn</h2>
+          <label>Mã hóa đơn: &nbsp;</label><span id="maHoaDon"></span><br>
+          <label>Ngày:</label> <input type="text" id="ngayTaoHoaDon"><br>
+          <label for="xuLyHoaDon">Trạng thái</label>
+          <select id="xuLyHoaDon" name="xuLyHoaDon">
+            <option value="chua" selected>Chưa xử lý</option>
+            <option value="dang">Đang xử lý</option>
+            <option value="huy">Chờ thanh toán</option>
+            <option value="roi">Đã xử lý</option>
+          </select>
+          <label>Khách hàng:</label>
+          <select id="khach-hang" name="khach-hang">
+    
+          </select>
+          
+          <div class="menuGioHang"></div>
+          
+          <div class="buttonForm">
+            <button type ="submit" id="luuThayDoi">Lưu</button>
+            <button type="button" id="thoatThayDoi">Đóng</button>
+          </div>
+        </div>
+        <div class="right-invoice">
+          <div class="menuCuaHang"></div>
+        </div>
+      </form>
+    </dialog>
+    <div class="topsanpham"></div>
+
+    <!-- <div class="topkhachhang"></div> -->
+    <!-- <div class="debug-table"></div> -->
+    <!-- <div class="statistical"></div> -->
+    <!-- <div class="best-seller"> -->
+    <!-- <div class="select-topsanpham"></div> -->
+    <!-- <div class="topsanpham"></div> -->
+    <!-- <div class="select-topkhachhang"></div> -->
+    <!-- <div class="topkhachhang"></div> -->
+    <!-- </div> -->
+    <!-- <div class="product-list"></div> -->
+    <!-- <div class="pagination"></div> -->
+    <!-- <div class="account-list"></div> -->
+    <!-- <div class="pagination2"></div> -->
+    <!-- <div class="order-list"></div> -->
+    <!-- <div class="pagination3"></div> -->
+    
+  </body>
+  <script src="../main.js"></script>
+  <script src="./admin.js"></script>
+</html>

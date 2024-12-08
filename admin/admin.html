@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Web 1 Best Bag</title>
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      sizes="512x512"
+      href="../img/favicon.png"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="./admin.css" />
+  </head>
+  <body class="Dark">
+    <!--TOPBAR-->
+    <div class="topbar">
+      <div class="bar-container">
+        <button class="topbar-toggler" type="button">
+          <i class="fas fa-bars" style="color: #fff"></i>
+        </button>
+        <div class="topbar-collapse" id="topbarContent">
+          <ul class="topbar-content">
+            <li class="topbar-item">
+              <a class="topbar-link" href="#" id="topbarDropdown" role="button">
+                <img src="" alt="avatar" class="avatar-img" />
+                Xin chào Admin
+              </a>
+              <div class="topbar-dropmenu" aria-labelledby="topbarDropdown">
+                <a class="topbar-dropitem" href="/User/Auth/login.html">Đăng xuất</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!--END-TOPBAR-->
+
+    <div class="wrapper d-flex">
+      <!--SIDEBAR-->
+      <div
+        class="sideMenu"
+        COMMENTED-onmouseover="PhongSide();"
+        COMMENTED-onmouseout="ThuSide();"
+        style="width: 80px"
+      >
+        <div class="sidebar">
+          <div style="height: 30vh"></div>
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="#" id="thongke" class="menu-link sidebar-link isAcitve">
+                <i class="side-icon fas fa-chart-line"></i>
+                <span class="text">Thống kê</span>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="#" id="sanpham" class="menu-link sidebar-link">
+                <i class="side-icon fas fa-shopping-bag"></i>
+                <span class="text">Sản phẩm</span>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="#" id="nguoidung" class="menu-link sidebar-link">
+                <i class="side-icon fas fa-users"></i>
+                <span class="text">Người dùng</span>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="#" id="hoadon" class="menu-link sidebar-link">
+                <i class="side-icon fas fa-file-invoice"></i>
+                <span class="text">Đơn hàng</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!--END-SIDEBAR-->
+      <!--CONTENT-WEB-->
+      <div id="content-wrapper"></div>
+      <!--END-CONTENT-WEB-->
+    </div>
+  </body>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/apexcharts@4.1.0/dist/apexcharts.min.css"
+  />
+  <script
+    src="https://cdn.jsdelivr.net/npm/apexcharts@4.1.0/dist/apexcharts.min.js"
+    integrity="sha256-mOrdWYHx0STnKlAY+X1swccOXZHDGZgN+rQ7rewTfO4="
+    crossorigin="anonymous"
+  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/chartjs-plugin-hierarchical@4.4.4/build/index.umd.min.js"
+    integrity="sha256-EVTb/TupbHo8mbKRyEcfU7xxnLI5c7i2tlGULQM+un4="
+    crossorigin="anonymous"
+  ></script>
+  <script src="../main.js"></script>
+  <script src="./thongke.js"></script>
+  <script src="./bieudo-test.js"></script>
+  <script src="./admin.js"></script>
+</html>
