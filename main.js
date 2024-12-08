@@ -1433,6 +1433,8 @@ function showDebugMenu() {
   dialog.showModal();
 }
 
+
+
 if (window.dayLaTrangIndex)
   // goi khi trang web load thanh cong
   window.addEventListener("load", () => {
