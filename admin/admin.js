@@ -301,13 +301,17 @@ function renderItemNguoiDung(nguoiDung) {
     if (
       nguoiDung["disabled"] ||
       confirm("Bạn có chắc chắn muốn khoá tài khoản này?")
-    )
+    ){
       suaNguoiDung(nguoiDung["id"], {
         ...nguoiDung,
         disabled: !nguoiDung["disabled"],
       });
-    if (nguoiDung["disabled"]) {
+      nguoiDung["disabled"]=!nguoiDung["disabled"];
+    }
+    if (!nguoiDung["disabled"]) {
       active.classList.add("fas", "fa-check-circle", "color-green");
+      rowNguoiDung.style.backgroundColor = "transparent";
+      rowNguoiDung.style.textDecoration = "none";
     } else {
       active.classList.add("fas", "fa-check-circle");
       active.classList.remove("color-green");
