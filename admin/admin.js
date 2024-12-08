@@ -15,7 +15,7 @@ function ThuSide() {
   document.querySelector(".sideMenu").style.width = "80px";
 }
 
-function tinhSanPhamHienThi(wrapperSelector = ".product-list") {
+function tinhSanPhamHienThiAdmin(wrapperSelector = ".product-list") {
   if (!document.querySelector(wrapperSelector)) {
     console.info("tinhSanPhamHienThi khong tim thay wrapper!");
     return;
@@ -44,10 +44,10 @@ function tinhSanPhamHienThi(wrapperSelector = ".product-list") {
 
   duLieuDaTinh = { duLieuDaLoc: sanPhamsDaLoc, soPageToiDa, pageHienTai: page };
 
-  hienThiSanPham(duLieuDaTinh, wrapperSelector);
+  hienThiSanPhamAdmin(duLieuDaTinh, wrapperSelector);
 }
 
-function hienThiDanhSach(duLieuDaTinh, hamRenderItem, wrapperSelector) {
+function hienThiDanhSachAdmin(duLieuDaTinh, hamRenderItem, wrapperSelector) {
   const wrapper = document.querySelector(wrapperSelector);
   if (!wrapper) {
     console.error(`Không tìm thấy phần tử với selector: ${wrapperSelector}`);
@@ -79,7 +79,7 @@ function hienThiDanhSach(duLieuDaTinh, hamRenderItem, wrapperSelector) {
   }
   wrapper.appendChild(container);
 }
-function renderItemSanPham(sanPham) {
+function renderItemSanPhamAdmin(sanPham) {
   const wrapCart = document.createElement("div");
   wrapCart.classList.add("wrap-cart");
   const card = document.createElement("div");
@@ -133,9 +133,9 @@ function renderItemSanPham(sanPham) {
   wrapCart.appendChild(card);
   return wrapCart;
 }
-function hienThiSanPham(duLieuDaTinh, wrapperSelector) {
+function hienThiSanPhamAdmin(duLieuDaTinh, wrapperSelector) {
   const khiBamTrang = () =>
-    hienThiDanhSach(duLieuDaTinh, renderItemSanPham, wrapperSelector);
+    hienThiDanhSachAdmin(duLieuDaTinh, renderItemSanPhamAdmin, wrapperSelector);
   khiBamTrang();
   hienThiPagination(duLieuDaTinh, () => khiBamTrang());
 }
@@ -1171,7 +1171,9 @@ function adminXoaHoaDon() {
 }
 
 window.addEventListener("load", function () {
-  onPageLoad();
+  
+    onPageAdminLoad();
+  
 });
 
 // function timNguoiDung(id) {
@@ -1401,7 +1403,8 @@ if (tabhoadon) {
   });
 }
 
-function onPageLoad() {
+function onPageAdminLoad() {
+  if(window.daylaTrangAdmin){
   const params = layParamUrl();
   const tab = params["tab"] || "thongke";
   switch (tab) {
@@ -1457,6 +1460,7 @@ function onPageLoad() {
       );
       tabthongke.classList.add("isActive");
   }
+}
 }
 
 function taoBoLocNguoiDung() {
