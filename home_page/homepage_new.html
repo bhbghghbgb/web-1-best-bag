@@ -11,7 +11,7 @@
     <script type="text/javascript">
         window.dayLaTrangIndex = true;
     </script>
-    <!-- <script type="module">
+    <script type="module">
         import {
             InvalidFormatError,
             InvalidNumberError,
@@ -34,28 +34,18 @@
                     return "Không đủ đơn vị đọc số";
             }
         };
-    </script> -->
+    </script>
     <script src="../main.js"></script>
     <script src="./homeMain.js"></script>
+    <script src="./NavBar/link-navbar.js"></script>
 
 </head>
 
 <body>
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-md sticky-top">
-            <!-- Search form -->
-            <div class="navbar-search">
-                <input type="text" class="navbar-search-input" placeholder="Tìm kiếm" id="searchInput">
-                <button class="navbar-search-btn" id="searchNow" onclick="timKiem();">
-                    <i class="fa fa-search" aria-hidden="true"></i>
-                </button>
-            </div>
-            <!-- CART -->
-            <span class="homepage-nav-cart">
-                <i class="fa fa-shopping-cart"></i>
-            </span>
-            <!-- END CART -->
-    </nav>
+    <div class="navbar-sidebar-inject">
+           
+    </div>
     <!-- END NAVBAR -->
     <!-- CAROUSEL -->
     <div class="carousel-inner img">

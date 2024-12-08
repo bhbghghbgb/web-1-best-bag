@@ -16,7 +16,7 @@ function watchNavbarBg() {
 
 }
 watchNavbarBg.active = false;
-fetch('/web-1-best-bag/NavBar/navbar.html').then(request => request.text())
+fetch('./NavBar/navbar.html').then(request => request.text())
     .then(data => {
         document.getElementById('navbar-placeholder').innerHTML = data;
         document.addEventListener('scroll', watchNavbarBg);
