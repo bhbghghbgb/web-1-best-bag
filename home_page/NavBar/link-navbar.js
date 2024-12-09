@@ -20,8 +20,15 @@ fetch('./NavBar/navbar.html').then(request => request.text())
     .then(data => {
         document.getElementById('navbar-placeholder').innerHTML = data;
         document.addEventListener('scroll', watchNavbarBg);
-        const userIcon = document.getElementById("user-icon");
-        userIcon.addEventListener("click", () => {
-            showLoginDialog();
-        });
+        const isLoggedIn = checkLoginStatus();
+        if (isLoggedIn) {
+            document.getElementById('navbar-right-non-login').remove();
+        } else {
+            document.getElementById('navbar-right-logged-in').remove();
+            const userIcon = document.getElementById("user-icon");
+            userIcon.addEventListener("click", () => {
+                showLoginDialog();
+            });
+        }
+
     });

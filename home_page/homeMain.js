@@ -129,3 +129,11 @@ function showLoginDialog() {
   }
 }
 
+function checkLoginStatus() {
+  const currentUserId = localStorage.getItem("currentUserId");
+  if (currentUserId) {
+    return true;
+  }
+  return false;
+}
+
