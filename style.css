@@ -203,10 +203,10 @@ button:hover {
   color: #fff;
 }
 
-/* Debug Styles (existing) */
-table,
-th,
-td {
+/* debug */
+.debug-table table,
+.debug-table th,
+.debug-table td {
   border: 1px solid black;
   border-collapse: collapse;
   padding: 4px;
