@@ -1,8 +1,6 @@
+// Các hàm xử lý thêm/sửa/xóa sản phẩm/đã test và chạy được
 function adminSuaSanPham(id) {
-  // Lấy danh sách sản phẩm từ localStorage
   const products = JSON.parse(localStorage.getItem("sanPham") || "[]");
-
-  // Tìm sản phẩm cần sửa
   const sanPham = products.find((p) => p["web-scraper-order"] === id);
 
   if (!sanPham) {
@@ -10,207 +8,270 @@ function adminSuaSanPham(id) {
     return;
   }
 
-  // Lưu sản phẩm cần sửa vào localStorage
   localStorage.setItem("editing-product", JSON.stringify(sanPham));
-  // Chuyển đến trang form với mode sửa
-  window.location.href = "ThemSuaXoaSP.html?mode=edit";
+  openProductModal(true); // Mở modal ở chế độ sửa
 }
 
 function adminXoaSanPham(id) {
   if (confirm("Bạn chắc chắn muốn xóa sản phẩm này?")) {
-    // Lấy danh sách sản phẩm từ localStorage
     let products = JSON.parse(localStorage.getItem("sanPham") || "[]");
-
-    // Tìm và xóa sản phẩm
     const index = products.findIndex((p) => p["web-scraper-order"] === id);
     if (index !== -1) {
       products.splice(index, 1);
-      // Lưu lại vào localStorage
       localStorage.setItem("sanPham", JSON.stringify(products));
       alert("Đã xóa sản phẩm thành công!");
-      // Cập nhật lại hiển thị
       window.location.reload();
     }
   }
 }
-// Xử lý form trong ThemSuaXoaSP.html
-if (window.location.pathname.includes("ThemSuaXoaSP.html")) {
-  window.addEventListener("load", () => {
-    const form = document.getElementById("productAddEditForm");
-    const formTitle = document.getElementById("formTitle");
-    const imageInput = document.getElementById("productImage");
-    const imagePreview = document.getElementById("imagePreview");
 
-    // Kiểm tra xem có phải đang sửa sản phẩm không
-    const params = new URLSearchParams(window.location.search);
-    const isEdit = params.get("mode") === "edit";
+// Các hàm xử lý modal
+function createProductModal() {
+  const modalHTML = `
+      <div id="productModal" class="admintsx-modal">
+        <div class="admintsx-modal-content">
+          <div class="admintsx-form-container">
+            <form id="productAddEditForm" class="admintsx-form">
+              <h2 id="formTitle" class="admintsx-form-title">Thêm Sản Phẩm Mới</h2>
+  
+              <div class="form-group admintsx-form-group">
+                <label for="productImage" class="admintsx-form-label required">Hình ảnh sản phẩm</label>
+                <input
+                  type="file"
+                  id="productImage"
+                  name="image"
+                  accept="image/*"
+                  class="admintsx-form-input admintsx-image-input"
+                />
+                <div id="imagePreview" class="admintsx-image-preview"></div>
+              </div>
+  
+              <div class="form-group admintsx-form-group">
+                <label for="productName" class="admintsx-form-label required">Tên sản phẩm</label>
+                <input 
+                  type="text" 
+                  id="productName" 
+                  name="name" 
+                  required 
+                  class="admintsx-form-input"
+                  placeholder="Nhập tên sản phẩm..."
+                />
+              </div>
+  
+              <div class="form-group admintsx-form-group">
+                <label for="productCategory" class="admintsx-form-label required">Danh mục sản phẩm</label>
+                <select id="productCategory" name="category" required class="admintsx-form-select">
+                  <option value="">-- Chọn danh mục --</option>
+                  <option value="tote">Tote</option>
+                  <option value="standard">Standard</option>
+                  <option value="sling">Sling</option>
+                  <option value="messenger">Messenger</option>
+                  <option value="laptop">Laptop</option>
+                  <option value="duffle">Duffle</option>
+                </select>
+              </div>
+  
+              <div class="form-group admintsx-form-group">
+                <label for="productDescription" class="admintsx-form-label required">Mô tả sản phẩm</label>
+                <textarea
+                  id="productDescription"
+                  name="description"
+                  rows="4"
+                  required
+                  class="admintsx-form-textarea"
+                  placeholder="Nhập mô tả chi tiết về sản phẩm..."
+                ></textarea>
+              </div>
+  
+              <div class="form-group admintsx-form-group">
+                <label for="productOriginalPrice" class="admintsx-form-label required">Giá gốc</label>
+                <input
+                  type="number"
+                  id="productOriginalPrice"
+                  name="price-n"
+                  min="0"
+                  required
+                  class="admintsx-form-input"
+                  placeholder="Nhập giá gốc..."
+                />
+              </div>
+  
+              <div class="form-group admintsx-form-group">
+                <label for="productSalePrice" class="admintsx-form-label required">Giá khuyến mãi</label>
+                <input
+                  type="number"
+                  id="productSalePrice"
+                  name="price-sale-n"
+                  min="0"
+                  required
+                  class="admintsx-form-input"
+                  placeholder="Nhập giá khuyến mãi..."
+                />
+              </div>
+  
+              <div class="admintsx-form-buttons">
+                <button type="submit" id="submitBtn" class="admintsx-submit-btn">Lưu</button>
+                <button type="button" id="cancelBtn" class="admintsx-cancel-btn">Hủy</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    `;
 
-    if (isEdit) {
-      // Lấy thông tin sản phẩm đang sửa
-      const editingProduct = JSON.parse(
-        localStorage.getItem("editing-product")
-      );
-      if (editingProduct) {
-        formTitle.textContent = "Chỉnh Sửa Sản Phẩm";
+  document.body.insertAdjacentHTML("beforeend", modalHTML);
 
-        // Điền dữ liệu vào form
-        form.elements["name"].value = editingProduct.name;
-        form.elements["category"].value = editingProduct.category;
-        form.elements["description"].value = editingProduct.description;
-        form.elements["price-n"].value = editingProduct["price-n"];
-        form.elements["price-sale-n"].value = editingProduct["price-sale-n"];
+  const modal = document.getElementById("productModal");
+  if (!modal) {
+    console.error("Modal không được tạo thành công");
+  }
+}
 
-        // Hiển thị ảnh hiện tại
-        imagePreview.innerHTML = `<img src="../images/${editingProduct["image-file"]}" style="max-width: 200px;">`;
-      }
+function openProductModal(isEdit = false) {
+  document.body.classList.add("admintsx-modal-open");
+
+  let modal = document.getElementById("productModal");
+  if (!modal) {
+    createProductModal();
+    modal = document.getElementById("productModal");
+    setupModalEventListeners();
+  }
+
+  const form = document.getElementById("productAddEditForm");
+  const formTitle = document.getElementById("formTitle");
+  const imagePreview = document.getElementById("imagePreview");
+  const imageInput = document.getElementById("productImage");
+
+  form.reset();
+  imagePreview.innerHTML = "";
+
+  const newImageInput = imageInput.cloneNode(true);
+  imageInput.parentNode.replaceChild(newImageInput, imageInput);
+  newImageInput.addEventListener("change", handleImagePreview);
+
+  if (isEdit) {
+    const editingProduct = JSON.parse(localStorage.getItem("editing-product"));
+    if (editingProduct) {
+      formTitle.textContent = "Chỉnh Sửa Sản Phẩm";
+
+      form.elements["name"].value = editingProduct.name;
+      form.elements["category"].value = editingProduct.category;
+      form.elements["description"].value = editingProduct.description;
+      form.elements["price-n"].value = editingProduct["price-n"];
+      form.elements["price-sale-n"].value = editingProduct["price-sale-n"];
+
+      imagePreview.innerHTML = `
+          <img src="../images/${editingProduct["image-file"]}" 
+               alt="Current product image"
+               style="max-width: 300px; max-height: 300px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);">
+        `;
+    }
+  } else {
+    formTitle.textContent = "Thêm Sản Phẩm Mới";
+  }
+
+  modal.style.display = "block";
+}
+
+function setupModalEventListeners() {
+  const modal = document.getElementById("productModal");
+  const form = document.getElementById("productAddEditForm");
+  const cancelBtn = document.getElementById("cancelBtn");
+
+  form.addEventListener("submit", handleProductFormSubmit);
+  cancelBtn.addEventListener("click", handleCancelClick);
+  modal.addEventListener("click", handleOutsideClick);
+}
+
+function handleImagePreview(e) {
+  const file = e.target.files[0];
+  const imagePreview = document.getElementById("imagePreview");
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      imagePreview.innerHTML = `
+          <img src="${e.target.result}" 
+               alt="Preview" 
+               style="max-width: 300px; max-height: 300px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);">
+        `;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    imagePreview.innerHTML = "";
+  }
+}
+
+function handleCancelClick() {
+  if (confirm("Bạn có chắc muốn hủy không? Mọi thay đổi sẽ không được lưu.")) {
+    closeProductModal();
+  }
+}
+
+function handleOutsideClick(e) {
+  if (e.target === e.currentTarget) {
+    closeProductModal();
+  }
+}
+
+function closeProductModal() {
+  const modal = document.getElementById("productModal");
+  if (modal) {
+    modal.style.display = "none";
+    localStorage.removeItem("editing-product");
+    document.body.classList.remove("admintsx-modal-open");
+  }
+}
+
+function handleProductFormSubmit(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = {
+    name: form.elements["name"].value,
+    category: form.elements["category"].value,
+    description: form.elements["description"].value,
+    "price-n": parseInt(form.elements["price-n"].value),
+    "price-sale-n": parseInt(form.elements["price-sale-n"].value),
+  };
+
+  let products = JSON.parse(localStorage.getItem("sanPham") || "[]");
+  const editingProduct = JSON.parse(localStorage.getItem("editing-product"));
+
+  if (editingProduct) {
+    formData["web-scraper-order"] = editingProduct["web-scraper-order"];
+
+    if (form.elements["image"].files[0]) {
+      formData["image-file"] = form.elements["image"].files[0].name;
+    } else {
+      formData["image-file"] = editingProduct["image-file"];
     }
 
-    // Xử lý submit form
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
+    const index = products.findIndex(
+      (p) => p["web-scraper-order"] === editingProduct["web-scraper-order"]
+    );
+    if (index !== -1) {
+      products[index] = formData;
+      localStorage.setItem("sanPham", JSON.stringify(products));
+      alert("Cập nhật sản phẩm thành công!");
+    }
+  } else {
+    if (!form.elements["image"].files[0]) {
+      alert("Vui lòng chọn ảnh cho sản phẩm mới!");
+      return;
+    }
+    formData["image-file"] = form.elements["image"].files[0].name;
 
-      const formData = {
-        name: form.elements["name"].value,
-        category: form.elements["category"].value,
-        description: form.elements["description"].value,
-        "price-n": parseInt(form.elements["price-n"].value),
-        "price-sale-n": parseInt(form.elements["price-sale-n"].value),
-      };
-
-      // Lấy danh sách sản phẩm từ localStorage
-      let products = JSON.parse(localStorage.getItem("sanPham") || "[]");
-
-      if (isEdit) {
-        // Cập nhật sản phẩm đang sửa
-        const editingProduct = JSON.parse(
-          localStorage.getItem("editing-product")
-        );
-        formData["web-scraper-order"] = editingProduct["web-scraper-order"];
-
-        // Chỉ cập nhật ảnh nếu người dùng chọn ảnh mới
-        if (form.elements["image"].files[0]) {
-          formData["image-file"] = form.elements["image"].files[0].name;
-        } else {
-          formData["image-file"] = editingProduct["image-file"]; // Giữ nguyên ảnh cũ
-        }
-
-        const index = products.findIndex(
-          (p) => p["web-scraper-order"] === editingProduct["web-scraper-order"]
-        );
-        if (index !== -1) {
-          products[index] = formData;
-          localStorage.setItem("sanPham", JSON.stringify(products));
-          alert("Cập nhật sản phẩm thành công!");
-        }
-      } else {
-        // Thêm sản phẩm mới
-        if (!form.elements["image"].files[0]) {
-          alert("Vui lòng chọn ảnh cho sản phẩm mới!");
-          return;
-        }
-        formData["image-file"] = form.elements["image"].files[0].name;
-
-        const maxId = Math.max(
-          ...products.map((p) => parseInt(p["web-scraper-order"]) || 0),
-          0
-        );
-        formData["web-scraper-order"] = (maxId + 1).toString();
-        products.push(formData);
-        localStorage.setItem("sanPham", JSON.stringify(products));
-        alert("Thêm sản phẩm thành công!");
-      }
-
-      // Xóa dữ liệu sản phẩm đang sửa
-      localStorage.removeItem("editing-product");
-      // Quay lại trang quản lý
-      window.location.href = "admin.html?tab=sanpham";
-    });
-
-    // Xử lý nút hủy
-    document.getElementById("cancelBtn").addEventListener("click", () => {
-      if (
-        confirm("Bạn có chắc muốn hủy không? Mọi thay đổi sẽ không được lưu.")
-      ) {
-        localStorage.removeItem("editing-product");
-        window.location.href = "admin.html?tab=sanpham";
-      }
-    });
-  });
-}
-function onPageLoad() {
-  const params = layParamUrl();
-  const tab = params["tab"] || "thongke";
-  switch (tab) {
-    case "thongke":
-      loadTabContent("thongke", () =>
-        taiDuLieuTongMainJs(() =>
-          taiHoaDon(() => {
-            taoBoLocTop();
-            tinhTopHienThi();
-            themChuyenTrangVaoThongKe();
-            themDuLieuVaoTheThongKe();
-          })
-        )
-      );
-      if (tabthongke) {
-        tabthongke.classList.add("isActive");
-      }
-      break;
-    case "nguoidung":
-      loadTabContent("nguoidung", () =>
-        taiDuLieuTongMainJs(() =>
-          taiNguoiDung(() => {
-            taoBoLocNguoiDung();
-          })
-        )
-      );
-
-      tabnguoidung.classList.add("isActive");
-      break;
-    case "sanpham":
-      loadTabContent("sanpham", () =>
-        taiDuLieuTongMainJs(() => {
-          taiSanPham(() => {
-            // Thêm event listener cho nút thêm mới
-            const addButton = document.getElementById("addproduct-button");
-            if (addButton) {
-              addButton.addEventListener("click", () => {
-                window.location.href = "pra.html";
-              });
-            }
-          });
-        })
-      );
-      tabsanpham.classList.add("isActive");
-      break;
-    case "hoadon":
-      loadTabContent("hoadon", () =>
-        taiDuLieuTongMainJs(() =>
-          taiHoaDon(() => {
-            taoBoLocHoaDon();
-          })
-        )
-      );
-
-      tabhoadon.classList.add("isActive");
-      break;
-    case "bieudo-test":
-      loadTabContent("bieudo-test", () =>
-        taiDuLieuTongMainJs(() => taiHoaDon(() => {}))
-      );
-      doiMauBackGround();
-      break;
-    default:
-      loadTabContent("thongke", () =>
-        taiDuLieuTongMainJs(() =>
-          taiHoaDon(() => {
-            taoBoLocTop();
-            tinhTopHienThi();
-            themChuyenTrangVaoThongKe();
-            themDuLieuVaoTheThongKe();
-          })
-        )
-      );
-      tabnguoidung.classList.add("isActive");
+    const maxId = Math.max(
+      ...products.map((p) => parseInt(p["web-scraper-order"]) || 0),
+      0
+    );
+    formData["web-scraper-order"] = (maxId + 1).toString();
+    products.push(formData);
+    localStorage.setItem("sanPham", JSON.stringify(products));
+    alert("Thêm sản phẩm thành công!");
   }
+
+  closeProductModal();
+  window.location.reload();
 }
