@@ -214,6 +214,7 @@ function layParamUrl() {
     topsp: params.get("topsp") || "",
     topnd: params.get("topnd") || "",
     chart: params.get("chart"),
+    idtrangchitietsanpham: params.get("idtrangchitietsanpham"),
   };
 }
 
@@ -232,12 +233,14 @@ function caiParamUrl(
     topsp,
     topnd,
     chart,
+    idtrangchitietsanpham,
   },
   resetParam = false,
-  reload = true
+  reload = true,
+  newUrl
 ) {
-  const url = new URL(document.location.toString());
-  if (resetParam) url.search = "";
+  const url = newUrl ?? new URL(document.location.toString());
+  if (resetParam || newUrl) url.search = "";
   const params = url.searchParams;
   const setParam = (param, name) => {
     if (param !== undefined) params.set(name, param);
@@ -259,7 +262,8 @@ function caiParamUrl(
   setParam(topsp, "topsp");
   setParam(topnd, "topnd");
   setParam(chart, "chart");
-  if (reload) window.location = url.toString();
+  setParam(idtrangchitietsanpham, "idtrangchitietsanpham");
+  if (reload || newUrl) window.location = url.toString();
   else window.history.replaceState({}, "", url.toString());
 }
 
