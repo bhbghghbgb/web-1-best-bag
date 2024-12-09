@@ -582,3 +582,53 @@ dialog#debugDialog {
       transform: translateY(calc(-50vh - 60%));
     }
   }
+
+  /* Bo loc */
+  #productForm {
+    margin-left: 35px;
+    width: 95%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    max-height: 90px; /* Ban đầu form sẽ chỉ cao như vậy */
+    overflow: hidden; /* Ẩn phần ngoài vùng giới hạn */
+    transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out; /* Hiệu ứng thu gọn/mở rộng */
+  }
+  
+  #productForm:hover {
+    max-height: 700px; /* Khi hover, form sẽ mở rộng */
+    padding: 20px; /* Khoảng cách trong form sẽ rộng hơn khi mở rộng */
+  }
+  
+  #productForm label {
+    display: block;
+    font-size: 14px;
+    margin: 5px 0;
+  }
+  
+  #productForm input,
+  #productForm select {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box; /* Đảm bảo input không tràn ra ngoài */
+  }
+  
+  #productForm button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #productForm button:hover {
+    background-color: #45a049;
+  }
+  
+  #categories {
+    display: flex;
+    gap: 20px;
+  }
