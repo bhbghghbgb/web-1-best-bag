@@ -135,5 +135,14 @@ function checkLoginStatus() {
     return true;
   }
   return false;
+};
+
+function getDataUser() {
+  const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
+  if (currentUserId) {
+  const danhSachUserDaLuu = localStorage.getItem("nguoiDung");
+    return true;
+  }
+  return null;
 }
 
