@@ -51,7 +51,7 @@ function renderItemSanPham(sanPham) {
   btn.addEventListener("click", () =>
     hienTrangChiTiet(sanPham["web-scraper-order"])
   );
-  btn.className="homepage-button"
+  btn.className = "homepage-button"
   btn.textContent = "Xem Chi Tiết";
   item.appendChild(btn);
   return item;
@@ -67,87 +67,65 @@ function convertNumberToPrice(number) {
 
 
 function showLoginDialog() {
+  // Sliding panel script
+  const signUpButton = document.getElementById("signUpSlide");
+  const signInButton = document.getElementById("signInSlide");
+  const container = document.getElementById("login-container");
+
+  signUpButton.addEventListener("click", () => {
+    container.classList.add("right-panel-active");
+  });
+
+  signInButton.addEventListener("click", () => {
+    container.classList.remove("right-panel-active");
+  });
+
+  // Show/Hide password script
+  const showPasswordCheckboxSignIn = document.getElementById("showPasswordCheckboxSignIn");
+  const showPasswordCheckboxSignUp = document.getElementById("showPasswordCheckboxSignUp");
+  const passwordFieldSignIn = document.getElementById("password_signin");
+  const passwordFieldSignUp = document.getElementById("password_signup");
+
+  showPasswordCheckboxSignIn.addEventListener("change", () => {
+    passwordFieldSignIn.type = showPasswordCheckboxSignIn.checked ? "text" : "password";
+  });
+
+  showPasswordCheckboxSignUp.addEventListener("change", () => {
+    passwordFieldSignUp.type = showPasswordCheckboxSignUp.checked ? "text" : "password";
+  });
+
+  // URL parameter handling
+  const urlParams = new URLSearchParams(window.location.search);
+  const status = urlParams.get('status');
+  if (status === "signup") {
+    container.classList.add("right-panel-active");
+  }
+
+  // Form submission handlers
+  const signUpForm = document.getElementById('signUpForm');
+  const signInForm = document.getElementById('signInForm');
+
+  signUpForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password_signup').value;
+    console.log('Sign Up:', { username, name, email, password });
+    // Add your sign-up logic here
+  });
+
+  signInForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const emailOrUsername = document.getElementById('emailOrUsernameField').value;
+    const password = document.getElementById('password_signin').value;
+    console.log('Sign In:', { emailOrUsername, password });
+    // Add your sign-in logic here
+  });
   const existingDialog = document.getElementById("loginDialog");
   if (existingDialog) {
     existingDialog.showModal();
     return;
   }
-
-  // Tạo dialog element
-  const dialog = document.getElementById("loginDialog");
-  // dialog.id = "loginDialog";
-  // dialog.style.width = "500px";
-  // dialog.style.padding = "20px";
-  // dialog.style.borderRadius = "10px";
-  //
-  // // Clone toàn bộ container để tránh di chuyển trực tiếp
-  // const containerClone = document.getElementById("login-container").cloneNode(true);
-  // dialog.appendChild(containerClone);
-  //
-  // // Thêm nút đóng dialog
-  // const closeButton = document.createElement("button");
-  // closeButton.textContent = "Đóng";
-  // closeButton.style.position = "absolute";
-  // closeButton.style.top = "10px";
-  // closeButton.style.right = "10px";
-  // closeButton.onclick = () => {
-  //   dialog.close();
-  // };
-  // dialog.appendChild(closeButton);
-  //
-  // document.body.appendChild(dialog);
-  //
-  // // Thêm sự kiện cho các nút chuyển đổi form
-  // const signInSlide = containerClone.querySelector("#signInSlide");
-  // const signUpSlide = containerClone.querySelector("#signUpSlide");
-  // const container = containerClone;
-  //
-  // signInSlide.addEventListener('click', () => {
-  //   container.classList.remove("right-panel-active");
-  // });
-  //
-  // signUpSlide.addEventListener('click', () => {
-  //   container.classList.add("right-panel-active");
-  // });
-  //
-  // // Xử lý show/hide password
-  // const showPasswordSignIn = containerClone.querySelector("#showPasswordCheckboxSignIn");
-  // const passwordSignIn = containerClone.querySelector("#password_signin");
-  // showPasswordSignIn.addEventListener('change', () => {
-  //   passwordSignIn.type = showPasswordSignIn.checked ? 'text' : 'password';
-  // });
-  //
-  // const showPasswordSignUp = containerClone.querySelector("#showPasswordCheckboxSignUp");
-  // const passwordSignUp = containerClone.querySelector("#password_signup");
-  // showPasswordSignUp.addEventListener('change', () => {
-  //   passwordSignUp.type = showPasswordSignUp.checked ? 'text' : 'password';
-  // });
-  //
-  // // Xử lý form submit
-  // const signInForm = containerClone.querySelector("#signInForm");
-  // const signUpForm = containerClone.querySelector("#signUpForm");
-  //
-  // signInForm.addEventListener('submit', (e) => {
-  //   e.preventDefault();
-  //   // Xử lý đăng nhập
-  //   const emailOrUsername = containerClone.querySelector("#emailOrUsernameField").value;
-  //   const password = containerClone.querySelector("#password_signin").value;
-  //
-  //   // Thêm logic xử lý đăng nhập tại đây
-  //   console.log("Đăng nhập:", emailOrUsername, password);
-  // });
-  //
-  // signUpForm.addEventListener('submit', (e) => {
-  //   e.preventDefault();
-  //   // Xử lý đăng ký
-  //   const username = containerClone.querySelector("#username").value;
-  //   const name = containerClone.querySelector("#name").value;
-  //   const email = containerClone.querySelector("#email").value;
-  //   const password = containerClone.querySelector("#password_signup").value;
-  //
-  //   // Thêm logic xử lý đăng ký tại đây
-  //   console.log("Đăng ký:", username, name, email, password);
-  // });
-
-  dialog.showModal();
 }
+
