@@ -240,7 +240,7 @@ function hienBieuDoKhachSop() {
   setChartOptions(options);
 }
 
-function hienBieuDoBanChay(chartContext) {
+function hienBieuDoBanChay() {
   const tkdm = thongKeDanhMuc();
   const categories = Object.keys(tkdm);
   const soLuongs = Object.values(tkdm);
