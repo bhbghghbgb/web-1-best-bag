@@ -116,6 +116,7 @@ input::placeholder {
     gap: 4px 8px;
     margin: 0 22px;
     padding: 12px 10px;
+    
 }
 
 .homepage-grid {
@@ -123,6 +124,7 @@ input::placeholder {
     flex-direction: column;
     border: none;
     justify-content: none;
+    
 }
 
 .homepage-grid-img {
@@ -223,7 +225,7 @@ ul.pagination-list {
     --text-color: #333;
 }
 
-* {
+div * {
     box-sizing: inherit;
     margin: 0;
     padding: 0;
