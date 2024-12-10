@@ -12,7 +12,7 @@ function SignIn() {
     if (userEntity.password === passwordValue) {
       alert("Login success");
       localStorage.setItem("currentUserId", userEntity.id);
-      window.location = "index.html";
+      window.location = "homepage_new.html";
     }
   } else {
     alert("Login failed: Username or password is incorrect");
