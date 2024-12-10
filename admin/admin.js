@@ -228,7 +228,6 @@ function adminXoaSanPham(id) {
   if (confirm("Bạn chắc chắn muốn xóa sản phẩm này?")) {
     xoaSanPham(id);
     tinhSanPhamHienThiAdmin();
-
   }
 }
 
