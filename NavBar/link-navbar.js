@@ -108,7 +108,7 @@ fetch('/NavBar/navbar.html').then(request => request.text())
           const logoutButton=document.createElement("button");
           userName.innerText = thongTinNguoiDung["name"];
           logoutButton.innerText = "Đăng xuất";
-          logoutButton.style="margin-left:8px;"
+          logoutButton.style="margin-right:150px;"
           navBarRight.appendChild(userName);
           navBarRight.appendChild(logoutButton);
           logoutButton.addEventListener("click", () => {
