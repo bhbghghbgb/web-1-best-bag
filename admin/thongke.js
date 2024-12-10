@@ -122,31 +122,43 @@ function thongKeGioHang() {
 }
 
 function thongKeDonHang() {
-  return {
-    orderCount: g_hoaDon.length,
-  };
+  return g_hoaDon.reduce((acc, hoaDon) => {
+    const xuLyStatus = hoaDon["xu-ly"];
+    acc[xuLyStatus] = (acc[xuLyStatus] || 0) + 1;
+    return acc;
+  }, {});
 }
 
 function thongKeTaiKhoan() {
+  const activeCount = g_nguoiDung.filter((user) => !user["disabled"]).length;
   return {
-    activeCount: g_nguoiDung.filter((user) => !user["disabled"]).length,
+    activeCount,
+    disabledCount: g_nguoiDung.length - activeCount,
   };
 }
 
 function thongKeTruyCap() {
   const now = new Date();
-  const elapsed = new Date() - new Date(now.getFullYear(), now.getMonth());
+  const elapsedMonth = now - new Date(now.getFullYear(), now.getMonth());
+  const elapsed = now - new Date(2020, 0, 1);
   return {
-    viewCountThisMonth: Math.ceil(elapsed / 15000),
-    adsClicksThisMonth: Math.ceil(elapsed / 35000),
+    viewCountThisMonth: Math.ceil(elapsedMonth / 15000),
+    adsClicksThisMonth: Math.ceil(elapsedMonth / 35000),
+    viewCount: Math.ceil(elapsed / 35000),
+    adsClicks: Math.ceil(elapsed / 65000),
   };
 }
 
 function thongKeDoanhThu() {
   const now = new Date();
-  return thongKeThoiGian()["chi-tiet"][now.getFullYear()]["chi-tiet"][
-    now.getMonth()
-  ]["tong-thu"];
+  const tktg = thongKeThoiGian();
+  return {
+    thisMonth:
+      tktg["chi-tiet"][now.getFullYear()]["chi-tiet"][now.getMonth()][
+        "tong-thu"
+      ],
+    total: tktg["tong-thu"],
+  };
 }
 
 function thongKeThoiGian() {
@@ -310,4 +322,23 @@ function thongKeThoiGian() {
 
 async function thongKeThoiGian2() {
   return await (await fetch("./tktgv18.json")).json();
+}
+
+function thongKeDanhMuc() {
+  {
+    const result = {};
+    g_hoaDon.forEach((hoaDon) => {
+      hoaDon["chi-tiet"].forEach((chiTiet) => {
+        const sanPham = timSanPham(chiTiet["san-pham"]);
+        const category = sanPham.category;
+        const soLuong = chiTiet["so-luong"];
+        if (result[category]) {
+          result[category] += soLuong;
+        } else {
+          result[category] = soLuong;
+        }
+      });
+    });
+    return result;
+  }
 }

@@ -169,7 +169,7 @@ function adminThemSanPham() {
         style: "currency",
         currency: "VND",
       }),
-      ["image-src"]:document.getElementById("linkHinhAnh").value,
+      ["image-src"]: document.getElementById("linkHinhAnh").value,
       ["images-file"]: document.getElementById("hinhAnhSanPham").files[0],
       ["price-n"]: document.getElementById("giaSanPham"),
       category: document.getElementById("loaiSanPham").value,
@@ -189,8 +189,8 @@ function adminSuaSanPham(id) {
   const infoFormDialog = document.querySelector("#infoFormDialog");
   const infoForm = document.querySelector("#infoForm");
   infoFormDialog.showModal();
-  document.getElementById("linkHinhAnh").value=sanPham["image-src"],
-  document.getElementById("tenSanPham").value = sanPham["name"];
+  (document.getElementById("linkHinhAnh").value = sanPham["image-src"]),
+    (document.getElementById("tenSanPham").value = sanPham["name"]);
   document.getElementById("giaSanPham").value = sanPham["price-n"];
   document.getElementById("loaiSanPham").value = sanPham["category"];
   document.getElementById("moTaSanPham").value = sanPham["description"];
@@ -204,7 +204,7 @@ function adminSuaSanPham(id) {
         style: "currency",
         currency: "VND",
       }),
-      "image-src":document.getElementById("linkHinhAnh").value,
+      "image-src": document.getElementById("linkHinhAnh").value,
       "price-n": document.getElementById("giaSanPham"),
       category: document.getElementById("loaiSanPham").value,
       description: document.getElementById("moTaSanPham").value,
@@ -301,12 +301,12 @@ function renderItemNguoiDung(nguoiDung) {
     if (
       nguoiDung["disabled"] ||
       confirm("Bạn có chắc chắn muốn khoá tài khoản này?")
-    ){
+    ) {
       suaNguoiDung(nguoiDung["id"], {
         ...nguoiDung,
         disabled: !nguoiDung["disabled"],
       });
-      nguoiDung["disabled"]=!nguoiDung["disabled"];
+      nguoiDung["disabled"] = !nguoiDung["disabled"];
     }
     if (!nguoiDung["disabled"]) {
       active.classList.add("fas", "fa-check-circle", "color-green");
@@ -1364,15 +1364,32 @@ function hienThiTopNguoiDung(topNguoiDung, hamRenderItem, wrapperSelector) {
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
 function loadTabContent(tabName, sauKhiTai) {
-  fetch(`${tabName}.xml`)
-    .then((response) => response.text())
-    .then((data) => {
-      const content_area = document.getElementById("content-wrapper");
-      if (content_area) {
-        content_area.innerHTML = data;
-      }
-      sauKhiTai();
+  function fetchContent(url, onSuccess, onFailure) {
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`loadTabContent Failed to fetch ${url}`);
+        }
+        return response.text();
+      })
+      .then(onSuccess)
+      .catch(onFailure);
+  }
+  const content_area = document.getElementById("content-wrapper");
+  if (!content_area) return;
+  const onFetchSuccess = (data) => {
+    content_area.innerHTML = data;
+    sauKhiTai();
+  };
+  const onFetchFailure = () => {
+    fetchContent(`${tabName}.html`, onFetchSuccess, (error) => {
+      console.error("loadTabContent Error loading HTML content:", error);
     });
+  };
+  fetchContent(`${tabName}.xml`, onFetchSuccess, (error) => {
+    console.error("loadTabContent Error loading XML content:", error);
+    onFetchFailure();
+  });
 }
 
 var tabthongke = document.getElementById("thongke");
@@ -1404,7 +1421,6 @@ if (tabhoadon) {
 }
 
 function onPageAdminLoad() {
-  
   const params = layParamUrl();
   const tab = params["tab"] || "thongke";
   switch (tab) {
@@ -1441,7 +1457,9 @@ function onPageAdminLoad() {
       break;
     case "bieudo-test":
       loadTabContent("bieudo-test", () =>
-        taiDuLieuTongMainJs(() => taiHoaDon(() => {}))
+        taiDuLieuTongMainJs(() =>
+          taiHoaDon(() => taiNguoiDung(() => taiSanPham(() => taoBieuDo())))
+        )
       );
       doiMauBackGround();
       break;
@@ -1616,33 +1634,37 @@ function themDuLieuVaoTheThongKe() {
   var soLieuSanPham = document.querySelector(".bg-mattRed .inner h3");
   soLieuSanPham.textContent = soLieuSp["totalProductCount"];
   var tenSoLieuSanPham = document.querySelector(".bg-mattRed .inner p");
-  tenSoLieuSanPham.textContent ="Sản phẩm, " + soLieuSp["uniqueProductCount"] + " mặt hàng";
+  tenSoLieuSanPham.textContent =
+    "Sản phẩm trong giỏ, " + soLieuSp["uniqueProductCount"] + " mặt hàng";
   const soLieuHd = thongKeDonHang();
   var soLieuHoaDon = document.querySelector(".bg-green .inner h3");
-  soLieuHoaDon.textContent = soLieuHd["orderCount"];
+  soLieuHoaDon.textContent = soLieuHd["chua"];
   var tenSoLieuHoaDon = document.querySelector(".bg-green .inner p");
-  tenSoLieuHoaDon.textContent = "Đơn hàng";
+  tenSoLieuHoaDon.textContent = `Đơn hàng chưa xử lý, ${soLieuHd["dang"]} đang, ${soLieuHd["roi"]} rồi, ${soLieuHd["huy"]} hủy`;
   const soLieuTk = thongKeTaiKhoan();
   var soLieuTaiKhoan = document.querySelector(".bg-orange .inner h3");
   soLieuTaiKhoan.textContent = soLieuTk["activeCount"];
   var tenSoLieuTaiKhoan = document.querySelector(".bg-orange .inner p");
-  tenSoLieuTaiKhoan.textContent = "Tài khoản đang hoạt động";
+  tenSoLieuTaiKhoan.textContent = `Tài khoản đang hoạt động, ${soLieuTk["disabledCount"]} đã khóa`;
   const soLieuTc = thongKeTruyCap();
   var soLieuLuotXem = document.querySelector(".bg-blue .inner h3");
   soLieuLuotXem.textContent = soLieuTc["viewCountThisMonth"];
   var tenSoLieuLuotXem = document.querySelector(".bg-blue .inner p");
-  tenSoLieuLuotXem.textContent = "Lượt truy cập trang";
+  tenSoLieuLuotXem.textContent = `Lượt truy cập trang thong tháng, ${soLieuTc["viewCount"]} tổng`;
   var soLieuXemAd = document.querySelector(".bg-maroon .inner h3");
   soLieuXemAd.textContent = soLieuTc["adsClicksThisMonth"];
   var tenSoLieuXemAd = document.querySelector(".bg-maroon .inner p");
-  tenSoLieuXemAd.textContent = "Lượt nhấn vào quảng cáo";
+  tenSoLieuXemAd.textContent = `Lượt nhấn vào quảng cáo thong tháng, ${soLieuTc["adsClicks"]} tổng`;
   var soLieuDoanhThu = document.querySelector(".bg-red .inner h3");
-  soLieuDoanhThu.textContent = thongKeDoanhThu().toLocaleString("vi-VN", {
+  const tkdt = thongKeDoanhThu();
+  soLieuDoanhThu.textContent = tkdt["thisMonth"].toLocaleString("vi-VN", {
     style: "currency",
     currency: "VND",
   });
   var tenSoLieuDoanhThu = document.querySelector(".bg-red .inner p");
-  tenSoLieuDoanhThu.textContent = "Doanh thu tháng";
+  tenSoLieuDoanhThu.textContent = `Doanh thu tháng, ${formatVND(
+    tkdt["total"]
+  )} tổng`;
 }
 
 //--------------------------------------------------------------------------------------------------
