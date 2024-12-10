@@ -50,28 +50,31 @@
     <title>Web 1 Best Bag</title>
   </head> -->
   <!-- <body> -->
-    <h1>Bieu do doanh thu</h1>
-
-    <!-- <div class="debug-table"></div> -->
-
-    <!-- <h2 id="graph-time"></h2> -->
-    <!-- <div class="debug-table"></div> -->
-
-    <!-- <div class="chart"> -->
-    <form id="chartForm" style="border: 1px solid green">
-      <select id="chartType" name="chart">
-        <option value="doanhthu" selected>Doanh thu</option>
-        <option value="khachsop">Khach sop</option>
-        <option value="banchay">Ban chay</option>
-      </select>
-      <button type="submit">Go</button>
-    </form>
-    <div id="chart-wrapper">
+    <div style="display: flex; gap: 32px; align-items: center; justify-content: center;">
+      <h1>Bieu do doanh thu</h1>
+      <!-- <div class="debug-table"></div> -->
+      <!-- <h2 id="graph-time"></h2> -->
+      <!-- <div class="debug-table"></div> -->
+      <!-- <div class="chart"> -->
+      <form id="chartForm" style="border: 1px solid green">
+        <select id="chartType" name="chart">
+          <option value="doanhthu" selected>Doanh thu</option>
+          <option value="khachsop">Khach sop</option>
+          <option value="banchay">Ban chay</option>
+        </select>
+        <button type="submit">Go</button>
+      </form>
+    </div>
+    <!-- height: topbar + h1 & chartForm-->
+    <div id="chart-wrapper" style="height: calc(100vh - 86px - 48px)">
       <div
         id="chart-navback"
         style="display: flex; padding: 0 36px; gap: 12px; align-items: center"
       ></div>
-      <div id="chart"></div>
+    <!-- height: navback-->
+      <div style="height: calc(100% - 60px)">
+        <div id="chart"></div>
+      </div>
       <!-- <canvas id="hierarchicalChart" width="3000" height="2000"></canvas> -->
     </div>
   <!-- </body>

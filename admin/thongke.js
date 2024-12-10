@@ -73,7 +73,7 @@ function thongKeNguoiDung({ ngay, thang, nam } = {}) {
       "da-mua": Object.values(tt).reduce((sum, qty) => sum + qty, 0),
       "tong-chi": Object.entries(tt).reduce(
         (total, [spId, qty]) =>
-          total + qty * readSanPham(spId)?.["price-sale-n"],
+          total + qty * readSanPham(spId, true)?.["price-sale-n"],
         0
       ),
     };
@@ -210,9 +210,9 @@ function thongKeThoiGian() {
     hoaDon["chi-tiet"].forEach((chiTiet) => {
       dayData["loai-da-ban-set"].add(chiTiet["san-pham"]);
       dayData["da-ban"] += chiTiet["so-luong"];
-      const sanPham = readSanPham(chiTiet["san-pham"]);
+      const sanPham = readSanPham(chiTiet["san-pham"], true);
       dayData["tong-thu"] +=
-        (sanPham["price-sale-n"] || 0) * chiTiet["so-luong"];
+        (sanPham?.["price-sale-n"] || 0) * chiTiet["so-luong"];
     });
   });
 
@@ -329,8 +329,8 @@ function thongKeDanhMuc() {
     const result = {};
     g_hoaDon.forEach((hoaDon) => {
       hoaDon["chi-tiet"].forEach((chiTiet) => {
-        const sanPham = timSanPham(chiTiet["san-pham"]);
-        const category = sanPham.category;
+        const sanPham = readSanPham(chiTiet["san-pham"], true);
+        const category = sanPham?.category;
         const soLuong = chiTiet["so-luong"];
         if (result[category]) {
           result[category] += soLuong;

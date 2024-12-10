@@ -220,7 +220,7 @@ function adminSuaSanPham(id) {
 
 function adminXoaSanPham(id) {
   if (confirm("Bạn chắc chắn muốn xóa sản phẩm này?")) {
-    deleteSanPham(id);
+    xoaSanPham(id);
   }
 }
 
