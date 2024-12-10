@@ -8,11 +8,11 @@ if (toggler) {
 }
 
 function PhongSide() {
-  document.querySelector(".sideMenu").style.width = "200px";
+  document.querySelector(".admin-sideMenu").style.width = "200px";
 }
 
 function ThuSide() {
-  document.querySelector(".sideMenu").style.width = "80px";
+  document.querySelector(".admin-sideMenu").style.width = "80px";
 }
 
 function tinhSanPhamHienThiAdmin(wrapperSelector = ".product-list") {
@@ -1171,7 +1171,7 @@ function adminXoaHoaDon() {
 }
 
 window.addEventListener("load", function () {
-  if(window.daylaTrangAdmin)
+  if(window.dayLaTrangAdmin)
     onPageAdminLoad();
   
 });
