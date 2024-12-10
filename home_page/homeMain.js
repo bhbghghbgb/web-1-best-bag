@@ -149,4 +149,7 @@ function layThongTinNguoiDung() {
   return null;
 }
 
-
+function dangXuat()
+{
+  xoaDuLieuLocalStorage("currentUserId");
+}
