@@ -39,7 +39,7 @@ function kiemTraInputSignIn() {
 }
 
 window.addEventListener("load", () => {
-  taiNguoiDung(() => {
+  taiDuLieuTongMainJs(() => taiNguoiDung(() => {
 
     const signInForm = document.getElementById("signInForm");
     signInForm.addEventListener("submit", (event) => {
@@ -49,5 +49,6 @@ window.addEventListener("load", () => {
       }
       SignIn();
     });
-  })
+  }))
 })
+
