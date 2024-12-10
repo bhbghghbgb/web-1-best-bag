@@ -137,11 +137,13 @@ function checkLoginStatus() {
   return false;
 };
 
-function getDataUser() {
-  const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
+function layThongTinNguoiDung() {
+  const currentUserId = localStorage.getItem("currentUserId");
   if (currentUserId) {
-  const danhSachUserDaLuu = localStorage.getItem("nguoiDung");
-    return true;
+  const danhSachNguoiDungDaLuu = JSON.parse(localStorage.getItem("nguoiDung"));
+  console.log('danhSachNguoiDungDaLuu: ',danhSachNguoiDungDaLuu);
+  const thongTinNguoiDung = danhSachNguoiDungDaLuu.find((item) => item.id ==currentUserId);
+    return thongTinNguoiDung;
   }
   return null;
 }
