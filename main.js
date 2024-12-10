@@ -1065,7 +1065,7 @@ function themNguoiDung(id, nguoiDung) {
 // tim nguoi dung theo idOrUsernameOrEmail
 function timNguoiDung(idOrUsernameOrEmail) {
   if (idOrUsernameOrEmail == null) {
-    // alert("timNguoiDung chua nhap id");
+    alert("timNguoiDung chua nhap id");
     return;
   }
   return (

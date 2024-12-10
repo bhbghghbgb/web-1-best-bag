@@ -100,26 +100,26 @@ fetch('/NavBar/navbar.html').then(request => request.text())
         document.getElementById('navbar-placeholder').innerHTML = data;
         document.addEventListener('scroll', watchNavbarBg);
         const currentUserId = localStorage.getItem("currentUserId");
-        const thongTinNguoiDung = timNguoiDung(currentUserId);
-        if (thongTinNguoiDung) {
-            document.getElementById('navbar-right-non-login').remove();
-            const navBarRight  = document.getElementById("navbar-right-logged-in");
-            const userName = document.createElement("h3");
-            const logoutButton=document.createElement("button");
-            userName.innerText = thongTinNguoiDung["name"];
-            logoutButton.innerText = "Đăng xuất";
-            logoutButton.style="margin-left:8px;"
-            navBarRight.appendChild(userName);
-            navBarRight.appendChild(logoutButton);
-            logoutButton.addEventListener("click", () => {
-                dangXuat();
-                window.location.reload();
-            });
+        if(currentUserId) {
+          const thongTinNguoiDung = timNguoiDung(currentUserId);
+          document.getElementById('navbar-right-non-login').remove();
+          const navBarRight  = document.getElementById("navbar-right-logged-in");
+          const userName = document.createElement("h3");
+          const logoutButton=document.createElement("button");
+          userName.innerText = thongTinNguoiDung["name"];
+          logoutButton.innerText = "Đăng xuất";
+          logoutButton.style="margin-left:8px;"
+          navBarRight.appendChild(userName);
+          navBarRight.appendChild(logoutButton);
+          logoutButton.addEventListener("click", () => {
+              dangXuat();
+              window.location.reload();
+          });
         } else {
-            document.getElementById('navbar-right-logged-in').remove();
-            const userIcon = document.getElementById("user-icon");
-            userIcon.addEventListener("click", () => {
-                showLoginDialog();
-            });
+          document.getElementById('navbar-right-logged-in').remove();
+          const userIcon = document.getElementById("user-icon");
+          userIcon.addEventListener("click", () => {
+              showLoginDialog();
+          });
         }
     });
