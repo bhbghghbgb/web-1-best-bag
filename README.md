@@ -27,7 +27,8 @@
 - k push đc thì gửi Hưng nguyên file Hưng copy vào chứ cũng k sửa đâu
 - css thì vẫn phải viết vô css của mình để bị conflict còn xóa hết style.css gộp lại từ đầu đc
 - **ko có đc** code thêm biến gì toàn cục hết nhé de tranh loi ghi gop vo 1 file
-
+- : ko làm kiểu này
+- 
 ```js
 // Các biến toàn cục
 let currentProduct; // Lưu sản phẩm đang xem chi tiết
@@ -35,6 +36,8 @@ let currentDetailImageIndex = 0; // Chỉ số ảnh đang hiển thị trong sl
 const currentUserId = "ID_NGUOI_DUNG"; // ID người dùng tạm thời (hard-code)
 let cart = JSON.parse(localStorage.getItem("cart")) || []; // Lấy giỏ hàng từ localStorage hoặc tạo mới
 ```
+</details>
+
 
 - **Update: Mon Dec 02 2024 11:31:53 GMT+0700 (Indochina Time)**: Trên tinh thần mỗi người làm rồi tự cố gắng ghép vào chứ đừng chờ.
 

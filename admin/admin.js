@@ -1,23 +1,14 @@
-const toggler = document.querySelector(".topbar-toggler");
-const collapse = document.querySelector(".topbar-collapse");
-if (toggler) {
-  toggler.addEventListener("click", () => {
-    collapse.style.display =
-      collapse.style.display === "flex" ? "none" : "flex";
-  });
-}
-
 function PhongSide() {
-  document.querySelector(".sideMenu").style.width = "200px";
+  document.querySelector(".admin-sideMenu").style.width = "200px";
 }
 
 function ThuSide() {
-  document.querySelector(".sideMenu").style.width = "80px";
+  document.querySelector(".admin-sideMenu").style.width = "80px";
 }
 
-function tinhSanPhamHienThi(wrapperSelector = ".product-list") {
+function tinhSanPhamHienThiAdmin(wrapperSelector = ".admin-product-list") {
   if (!document.querySelector(wrapperSelector)) {
-    console.info("tinhSanPhamHienThi khong tim thay wrapper!");
+    console.info("tinhSanPhamHienThiAdmin khong tim thay wrapper!");
     return;
   }
   let { page, sort, min, max, search, categories } = layParamUrl();
@@ -44,10 +35,10 @@ function tinhSanPhamHienThi(wrapperSelector = ".product-list") {
 
   duLieuDaTinh = { duLieuDaLoc: sanPhamsDaLoc, soPageToiDa, pageHienTai: page };
 
-  hienThiSanPham(duLieuDaTinh, wrapperSelector);
+  hienThiSanPhamAdmin(duLieuDaTinh, wrapperSelector);
 }
 
-function hienThiDanhSach(duLieuDaTinh, hamRenderItem, wrapperSelector) {
+function hienThiDanhSachAdmin(duLieuDaTinh, hamRenderItem, wrapperSelector) {
   const wrapper = document.querySelector(wrapperSelector);
   if (!wrapper) {
     console.error(`Không tìm thấy phần tử với selector: ${wrapperSelector}`);
@@ -79,7 +70,7 @@ function hienThiDanhSach(duLieuDaTinh, hamRenderItem, wrapperSelector) {
   }
   wrapper.appendChild(container);
 }
-function renderItemSanPham(sanPham) {
+function renderItemSanPhamAdmin(sanPham) {
   const wrapCart = document.createElement("div");
   wrapCart.classList.add("wrap-cart");
   const card = document.createElement("div");
@@ -133,36 +124,120 @@ function renderItemSanPham(sanPham) {
   wrapCart.appendChild(card);
   return wrapCart;
 }
-function hienThiSanPham(duLieuDaTinh, wrapperSelector) {
+function hienThiSanPhamAdmin(duLieuDaTinh, wrapperSelector) {
   const khiBamTrang = () =>
-    hienThiDanhSach(duLieuDaTinh, renderItemSanPham, wrapperSelector);
+    hienThiDanhSachAdmin(duLieuDaTinh, renderItemSanPhamAdmin, wrapperSelector);
   khiBamTrang();
   hienThiPagination(duLieuDaTinh, () => khiBamTrang());
 }
 
-function adminSuaSanPham(id) {
-  const products = JSON.parse(localStorage.getItem("sanPham") || "[]");
-  const sanPham = products.find((p) => p["web-scraper-order"] === id);
+function taoNutThemSanPham() {
+  const nutThemSanPham = document.querySelector("#addproduct-button");
+  if (nutThemSanPham) {
+    console.log("da tim thay nut them san pham");
+    nutThemSanPham.addEventListener("click", () => adminThemSanPham());
+  } else {
+    console.log("khong tim thay nut them san pham");
+  }
+}
 
+function adminThemSanPham() {
+  const infoFormDialog = document.querySelector("#infoFormDialog");
+  const infoForm = document.querySelector("#infoForm");
+  infoFormDialog.showModal();
+  document.getElementById("tenSanPham").value = "";
+  document.getElementById("giaSanPham").value = "";
+  document.getElementById("giaKhuyenMai").value = "";
+  document.getElementById("loaiSanPham").value = "";
+  document.getElementById("moTaSanPham").value = "";
+  document.getElementById("linkHinhAnh1").value = "";
+  document.getElementById("linkHinhAnh2").value = "";
+  document.getElementById("cancel-button").addEventListener("click", () => {
+    infoFormDialog.close();
+  });
+  infoForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const sanPham = {
+      "web-scraper-start-url": "https://lynvn.com/collections/view-all-bags?page=16",
+      "image-src": document.getElementById("linkHinhAnh1").value,
+      "image2-src": document.getElementById("linkHinhAnh2").value,
+      name: document.getElementById("tenSanPham").value,
+      price: document.getElementById("giaSanPham").toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }),
+      
+      "image-file": document.getElementById("hinhAnhSanPham1").files[0].name,
+      "image2-file": document.getElementById("hinhAnhSanPham2").files[0].name,
+      "price-n": parseInt(document.getElementById("giaSanPham").value),
+      "price-sale-n": parseInt(document.getElementById("giaKhuyenMai").value),
+      category: document.getElementById("loaiSanPham").value,
+      description: document.getElementById("moTaSanPham").value,
+    };
+    themSanPham(null, sanPham);
+    infoFormDialog.close();
+    tinhSanPhamHienThiAdmin();
+    hienThiPagination();
+  });
+}
+
+function adminSuaSanPham(id) {
+  const sanPham = timSanPham(id);
   if (!sanPham) {
-    alert("Không tìm thấy sản phẩm!");
+    alert("Khong tim thay san pham!");
     return;
   }
-
-  localStorage.setItem("editing-product", JSON.stringify(sanPham));
-  openProductModal(true); // Mở modal ở chế độ sửa
+  const infoFormDialog = document.querySelector("#infoFormDialog");
+  const infoForm = document.querySelector("#infoForm");
+  infoFormDialog.showModal();
+  
+  document.getElementById("tenSanPham").value = sanPham["name"];
+  document.getElementById("giaSanPham").value = sanPham["price-n"];
+  document.getElementById("giaKhuyenMai").value = sanPham["price-sale-n"];
+  document.getElementById("loaiSanPham").value = sanPham["category"];
+  document.getElementById("moTaSanPham").value = sanPham["description"];
+  document.getElementById("linkHinhAnh1").value = sanPham["image-src"];
+  document.getElementById("linkHinhAnh2").value = sanPham["image2-src"];
+  document.getElementById("cancel-button").addEventListener("click", () => {
+    infoFormDialog.close();
+  });
+  infoForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const hinhAnh1=sanPham["image-file"];
+    const hinhAnh2=sanPham["image2-file"];
+    if (document.getElementById("hinhAnhSanPham1").files.length !== 0) 
+       hinhAnh1 =document.getElementById("hinhAnhSanPham1").files[0].name;
+    if (document.getElementById("hinhAnhSanPham2").files.length !== 0)
+       hinhAnh2 = document.getElementById("hinhAnhSanPham2").files[0].name;
+    const newSanPham = {
+      "web-scraper-start-url":sanPham["web-scraper-start-url"],
+      "image-src":document.getElementById("linkHinhAnh1").value,
+      "image2-src":document.getElementById("linkHinhAnh2").value,
+      name: document.getElementById("tenSanPham").value,
+      price: document.getElementById("giaSanPham").toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }),
+      "image-file":hinhAnh1,
+      "image2-file":hinhAnh2,
+      "price-n": parseInt(document.getElementById("giaSanPham").value),
+      "price-sale-n": parseInt(document.getElementById("giaKhuyenMai").value),
+      category: document.getElementById("loaiSanPham").value,
+      description: document.getElementById("moTaSanPham").value,
+    };
+    
+    suaSanPham(id, newSanPham);
+    infoFormDialog.close();
+    tinhSanPhamHienThiAdmin();
+  });
 }
 
 function adminXoaSanPham(id) {
   if (confirm("Bạn chắc chắn muốn xóa sản phẩm này?")) {
-    let products = JSON.parse(localStorage.getItem("sanPham") || "[]");
-    const index = products.findIndex((p) => p["web-scraper-order"] === id);
-    if (index !== -1) {
-      products.splice(index, 1);
-      localStorage.setItem("sanPham", JSON.stringify(products));
-      alert("Đã xóa sản phẩm thành công!");
-      window.location.reload();
-    }
+    xoaSanPham(id);
+    tinhSanPhamHienThiAdmin();
+    hienThiPagination();
+
   }
 }
 
@@ -243,13 +318,17 @@ function renderItemNguoiDung(nguoiDung) {
     if (
       nguoiDung["disabled"] ||
       confirm("Bạn có chắc chắn muốn khoá tài khoản này?")
-    )
+    ) {
       suaNguoiDung(nguoiDung["id"], {
         ...nguoiDung,
         disabled: !nguoiDung["disabled"],
       });
-    if (nguoiDung["disabled"]) {
+      nguoiDung["disabled"] = !nguoiDung["disabled"];
+    }
+    if (!nguoiDung["disabled"]) {
       active.classList.add("fas", "fa-check-circle", "color-green");
+      rowNguoiDung.style.backgroundColor = "transparent";
+      rowNguoiDung.style.textDecoration = "none";
     } else {
       active.classList.add("fas", "fa-check-circle");
       active.classList.remove("color-green");
@@ -390,7 +469,7 @@ function adminThemNguoiDung() {
       editDialog.close(); // Ẩn form đi khi nhấn nút "Thoát"
     });
   const today = new Date();
-  const formattedDate = today.toISOString(); // Định dạng ngày theo chuẩn ISO (yyyy-mm-ddThh:mm:ss.sssZ)
+  const formattedDate = today.toISOString();// Định dạng ngày theo chuẩn ISO (yyyy-mm-ddThh:mm:ss.sssZ)
   document.getElementById("ngay-tao").value = formattedDate; // Gán giá trị ngày hiện tại vào input
   document.getElementById("ngay-tao").disabled = true;
   editForm.addEventListener("submit", (event) => {
@@ -404,8 +483,10 @@ function adminThemNguoiDung() {
       ["ngay-tao"]: formattedDate,
       disabled: document.getElementById("disabled2").checked,
     };
-    themNguoiDung(newNguoiDung);
+    themNguoiDung(null,newNguoiDung);
     editDialog.close();
+    tinhNguoiDungHienThi();
+    hienThiPagination();
   });
 }
 
@@ -446,10 +527,12 @@ function adminSuaNguoiDung(id) {
       username: document.getElementById("username").value,
       email: document.getElementById("email").value,
       password: document.getElementById("password").value,
+      "ngay-tao": nguoiDung["ngay-tao"],
       disabled: document.getElementById("disabled2").checked,
     };
     suaNguoiDung(id, newNguoiDung);
     editDialog.close();
+    tinhNguoiDungHienThi();
   };
 }
 
@@ -467,6 +550,8 @@ function adminXoaNguoiDung() {
   if (confirm("Bạn có chắc chắn muốn xóa những tài khoản này?")) {
     for (let id of idsToDelete) {
       xoaNguoiDung(id);
+      tinhNguoiDungHienThi();
+      hienThiPagination();
     }
   }
 }
@@ -1044,8 +1129,10 @@ function adminThemHoaDon() {
       "chi-tiet": cart,
       "xu-ly": document.getElementById("xuLyHoaDon").value,
     };
-    themHoaDon(id, newHoaDon);
+    themHoaDon(null, newHoaDon);
     invoiceDialog.close();
+    tinhHoaDonHienThi();
+    hienThiPagination();
   });
 }
 
@@ -1090,6 +1177,7 @@ function adminSuaHoaDon(id) {
     };
     suaHoaDon(id, newHoaDon);
     invoiceDialog.close();
+    tinhHoaDonHienThi();
   });
 }
 
@@ -1104,17 +1192,17 @@ function adminXoaHoaDon() {
   if (confirm("Bạn chắc chắn muốn xóa những hóa đơn này?")) {
     for (let id of arr_AddOrderToBin) {
       xoaHoaDon(id);
+      tinhHoaDonHienThi();
+      hienThiPagination();
     }
   }
 }
 
 window.addEventListener("load", function () {
-  onPageLoad();
+  if(window.dayLaTrangAdmin){
+    onPageAdminLoad();
+  }
 });
-
-// function timNguoiDung(id) {
-//   return g_nguoiDung.find((nguoiDung) => nguoiDung["id"] === id);
-// }
 
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
@@ -1300,46 +1388,77 @@ function hienThiTopNguoiDung(topNguoiDung, hamRenderItem, wrapperSelector) {
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
 function loadTabContent(tabName, sauKhiTai) {
-  fetch(`${tabName}.xml`)
-    .then((response) => response.text())
-    .then((data) => {
-      const content_area = document.getElementById("content-wrapper");
-      if (content_area) {
-        content_area.innerHTML = data;
-      }
-      sauKhiTai();
+  function fetchContent(url, onSuccess, onFailure) {
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`loadTabContent Failed to fetch ${url}`);
+        }
+        return response.text();
+      })
+      .then(onSuccess)
+      .catch(onFailure);
+  }
+  const content_area = document.getElementById("content-wrapper");
+  if (!content_area) return;
+  const onFetchSuccess = (data) => {
+    content_area.innerHTML = data;
+    sauKhiTai();
+  };
+  const onFetchFailure = () => {
+    fetchContent(`${tabName}.html`, onFetchSuccess, (error) => {
+      console.error("loadTabContent Error loading HTML content:", error);
     });
-}
-
-var tabthongke = document.getElementById("thongke");
-if (tabthongke) {
-  tabthongke.addEventListener("click", () => {
-    caiParamUrl({ tab: "thongke" }, true);
+  };
+  fetchContent(`${tabName}.xml`, onFetchSuccess, (error) => {
+    console.error("loadTabContent Error loading XML content:", error);
+    onFetchFailure();
   });
 }
 
-var tabnguoidung = document.getElementById("nguoidung");
-if (tabnguoidung) {
-  tabnguoidung.addEventListener("click", () => {
-    caiParamUrl({ tab: "nguoidung" }, true);
-  });
+
+function taoMenuTab(tab){
+  const toggler = document.querySelector(".topbar-toggler");
+  const collapse = document.querySelector(".topbar-collapse");
+  if (toggler) {
+    toggler.addEventListener("click", () => {
+      collapse.style.display =
+        collapse.style.display === "flex" ? "none" : "flex";
+    });
+  }
+
+  const tabthongke = document.getElementById("thongke");
+  if (tabthongke) {
+    tabthongke.addEventListener("click", () => {
+      caiParamUrl({ tab: "thongke" }, true);
+    });
+  }
+
+  const tabnguoidung = document.getElementById("nguoidung");
+  if (tabnguoidung) {
+    tabnguoidung.addEventListener("click", () => {
+      caiParamUrl({ tab: "nguoidung" }, true);
+    });
+  }else{console.log("khong tim thay tab nguoi dung")}
+
+  const tabsanpham = document.getElementById("sanpham");
+  if (tabsanpham) {
+    tabsanpham.addEventListener("click", () => {
+      caiParamUrl({ tab: "sanpham" }, true);
+    });
+  }else{console.log("tim khong thay tab san pham")}
+
+  const tabhoadon = document.getElementById("hoadon");
+  if (tabhoadon) {
+    tabhoadon.addEventListener("click", () => {
+      caiParamUrl({ tab: "hoadon" }, true);
+    });
+  }
+  const tabElement = document.getElementById(tab);
+  tabElement.classList.add("isActive");
 }
 
-var tabsanpham = document.getElementById("sanpham");
-if (tabsanpham) {
-  tabsanpham.addEventListener("click", () => {
-    caiParamUrl({ tab: "sanpham" }, true);
-  });
-}
-
-var tabhoadon = document.getElementById("hoadon");
-if (tabhoadon) {
-  tabhoadon.addEventListener("click", () => {
-    caiParamUrl({ tab: "hoadon" }, true);
-  });
-}
-
-function onPageLoad() {
+function onPageAdminLoad() {
   const params = layParamUrl();
   const tab = params["tab"] || "thongke";
   switch (tab) {
@@ -1351,13 +1470,15 @@ function onPageLoad() {
           })
         );
         toggleModeButton(adminThemNguoiDung, adminXoaNguoiDung);
+        taoMenuTab("nguoidung");
       });
-      tabnguoidung.classList.add("isActive");
+      
       break;
     case "sanpham":
       loadTabContent("sanpham", () => {
-        taiDuLieuTongMainJs(() => taiSanPham(() => {}));
+        taiDuLieuTongMainJs(() => taiSanPham(() => {tinhSanPhamHienThiAdmin()}));
         taoNutThemSanPham();
+        taoMenuTab("sanpham");
       });
       tabsanpham.classList.add("isActive");
       break;
@@ -1370,18 +1491,21 @@ function onPageLoad() {
           })
         );
         toggleModeButton(adminThemHoaDon, adminXoaHoaDon);
+        taoMenuTab("hoadon");
       });
 
-      tabhoadon.classList.add("isActive");
+      
       break;
     case "bieudo-test":
       loadTabContent("bieudo-test", () =>
-        taiDuLieuTongMainJs(() => taiHoaDon(() => {}))
+        taiDuLieuTongMainJs(() =>
+          taiHoaDon(() => taiNguoiDung(() => taiSanPham(() => taoBieuDo())))
+        )
       );
       doiMauBackGround();
       break;
     default:
-      loadTabContent("thongke", () =>
+      loadTabContent("thongke", () =>{
         taiDuLieuTongMainJs(() =>
           taiHoaDon(() =>
             taiGioHang(() => {
@@ -1391,10 +1515,12 @@ function onPageLoad() {
               themDuLieuVaoTheThongKe();
             })
           )
-        )
-      );
-      tabthongke.classList.add("isActive");
+        );
+        taoMenuTab("thongke");
+      });
+      
   }
+
 }
 
 function taoBoLocNguoiDung() {
@@ -1426,10 +1552,10 @@ function taoBoLocNguoiDung() {
     });
 
     // Kiểm tra và hiển thị cảnh báo nếu cần
-    /*if (!filterParams.disabled && !filterParams.sort) {
+    if (!filterParams.disabled && !filterParams.sort) {
       alert("Vui lòng chọn ít nhất một bộ lọc hoặc sắp xếp");
       return;
-    }*/
+    }
 
     // Cập nhật URL hoặc gửi dữ liệu qua AJAX
     caiParamUrl(filterParams); // Hàm giả định cập nhật URL hoặc gửi request
@@ -1543,6 +1669,9 @@ function doiMauBackGround() {
     return;
   }
   bg.classList.add("change-background");
+
+  const dp = document.querySelector(".topbar");
+  dp.style.display="none";
 }
 
 function themDuLieuVaoTheThongKe() {
@@ -1550,33 +1679,37 @@ function themDuLieuVaoTheThongKe() {
   var soLieuSanPham = document.querySelector(".bg-mattRed .inner h3");
   soLieuSanPham.textContent = soLieuSp["totalProductCount"];
   var tenSoLieuSanPham = document.querySelector(".bg-mattRed .inner p");
-  tenSoLieuSanPham.textContent = soLieuSp["uniqueProductCount"] + " mặt hàng";
+  tenSoLieuSanPham.textContent =
+    "Sản phẩm trong giỏ, " + soLieuSp["uniqueProductCount"] + " mặt hàng";
   const soLieuHd = thongKeDonHang();
   var soLieuHoaDon = document.querySelector(".bg-green .inner h3");
-  soLieuHoaDon.textContent = soLieuHd["orderCount"];
+  soLieuHoaDon.textContent = soLieuHd["chua"];
   var tenSoLieuHoaDon = document.querySelector(".bg-green .inner p");
-  tenSoLieuHoaDon.textContent = "Đơn hàng";
+  tenSoLieuHoaDon.textContent = `Đơn hàng chưa xử lý, ${soLieuHd["dang"]} đang, ${soLieuHd["roi"]} rồi, ${soLieuHd["huy"]} hủy`;
   const soLieuTk = thongKeTaiKhoan();
   var soLieuTaiKhoan = document.querySelector(".bg-orange .inner h3");
   soLieuTaiKhoan.textContent = soLieuTk["activeCount"];
   var tenSoLieuTaiKhoan = document.querySelector(".bg-orange .inner p");
-  tenSoLieuTaiKhoan.textContent = "Tài khoản đang hoạt động";
+  tenSoLieuTaiKhoan.textContent = `Tài khoản đang hoạt động, ${soLieuTk["disabledCount"]} đã khóa`;
   const soLieuTc = thongKeTruyCap();
   var soLieuLuotXem = document.querySelector(".bg-blue .inner h3");
   soLieuLuotXem.textContent = soLieuTc["viewCountThisMonth"];
   var tenSoLieuLuotXem = document.querySelector(".bg-blue .inner p");
-  tenSoLieuLuotXem.textContent = "Lượt truy cập trang";
+  tenSoLieuLuotXem.textContent = `Lượt truy cập trang thong tháng, ${soLieuTc["viewCount"]} tổng`;
   var soLieuXemAd = document.querySelector(".bg-maroon .inner h3");
   soLieuXemAd.textContent = soLieuTc["adsClicksThisMonth"];
   var tenSoLieuXemAd = document.querySelector(".bg-maroon .inner p");
-  tenSoLieuXemAd.textContent = "Lượt nhấn vào quảng cáo";
+  tenSoLieuXemAd.textContent = `Lượt nhấn vào quảng cáo thong tháng, ${soLieuTc["adsClicks"]} tổng`;
   var soLieuDoanhThu = document.querySelector(".bg-red .inner h3");
-  soLieuDoanhThu.textContent = thongKeDoanhThu().toLocaleString("vi-VN", {
+  const tkdt = thongKeDoanhThu();
+  soLieuDoanhThu.textContent = tkdt["thisMonth"].toLocaleString("vi-VN", {
     style: "currency",
     currency: "VND",
   });
   var tenSoLieuDoanhThu = document.querySelector(".bg-red .inner p");
-  tenSoLieuDoanhThu.textContent = "Doanh thu tháng";
+  tenSoLieuDoanhThu.textContent = `Doanh thu tháng, ${formatVND(
+    tkdt["total"]
+  )} tổng`;
 }
 
 //--------------------------------------------------------------------------------------------------

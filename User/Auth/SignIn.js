@@ -12,7 +12,7 @@ function SignIn() {
     if (userEntity.password === passwordValue) {
       alert("Login success");
       localStorage.setItem("currentUserId", userEntity.id);
-      window.location = "index.html";
+      window.location = "homepage_new.html";
     }
   } else {
     alert("Login failed: Username or password is incorrect");
@@ -38,8 +38,7 @@ function kiemTraInputSignIn() {
 }
 
 window.addEventListener("load", () => {
-  taiDuLieuTongMainJs(() => taiNguoiDung(() => {
-
+  taiNguoiDung(() => {
     const signInForm = document.getElementById("signInForm");
     signInForm.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -48,6 +47,6 @@ window.addEventListener("load", () => {
       }
       SignIn();
     });
-  }))
+  })
 })
 
