@@ -42,6 +42,7 @@
 <dialog id="editFormDialog" >
   <h2>Thông tin người dùng</h2>
   <form id="editForm" >
+
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" placeholder="Nhập tên" required />
     

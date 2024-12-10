@@ -796,7 +796,14 @@ function createEntity(
   luuDuLieuLocalStorage(indexMappingKey, indexMapping);
 }
 
-function readEntity(entityList, entityKey, indexMapping, idKey, entityId) {
+function readEntity(
+  entityList,
+  entityKey,
+  indexMapping,
+  idKey,
+  entityId,
+  orDefault = null
+) {
   const index = indexMapping[entityId];
   console.debug("readEntity", {
     entityList,
@@ -806,7 +813,7 @@ function readEntity(entityList, entityKey, indexMapping, idKey, entityId) {
     entityId,
     index,
   });
-  return index !== undefined ? entityList[index] : null;
+  return index !== undefined ? entityList[index] : orDefault;
 }
 
 function updateEntity(
@@ -878,8 +885,30 @@ function createSanPham(entity) {
   );
 }
 
-function readSanPham(entityId) {
-  return readEntity(g_sanPham, sanPhamKey, i_sanPham, sanPhamIdKey, entityId);
+function readSanPham(entityId, orDefault = false) {
+  return readEntity(
+    g_sanPham,
+    sanPhamKey,
+    i_sanPham,
+    sanPhamIdKey,
+    entityId,
+    orDefault
+      ? {
+          "web-scraper-order": null,
+          "web-scraper-start-url": null,
+          "image-src": null,
+          "image2-src": null,
+          name: null,
+          price: "0 ₫",
+          "image-file": null,
+          "image2-file": null,
+          "price-n": 0,
+          "price-sale-n": 0,
+          category: "deleted",
+          description: null,
+        }
+      : null
+  );
 }
 
 function updateSanPham(entityId, newEntity) {
@@ -917,13 +946,24 @@ function createNguoiDung(entity) {
   );
 }
 
-function readNguoiDung(entityId) {
+function readNguoiDung(entityId, orDefault = false) {
   return readEntity(
     g_nguoiDung,
     nguoiDungKey,
     i_nguoiDung,
     nguoiDungIdKey,
-    entityId
+    entityId,
+    orDefault
+      ? {
+          id: null,
+          name: null,
+          username: null,
+          email: null,
+          password: null,
+          "ngay-tao": null,
+          disabled: true,
+        }
+      : null
   );
 }
 
@@ -962,8 +1002,20 @@ function createGioHang(entity) {
   );
 }
 
-function readGioHang(entityId) {
-  return readEntity(g_gioHang, gioHangKey, i_gioHang, gioHangIdKey, entityId);
+function readGioHang(entityId, orDefault = false) {
+  return readEntity(
+    g_gioHang,
+    gioHangKey,
+    i_gioHang,
+    gioHangIdKey,
+    entityId,
+    orDefault
+      ? {
+          "nguoi-dung": null,
+          "chi-tiet": [],
+        }
+      : null
+  );
 }
 
 function updateGioHang(entityId, newEntity) {
@@ -994,8 +1046,23 @@ function createHoaDon(entity) {
   createEntity(g_hoaDon, hoaDonKey, i_hoaDon, hoaDonImKey, hoaDonImKey, entity);
 }
 
-function readHoaDon(entityId) {
-  return readEntity(g_hoaDon, hoaDonKey, i_hoaDon, hoaDonImKey, entityId);
+function readHoaDon(entityId, orDefault = false) {
+  return readEntity(
+    g_hoaDon,
+    hoaDonKey,
+    i_hoaDon,
+    hoaDonImKey,
+    entityId,
+    orDefault
+      ? {
+          id: null,
+          "nguoi-dung": null,
+          "ngay-tao": null,
+          "chi-tiet": [],
+          "xu-ly": "xoa",
+        }
+      : null
+  );
 }
 
 function updateHoaDon(entityId, newEntity) {
