@@ -1,13 +1,15 @@
-function hienTrangChiTiet(id) {
-  // Tạo URL mới đến trang chi tiết sản phẩm
-  const newUrl = new URL(
-    `${mainJsScriptDirectory}/Product/ChiTietSanPham/ChiTietSanPham.html`,
-    window.location.origin
-  );
+// function hienTrangChiTiet(id) {
+//   // Tạo URL mới đến trang chi tiết sản phẩm
+//   const newUrl = new URL(
+//     `${mainJsScriptDirectory}/Product/ChiTietSanPham/ChiTietSanPham.html`,
+//     window.location.origin
+//   );
 
-  // Chuyển đến trang chi tiết với id sản phẩm
-  caiParamUrl({ idtrangchitietsanpham: id }, false, false, newUrl);
-}
+//   console.log('newUrl: ',newUrl);
+
+//   // Chuyển đến trang chi tiết với id sản phẩm
+//   caiParamUrl({ idtrangchitietsanpham: id }, false, false, newUrl);
+// }
 // Thêm vào đầu file
 window.addEventListener("load", () => {
   // Lấy id sản phẩm từ URL

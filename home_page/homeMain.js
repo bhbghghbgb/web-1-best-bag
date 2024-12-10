@@ -1,8 +1,8 @@
-function hienTrangChiTiet(id) {
-  const sanPham = timSanPham(id);
-  // TODO: mo trang chi tiet san pham
-  window.location.href = `/Product/ChiTietSanPham/ChiTietSanPham.html?id=${id}`;
-}
+// function hienTrangChiTiet(id) {
+//   const sanPham = timSanPham(id);
+//   // TODO: mo trang chi tiet san pham
+//   window.location.href = `/Product/ChiTietSanPham/ChiTietSanPham.html?id=${id}`;
+// }
 
 function renderItemSanPham(sanPham) {
   const item = document.createElement("div");
