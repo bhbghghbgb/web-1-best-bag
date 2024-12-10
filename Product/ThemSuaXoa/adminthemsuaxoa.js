@@ -1,4 +1,17 @@
 // Các hàm xử lý thêm/sửa/xóa sản phẩm/đã test và chạy được
+function taoNutThemSanPham() {
+  const nutThemSanPham = document.querySelector("#addproduct-button");
+  if (nutThemSanPham) {
+    console.log("da tim thay nut them san pham");
+    nutThemSanPham.addEventListener("click", () => adminThemSanPham());
+  } else {
+    console.log("khong tim thay nut them san pham");
+  }
+}
+
+function adminThemSanPham() {
+  openProductModal(false); // Mở modal ở chế độ thêm mới
+}
 function adminSuaSanPham(id) {
   const products = JSON.parse(localStorage.getItem("sanPham") || "[]");
   const sanPham = products.find((p) => p["web-scraper-order"] === id);
@@ -120,11 +133,6 @@ function createProductModal() {
     `;
 
   document.body.insertAdjacentHTML("beforeend", modalHTML);
-
-  const modal = document.getElementById("productModal");
-  if (!modal) {
-    console.error("Modal không được tạo thành công");
-  }
 }
 
 function openProductModal(isEdit = false) {
@@ -153,18 +161,19 @@ function openProductModal(isEdit = false) {
     const editingProduct = JSON.parse(localStorage.getItem("editing-product"));
     if (editingProduct) {
       formTitle.textContent = "Chỉnh Sửa Sản Phẩm";
-
       form.elements["name"].value = editingProduct.name;
       form.elements["category"].value = editingProduct.category;
       form.elements["description"].value = editingProduct.description;
       form.elements["price-n"].value = editingProduct["price-n"];
       form.elements["price-sale-n"].value = editingProduct["price-sale-n"];
 
-      imagePreview.innerHTML = `
+      if (editingProduct["image-file"]) {
+        imagePreview.innerHTML = `
           <img src="../images/${editingProduct["image-file"]}" 
                alt="Current product image"
-               style="max-width: 300px; max-height: 300px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);">
+               style="max-width: 300px; max-height: 300px; border-radius: 8px;">
         `;
+      }
     }
   } else {
     formTitle.textContent = "Thêm Sản Phẩm Mới";
@@ -193,7 +202,7 @@ function handleImagePreview(e) {
       imagePreview.innerHTML = `
           <img src="${e.target.result}" 
                alt="Preview" 
-               style="max-width: 300px; max-height: 300px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);">
+               style="max-width: 300px; max-height: 300px; border-radius: 8px;">
         `;
     };
     reader.readAsDataURL(file);
