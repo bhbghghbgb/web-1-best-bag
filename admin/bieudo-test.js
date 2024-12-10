@@ -21,6 +21,7 @@ function formatVND(value) {
 var g_chart = { element: null, context: null };
 
 function setChartOptions(options) {
+  if (options?.chart) options.chart.height = "100%";
   const { element, context } = g_chart;
   if (context?.opts?.chart?.type !== options?.chart?.type) {
     element.innerHTML = "";
@@ -40,7 +41,7 @@ function hienBieuDoDoanhThu(historyLink) {
   function createHistory(text1, text2, text3, callback) {
     function addSlash() {
       const slash = document.createElement("h2");
-      slash.style.fontSize = "64px";
+      slash.style.fontSize = "32px";
       slash.textContent = "/";
       historyLink.appendChild(slash);
     }
@@ -54,7 +55,7 @@ function hienBieuDoDoanhThu(historyLink) {
 
     const elementa = document.createElement("a");
     elementa.href = "#";
-    const element = document.createElement("h3");
+    const element = document.createElement("h5");
     element.appendChild(document.createTextNode(text1));
     element.appendChild(document.createElement("br"));
     if (text2) {
@@ -112,11 +113,7 @@ function hienBieuDoDoanhThu(historyLink) {
                     chart: {
                       type: "bar",
                       events: {
-                        dataPointSelection: function (
-                          event,
-                          chartContext,
-                          config
-                        ) {},
+                        dataPointSelection: function () {},
                       },
                     },
                     title: { text: "Bieu do doanh thu theo ngay" },
@@ -222,7 +219,9 @@ function hienBieuDoKhachSop() {
       events: { dataPointSelection: () => {} },
     },
     title: { text: "Bieu do khach sop" },
-    plotOptions: { bar: { horizontal: true } },
+    plotOptions: {
+      bar: { dataLabels: { orientation: "horizontal" }, horizontal: true },
+    },
     series: [
       {
         name: "profits",
@@ -293,7 +292,9 @@ function taoBieuDo() {
   };
   function onChartTypeSelection(target) {
     const { tab } = layParamUrl();
-    const chart = target ? new FormData(target).get("chart") : "doanhthu";
+    const chart =
+      (target ? new FormData(target).get("chart") : layParamUrl().chart) ||
+      "doanhthu";
     caiParamUrl({ tab, chart }, true, false);
     chartType.value = chart;
     historyLink.innerHTML = "";
@@ -311,6 +312,7 @@ function taoBieuDo() {
 
 window.addEventListener("load", () => {
   if (
+    !window.location.toString().includes("bieudo-test.html") ||
     !document.querySelector("#chart-wrapper") ||
     !document.querySelector("#chartForm")
   )
