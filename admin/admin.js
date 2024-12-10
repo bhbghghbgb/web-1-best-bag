@@ -166,9 +166,8 @@ function adminThemSanPham() {
         style: "currency",
         currency: "VND",
       }),
-      
-      "image-file": document.getElementById("hinhAnhSanPham1").files[0].name,
-      "image2-file": document.getElementById("hinhAnhSanPham2").files[0].name,
+      "image-file": document.getElementById("hinhAnhSanPham1").files[0]?.name || "",
+      "image2-file": document.getElementById("hinhAnhSanPham2").files[0]?.name || "",
       "price-n": parseInt(document.getElementById("giaSanPham").value),
       "price-sale-n": parseInt(document.getElementById("giaKhuyenMai").value),
       category: document.getElementById("loaiSanPham").value,
@@ -177,7 +176,6 @@ function adminThemSanPham() {
     themSanPham(null, sanPham);
     infoFormDialog.close();
     tinhSanPhamHienThiAdmin();
-    hienThiPagination();
   });
 }
 
@@ -203,12 +201,6 @@ function adminSuaSanPham(id) {
   });
   infoForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    const hinhAnh1=sanPham["image-file"];
-    const hinhAnh2=sanPham["image2-file"];
-    if (document.getElementById("hinhAnhSanPham1").files.length !== 0) 
-       hinhAnh1 =document.getElementById("hinhAnhSanPham1").files[0].name;
-    if (document.getElementById("hinhAnhSanPham2").files.length !== 0)
-       hinhAnh2 = document.getElementById("hinhAnhSanPham2").files[0].name;
     const newSanPham = {
       "web-scraper-start-url":sanPham["web-scraper-start-url"],
       "image-src":document.getElementById("linkHinhAnh1").value,
@@ -218,8 +210,8 @@ function adminSuaSanPham(id) {
         style: "currency",
         currency: "VND",
       }),
-      "image-file":hinhAnh1,
-      "image2-file":hinhAnh2,
+      "image-file":document.getElementById("hinhAnhSanPham1").files[0]?.name || sanPham["image-file"],
+      "image2-file":document.getElementById("hinhAnhSanPham2").files[0]?.name || sanPham["image2-file"],
       "price-n": parseInt(document.getElementById("giaSanPham").value),
       "price-sale-n": parseInt(document.getElementById("giaKhuyenMai").value),
       category: document.getElementById("loaiSanPham").value,
@@ -236,8 +228,6 @@ function adminXoaSanPham(id) {
   if (confirm("Bạn chắc chắn muốn xóa sản phẩm này?")) {
     xoaSanPham(id);
     tinhSanPhamHienThiAdmin();
-    hienThiPagination();
-
   }
 }
 
@@ -486,7 +476,6 @@ function adminThemNguoiDung() {
     themNguoiDung(null,newNguoiDung);
     editDialog.close();
     tinhNguoiDungHienThi();
-    hienThiPagination();
   });
 }
 
@@ -551,7 +540,6 @@ function adminXoaNguoiDung() {
     for (let id of idsToDelete) {
       xoaNguoiDung(id);
       tinhNguoiDungHienThi();
-      hienThiPagination();
     }
   }
 }
@@ -1043,7 +1031,7 @@ function renderCuaHang(cart, hamRenderItem, wrapperSelector = ".menuCuaHang") {
     }
   }
   if (danhSachConLai.length === 0) {
-    wrapper.appendChild(document.createTextNode("Khong con gi lun"));
+    wrapper.appendChild(document.createTextNode("Kho trống"));
   }
   const cuaHang = document.createElement("table");
   const muc = document.createElement("thead");
@@ -1132,7 +1120,6 @@ function adminThemHoaDon() {
     themHoaDon(null, newHoaDon);
     invoiceDialog.close();
     tinhHoaDonHienThi();
-    hienThiPagination();
   });
 }
 
@@ -1193,7 +1180,6 @@ function adminXoaHoaDon() {
     for (let id of arr_AddOrderToBin) {
       xoaHoaDon(id);
       tinhHoaDonHienThi();
-      hienThiPagination();
     }
   }
 }
@@ -1480,7 +1466,6 @@ function onPageAdminLoad() {
         taoNutThemSanPham();
         taoMenuTab("sanpham");
       });
-      tabsanpham.classList.add("isActive");
       break;
     case "hoadon":
       loadTabContent("hoadon", () => {
@@ -1503,6 +1488,7 @@ function onPageAdminLoad() {
         )
       );
       doiMauBackGround();
+      taoMenuTab("thongke");
       break;
     default:
       loadTabContent("thongke", () =>{
