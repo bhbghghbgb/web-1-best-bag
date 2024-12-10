@@ -115,6 +115,7 @@ fetch('/NavBar/navbar.html').then(request => request.text())
               window.location.reload();
           });
         } else {
+          document.getElementById('navCartContainer').remove();
           document.getElementById('navbar-right-logged-in').remove();
           const userIcon = document.getElementById("user-icon");
           userIcon.addEventListener("click", () => {
