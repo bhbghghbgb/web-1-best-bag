@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" type="image/png" href="../images/icons8-bag-96.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Navigation bar</title>
     <style>
@@ -41,12 +42,12 @@
             background-color: rgba(128, 128, 128, .5);
         }
 
-        .navbar-search-pseudo > svg {
+        .navbar-search-pseudo>svg {
             position: relative;
             left: 12px;
         }
 
-        .navbar-search-pseudo > input {
+        .navbar-search-pseudo>input {
             padding-top: 0;
             background-color: transparent;
             outline-color: transparent;
@@ -57,18 +58,18 @@
             transition: width .3s ease, opacity .3s linear, visibility .3s step-end;
         }
 
-        .navbar-search-pseudo > input:focus {
+        .navbar-search-pseudo>input:focus {
             outline: none;
         }
 
         @media (max-width: 640px) {
-            .navbar-search-pseudo > input {
+            .navbar-search-pseudo>input {
                 width: 160px;
             }
         }
 
         @media (max-width: 512px) {
-            .navbar-search-pseudo > input {
+            .navbar-search-pseudo>input {
                 opacity: 0;
                 width: 0;
                 visibility: hidden;
@@ -95,25 +96,29 @@
 </head>
 
 <body>
-<div class="navbar">
-    <div class="navbar-left">
-        <a>
-            <img src="../images/icons8-bag-96.png" alt="Logo" width="50px" height="50px">
-        </a>
-        <a href="../index.html">
-            <h1 style="color: black;">Best Bag</h1>
-        </a>
+    <div class="navbar">
+        <div class="navbar-left">
+            <a>
+                <img src="../images/icons8-bag-96.png"  alt="Logo" width="50px" height="50px">
+            </a>
+            <a href="../index.html">
+                <h1 style="color: black;">Best Bag</h1>
+            </a>
+        </div>
+        <div class="navbar-right" id="navbar-right-non-login">
+            <a id="user-icon">
+                <svg class="selectable circle-icon" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2m8-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </a>
+        </div>
+        <div class="navbar-right" id="navbar-right-logged-in">
+
+        </div>
+
     </div>
-    <div class="navbar-right">
-        <a id="user-icon">
-            <svg class="selectable circle-icon" width="40" height="40" viewBox="0 0 24 24" fill="none"
-                 xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2m8-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
-                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-        </a>
-    </div>
-</div>
 </body>
 
 </html>

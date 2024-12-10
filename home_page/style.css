@@ -1,0 +1,1154 @@
+/* style.css */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+/* render san pham,phan trang */
+
+.homepage-button {
+  background-color: darkgreen;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 15px;
+  border-radius: 20px;
+  margin: 0 10px;
+}
+
+.homepage-button:hover {
+  background-color: green;
+}
+
+/* Product Display and Pagination */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 4px 8px;
+  margin: 0 22px;
+  padding: 12px 10px;
+
+}
+
+.homepage-grid {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  justify-content: none;
+
+}
+
+.homepage-grid-img {
+  position: relative;
+  max-width: 300px;
+  max-height: 500px;
+  width: 100%;
+  height: auto;
+  align-self: center;
+}
+
+.homepage-checkPrice {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+}
+
+ul.pagination-list {
+  list-style-type: none;
+}
+
+.pagination-list {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.pagination-list button {
+  margin: 0;
+  padding: 6px 10px;
+  border: 1px solid #2c3e50;
+  margin-left: -1px;
+  border-radius: unset;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.pagination-list button:hover {
+  background-color: orange;
+}
+
+.pagination-list button.active {
+  background-color: #2c3e50;
+  color: white;
+  font-weight: bolder;
+}
+
+.pagination-popover {
+  width: 135px;
+  border: 1px solid #2c3e50;
+  background-color: #f8f8f8;
+  padding: 5px;
+  border-radius: 1px 1px 0 0;
+}
+
+.pagination-popover label {
+  padding: 3px 8px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 18px;
+  background-color: #2c3e50;
+  color: white;
+  border-bottom: 1px solid #f2f2f2;
+  border-radius: 1px 1px 0 0;
+}
+
+.pagination-popover input[type="number"] {
+  width: 70px;
+  border: 1px solid #7d7d7d;
+  padding: 0 4px 0 4px;
+  margin-top: 5px;
+  height: 28px;
+}
+
+.pagination-popover button {
+  font-size: 13px;
+  line-height: 20px;
+  padding: 3px 15px;
+  font-weight: 500;
+  margin: 5px 0;
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  text-transform: capitalize;
+  background-color: #2c3e50;
+  color: #fff;
+}
+
+:root {
+  --primary-color: #005a2a;
+  --secondary-color: #005a2a;
+  --hover-color: #00803c;
+  --text-color: #333;
+}
+
+div * {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  box-sizing: border-box;
+  color: var(--text-color);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* CART */
+.homepage-nav-cart {
+  position: relative;
+  color: red;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-top: 17px;
+  margin-left: 20px;
+}
+
+/* ==============================
+            CAROUSEL 
+  ============================== */
+.carousel-inner img {
+  width: 100%;
+  aspect-ratio: 4;
+  object-fit: fill;
+}
+
+/* ================================
+            FOOTER
+  =============================== */
+.homepage-footer-content {
+  background-color: var(--primary-color);
+  margin-top: 16px;
+  padding-top: 24px;
+  color: white;
+  height: 300px;
+}
+
+.homepage-footer-img {
+  width: 150px;
+}
+
+.homepage-footer-address,
+.homepage-footer-logo {
+  text-align: center;
+  font-size: 1.2rem;
+  margin: auto;
+}
+
+.homepage-footer-lincense {
+  font-size: 0.8rem;
+  margin: 60px;
+  text-align: center;
+}
+
+/* Login */
+dialog#debugDialog {
+  transition: display 0.5s allow-discrete, overlay 0.5s allow-discrete;
+  animation: dialog-slide-hide 0.5s ease-out normal;
+
+  &::backdrop {
+    animation: dialog-backdrop-hide 0.5s ease-out normal;
+  }
+
+  &[open] {
+    animation: dialog-slide-show 0.5s ease-out normal;
+
+    &::backdrop {
+      animation: dialog-backdrop-show 0.5s ease-out normal;
+    }
+  }
+}
+
+dialog#loginDialog {
+  animation: loginDialog-show 0.6s;
+}
+
+dialog#loginDialog * {
+  box-sizing: border-box;
+}
+
+dialog#loginDialog body,
+dialog#loginDialog html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  /* Prevents normal scrolling */
+}
+
+dialog#loginDialog body {
+  background: #f6f5f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: "Montserrat", sans-serif;
+  height: 100vh;
+  margin: -20px 0 50px;
+}
+
+dialog#loginDialog h1 {
+  font-weight: bold;
+  margin: 0;
+}
+
+dialog#loginDialog p {
+  font-size: 14px;
+  font-weight: 100;
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  margin: 20px 0 30px;
+}
+
+dialog#loginDialog span {
+  font-size: 12px;
+}
+
+dialog#loginDialog a {
+  color: #333;
+  font-size: 14px;
+  text-decoration: none;
+  margin: 15px 0;
+}
+
+dialog#loginDialog button {
+  border-radius: 20px;
+  border: 1px solid #ff4b2b;
+  background-color: #ff4b2b;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: transform 80ms ease-in;
+}
+
+dialog#loginDialog button:active {
+  transform: scale(0.95);
+}
+
+dialog#loginDialog button:focus {
+  outline: none;
+}
+
+dialog#loginDialog button.ghost {
+  background-color: transparent;
+  border-color: #ffffff;
+}
+
+dialog#loginDialog form {
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 50px;
+  height: 100%;
+  text-align: center;
+}
+
+dialog#loginDialog input {
+  background-color: #eee;
+  border: none;
+  padding: 12px 15px;
+  margin: 8px 0;
+  width: 100%;
+}
+
+dialog#loginDialog .login-container {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
+    0 10px 10px rgba(0, 0, 0, 0.22);
+  position: relative;
+  overflow: hidden;
+  width: 768px;
+  max-width: 100%;
+  min-height: 480px;
+}
+
+dialog#loginDialog .form-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.6s ease-in-out;
+}
+
+dialog#loginDialog .sign-in-container {
+  left: 0;
+  width: 50%;
+  z-index: 2;
+}
+
+dialog#loginDialog.login-container.right-panel-active .sign-in-container {
+  transform: translateX(100%);
+}
+
+dialog#loginDialog .sign-up-container {
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
+}
+
+dialog#loginDialog .login-container.right-panel-active .sign-up-container {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+  animation: show 0.6s;
+}
+
+@keyframes loginDialog-show {
+
+  0%,
+  49.99% {
+    opacity: 0;
+    z-index: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 1;
+    z-index: 5;
+  }
+}
+
+dialog#loginDialog .overlay-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.6s ease-in-out;
+  z-index: 100;
+}
+
+dialog#loginDialog .login-container.right-panel-active .overlay-container {
+  transform: translateX(-100%);
+}
+
+dialog#loginDialog .overlay {
+  background: #ff416c;
+  background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);
+  background: linear-gradient(to right, #ff4b2b, #ff416c);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0 0;
+  color: #ffffff;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
+}
+
+dialog#loginDialog .login-container.right-panel-active .overlay {
+  transform: translateX(50%);
+}
+
+dialog#loginDialog .overlay-panel {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 40px;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
+}
+
+dialog#loginDialog .overlay-left {
+  transform: translateX(-20%);
+}
+
+dialog#loginDialog .login-container.right-panel-active .overlay-left {
+  transform: translateX(0);
+}
+
+dialog#loginDialog .overlay-right {
+  right: 0;
+  transform: translateX(0);
+}
+
+dialog#loginDialog .login-container.right-panel-active .overlay-right {
+  transform: translateX(20%);
+}
+
+dialog#loginDialog .social-container {
+  margin: 20px 0;
+}
+
+dialog#loginDialog .social-container a {
+  border: 1px solid #dddddd;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 5px;
+  height: 40px;
+  width: 40px;
+}
+
+/* #logout-popover {
+  background-color: red;
+  width: 100px;
+  height: 100px;
+  border: none;
+} */
+
+.logout-container {
+  background-color: #fff;
+  nav-left:current;
+  margin-top: 200p;
+
+}
+
+
+
+@keyframes dialog-slide-show {
+  from {
+    transform: translateY(calc(-50vh - 60%));
+  }
+
+  to {
+    transform: translateY(0%);
+  }
+}
+
+@keyframes dialog-slide-hide {
+  to {
+    transform: translateY(calc(-50vh - 60%));
+  }
+}
+
+div#debugMessage {
+  transition: display 0.5s allow-discrete;
+  animation: popover-slide-hide 0.5s ease-out normal;
+
+  &:popover-open {
+    animation: popover-slide-show 0.5s ease-out normal;
+  }
+}
+
+@keyframes popover-slide-show {
+  from {
+    transform: translateY(calc(-50vh - 60%));
+  }
+
+  to {
+    transform: translateY(0%);
+  }
+}
+
+@keyframes popover-slide-hide {
+  to {
+    transform: translateY(calc(-50vh - 60%));
+  }
+}
+
+/* Bo loc */
+#productForm {
+  margin-left: 35px;
+  width: 95%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  max-height: 90px;
+  /* Ban đầu form sẽ chỉ cao như vậy */
+  overflow: hidden;
+  /* Ẩn phần ngoài vùng giới hạn */
+  transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+  /* Hiệu ứng thu gọn/mở rộng */
+}
+
+#productForm:hover {
+  max-height: 700px;
+  /* Khi hover, form sẽ mở rộng */
+  padding: 20px;
+  /* Khoảng cách trong form sẽ rộng hơn khi mở rộng */
+}
+
+#productForm label {
+  display: block;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+#productForm input,
+#productForm select {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  /* Đảm bảo input không tràn ra ngoài */
+}
+
+#productForm button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#productForm button:hover {
+  background-color: #45a049;
+}
+
+#categories {
+  display: flex;
+  gap: 20px;
+}
+
+/* Cart */
+/* New Cart-Related Styles */
+.cart-button-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+/* Nút giỏ hàng */
+#cartButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+/* Hiệu ứng hover cho nút giỏ hàng */
+#cartButton:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Icon trong nút giỏ hàng */
+#cartButton i {
+  font-size: 1rem;
+}
+
+/* Modal chung */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Nội dung modal */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 800px;
+  border-radius: 5px;
+}
+
+/* Header của modal */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Nút đóng modal */
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Hiệu ứng hover cho nút đóng */
+.close:hover {
+  color: black;
+}
+
+/* Item trong giỏ hàng */
+.cart-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Hình ảnh sản phẩm trong giỏ hàng */
+.cart-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+/* Thông tin sản phẩm trong giỏ hàng */
+.cart-item-info {
+  flex-grow: 1;
+}
+
+/* Tiêu đề sản phẩm trong giỏ hàng */
+.cart-item-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Giá sản phẩm trong giỏ hàng */
+.cart-item-price {
+  color: #e53935;
+}
+
+/* Số lượng sản phẩm trong giỏ hàng */
+.cart-item-quantity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Tổng kết giỏ hàng */
+.cart-summary {
+  margin-top: 20px;
+  text-align: right;
+}
+
+/* Tổng tiền */
+.total-amount {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* Container cho các nút trong giỏ hàng */
+.cart-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Nút chính */
+.btn-primary {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Nút phụ */
+.btn-secondary {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Điều khiển số lượng */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Nút điều chỉnh số lượng */
+.quantity-btn {
+  padding: 5px 10px;
+  background-color: #ddd;
+  border: none;
+  cursor: pointer;
+}
+
+/* Modal chi tiết sản phẩm */
+#productDetailModal .modal-content {
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+}
+
+/* Layout chi tiết sản phẩm */
+#productDetailModal .product-detail {
+  display: flex;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+/* Phần hình ảnh sản phẩm */
+#productDetailModal .product-image {
+  flex: 1;
+  max-width: 500px;
+  position: relative;
+  padding: 0 30px;
+}
+
+/* Slider hình ảnh */
+#productDetailModal .image-slider {
+  position: relative;
+  width: 100%;
+}
+
+/* Hình ảnh trong slider */
+#productDetailModal .image-slider img {
+  display: none;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Hình ảnh đang active trong slider */
+#productDetailModal .image-slider img.active {
+  display: block;
+}
+
+/* Thông tin sản phẩm */
+#productDetailModal .product-info {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 768px) {
+  #productDetailModal .product-detail {
+    flex-direction: column;
+  }
+
+  #productDetailModal .product-image {
+    max-width: 100%;
+  }
+
+  #productDetailModal .product-info {
+    padding: 20px 0;
+  }
+}
+
+/* Modal giỏ hàng */
+#cartModal .modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Phần body của modal giỏ hàng */
+#cartModal .modal-body {
+  max-height: calc(80vh - 150px);
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+/* Tổng kết giỏ hàng cố định */
+#cartModal .cart-summary {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  margin-top: 15px;
+}
+
+/* Tùy chỉnh thanh cuộn */
+#cartModal .modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+#cartModal .modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+#cartModal .modal-body::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+#cartModal .modal-body::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Font chữ cho item trong giỏ hàng */
+#cartModal .cart-item {
+  font-size: 16px;
+}
+
+/* Tiêu đề sản phẩm trong giỏ hàng */
+#cartModal .cart-item-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+/* Giá sản phẩm trong giỏ hàng */
+#cartModal .cart-item-price {
+  font-size: 17px;
+  color: #e53935;
+  font-weight: 500;
+}
+
+/* Tổng tiền cuối cùng */
+#cartModal .final-total-cost {
+  font-size: 20px;
+  font-weight: bold;
+  color: #e53935;
+}
+
+/* Tiêu đề modal giỏ hàng */
+#cartModal .modal-header h2 {
+  font-size: 24px;
+  margin: 0;
+  color: #e53935;
+  font-weight: bold;
+}
+
+/* Nút xóa sản phẩm */
+.delete-btn {
+  background: none;
+  border: none;
+  color: #e53935;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+/* Hiệu ứng hover cho nút xóa */
+.delete-btn:hover {
+  background-color: #ffebee;
+  transform: scale(1.1);
+}
+
+/* Icon trong nút xóa */
+.delete-btn i {
+  font-size: 18px;
+}
+
+/* Tiêu đề sản phẩm trong modal chi tiết */
+#productDetailModal .product-info h1 {
+  font-size: 32px;
+  margin-bottom: 15px;
+  color: #333;
+  font-weight: bold;
+  line-height: 1.3;
+}
+
+/* Tiêu đề phụ trong modal chi tiết */
+#productDetailModal .product-info h3 {
+  font-size: 20px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+/* Đoạn văn trong modal chi tiết */
+#productDetailModal .product-info p {
+  font-size: 20px;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+/* Khung thông tin giá */
+#productDetailModal .price-info {
+  margin: 25px 0;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 2px solid #eee;
+}
+
+/* Giá gốc */
+#productDetailModal .original-price {
+  font-size: 36px;
+  color: #666;
+  text-decoration: line-through;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Giá khuyến mãi */
+#productDetailModal .sale-price {
+  font-size: 48px;
+  color: #e53935;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Phần chọn số lượng */
+#productDetailModal .quantity-selector {
+  margin: 20px 0;
+}
+
+/* Label cho số lượng */
+#productDetailModal .quantity-selector label {
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+/* Input số lượng */
+#productDetailModal .quantity-controls input {
+  font-size: 16px;
+  padding: 8px;
+  width: 80px;
+}
+
+/* Khung tổng tiền */
+#productDetailModal .total-price {
+  margin: 25px 0;
+  padding: 15px;
+  background-color: #fff8f8;
+  border-radius: 8px;
+  border: 2px solid #ffebee;
+}
+
+/* Text tổng tiền */
+#productDetailModal .total-price p {
+  font-size: 22px;
+  margin: 0;
+  color: #333;
+}
+
+/* Số tiền tổng */
+#productDetailModal #productDetailTotalPrice {
+  font-size: 28px;
+  font-weight: bold;
+  color: #e53935;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+/* Nút thêm vào giỏ hàng */
+#productDetailModal .add-to-cart-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 18px;
+  padding: 12px 24px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+/* Hiệu ứng hover cho nút thêm vào giỏ */
+#productDetailModal .add-to-cart-btn:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Icon trong nút thêm vào giỏ */
+#productDetailModal .add-to-cart-btn i {
+  font-size: 20px;
+}
+
+/* Nút điều hướng slider */
+#productDetailModal .slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+/* Hiệu ứng hover cho nút điều hướng */
+#productDetailModal .slider-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Nút prev */
+#productDetailModal .slider-btn.prev {
+  left: -20px;
+}
+
+/* Nút next */
+#productDetailModal .slider-btn.next {
+  right: -20px;
+}
+
+/* Modal chi tiết sản phẩm */
+#productDetailModal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hiển thị modal */
+#productDetailModal[style*="display: block"] {
+  display: flex !important;
+}
+
+/* Label giá */
+#productDetailModal .price-label {
+  font-size: 20px;
+  color: #333;
+  font-weight: normal;
+}
+
+/* Body khi modal mở */
+body.modal-open {
+  overflow: hidden;
+  padding-right: 17px;
+}
+
+/* Thanh điều hướng */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+/* Brand trong navbar */
+.nav-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Số lượng item trong giỏ hàng */
+#cartItemCount {
+  background-color: white;
+  color: #4caf50;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Hiệu ứng highlight cho số lượng */
+#cartItemCount.highlight {
+  transform: scale(1.2);
+  background-color: #ffeb3b;
+}
+
+/* Container tìm kiếm */
+#search-container {
+  margin-top: 80px;
+}
