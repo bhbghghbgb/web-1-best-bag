@@ -12,7 +12,6 @@ function SignUp() {
   const nameValue = name.value;
 
 
-
   themNguoiDung(null, {
     name: nameValue,
     username: usernameValue,
