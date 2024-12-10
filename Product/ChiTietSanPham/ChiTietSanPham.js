@@ -1,5 +1,5 @@
 // Thêm biến để lưu trạng thái hiện tại của modal chi tiết
-let modalState = {
+let modalCart = {
   currentProduct: null,
   currentDetailImageIndex: 0,
   currentUserId: "ID_NGUOI_DUNG", // TODO: Thay thế bằng ID người dùng từ json thử thì lấy ra đươc giỏ hàng
@@ -16,7 +16,7 @@ function openCartModal() {
   document.body.classList.add("product-detail-modal-open");
 
   // Lấy giỏ hàng của người dùng hiện tại
-  const gioHang = timGioHang(modalState.currentUserId);
+  const gioHang = timGioHang(modalCart.currentUserId);
   if (gioHang) {
     renderGioHang(gioHang["chi-tiet"], renderItemGioHang, "#cartItems");
     capNhatCart();
@@ -41,8 +41,8 @@ function hienTrangChiTiet(id) {
     return;
   }
 
-  modalState.currentProduct = sanPham;
-  modalState.currentDetailImageIndex = 0;
+  modalCart.currentProduct = sanPham;
+  modalCart.currentDetailImageIndex = 0;
 
   // Cập nhật thông tin sản phẩm vào modal
   document.getElementById(
@@ -91,16 +91,16 @@ function showDetailImage(index) {
   );
   images.forEach((img) => img.classList.remove("active"));
   images[index].classList.add("active");
-  modalState.currentDetailImageIndex = index;
+  modalCart.currentDetailImageIndex = index;
 }
 
 function nextDetailImage() {
-  const nextIndex = (modalState.currentDetailImageIndex + 1) % 2;
+  const nextIndex = (modalCart.currentDetailImageIndex + 1) % 2;
   showDetailImage(nextIndex);
 }
 
 function prevDetailImage() {
-  const prevIndex = modalState.currentDetailImageIndex === 0 ? 1 : 0;
+  const prevIndex = modalCart.currentDetailImageIndex === 0 ? 1 : 0;
   showDetailImage(prevIndex);
 }
 
@@ -161,9 +161,9 @@ function renderItemGioHang(item, chiTietGioHang) {
     ).toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 
     // Cập nhật giỏ hàng trong database
-    const gioHang = timGioHang(modalState.currentUserId);
+    const gioHang = timGioHang(modalCart.currentUserId);
     if (gioHang) {
-      suaChiTietGioHang(modalState.currentUserId, gioHang["chi-tiet"]);
+      suaChiTietGioHang(modalCart.currentUserId, gioHang["chi-tiet"]);
       capNhatCart();
     }
   });
@@ -187,12 +187,12 @@ function renderItemGioHang(item, chiTietGioHang) {
   xoaKhoiCart.innerHTML = '<i class="fas fa-trash"></i>';
   xoaKhoiCart.className = "product-detail-delete-btn";
   xoaKhoiCart.addEventListener("click", () => {
-    const gioHang = timGioHang(modalState.currentUserId);
+    const gioHang = timGioHang(modalCart.currentUserId);
     if (gioHang) {
       const newChiTiet = gioHang["chi-tiet"].filter(
         (i) => i["san-pham"] !== item["san-pham"]
       );
-      suaChiTietGioHang(modalState.currentUserId, newChiTiet);
+      suaChiTietGioHang(modalCart.currentUserId, newChiTiet);
       renderGioHang(newChiTiet, renderItemGioHang, "#cartItems");
       capNhatCart();
     }
@@ -205,12 +205,12 @@ function renderItemGioHang(item, chiTietGioHang) {
 
 // Các hàm quản lý giỏ hàng
 function updateDetailTotal() {
-  if (!modalState.currentProduct) return;
+  if (!modalCart.currentProduct) return;
 
   const quantity = parseInt(
     document.getElementById("productDetailQuantity").value
   );
-  const price = parseFloat(modalState.currentProduct["price-sale-n"]);
+  const price = parseFloat(modalCart.currentProduct["price-sale-n"]);
   const total = quantity * price;
 
   document.getElementById("productDetailTotalPrice").textContent =
@@ -221,17 +221,17 @@ function updateDetailTotal() {
 }
 
 function addToCartFromDetail() {
-  if (!modalState.currentProduct) {
+  if (!modalCart.currentProduct) {
     console.error("Không tìm thấy thông tin sản phẩm");
     return;
   }
 
-  const productId = modalState.currentProduct["web-scraper-order"];
+  const productId = modalCart.currentProduct["web-scraper-order"];
   const quantity =
     parseInt(document.getElementById("productDetailQuantity").value) || 1;
 
   // Lấy giỏ hàng hiện tại của người dùng
-  const gioHang = timGioHang(modalState.currentUserId);
+  const gioHang = timGioHang(modalCart.currentUserId);
   if (!gioHang) {
     console.error("Không tìm thấy giỏ hàng của người dùng");
     return;
@@ -251,7 +251,7 @@ function addToCartFromDetail() {
   }
 
   // Cập nhật giỏ hàng
-  suaChiTietGioHang(modalState.currentUserId, gioHang["chi-tiet"]);
+  suaChiTietGioHang(modalCart.currentUserId, gioHang["chi-tiet"]);
   capNhatCart();
   alert(`Đã thêm ${quantity} sản phẩm vào giỏ hàng!`);
   closeProductDetailModal();
@@ -275,7 +275,7 @@ function saveCartToLocalStorage() {
 
 // Cập nhật hiển thị giỏ hàng
 function capNhatCart() {
-  const gioHang = timGioHang(modalState.currentUserId);
+  const gioHang = timGioHang(modalCart.currentUserId);
   if (!gioHang) return;
 
   const cartCount = document.getElementById("cartItemCount");
