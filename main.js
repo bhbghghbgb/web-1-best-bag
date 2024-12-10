@@ -310,14 +310,11 @@ function tinhHoaDonHienThi(wrapperSelector = ".order-list") {
 }
 
 function hienTrangChiTiet(id) {
-  // Tạo URL mới đến trang chi tiết sản phẩm
-  const newUrl = new URL(
-    `${mainJsScriptDirectory}/Product/ChiTietSanPham/ChiTietSanPham.html`,
-    window.location.origin
+  alert(
+    `Chua cai dat chuc nang hien trang chi tier | id: ${id}, sp: ${JSON.stringify(
+      readSanPham(id)
+    )}`
   );
-
-  // Chuyển đến trang chi tiết với id sản phẩm
-  caiParamUrl({ idtrangchitietsanpham: id }, false, false, newUrl);
 }
 
 function hienThiSanPham(duLieuDaTinh, wrapperSelector) {
