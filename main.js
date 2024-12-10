@@ -310,13 +310,16 @@ function tinhHoaDonHienThi(wrapperSelector = ".order-list") {
 }
 
 function hienTrangChiTiet(id) {
-  // alert("Chua cai dat chuc nang hien trang chi tier");
-  const sanPham = timSanPham(id);
-  console.info(id, sanPham);
+  // Tạo URL mới đến trang chi tiết sản phẩm
+  const newUrl = new URL(
+    `${mainJsScriptDirectory}/Product/ChiTietSanPham/ChiTietSanPham.html`,
+    window.location.origin
+  );
 
-  // TODO: mo trang chi tiet san pham
-  window.location.href = `Product/ChiTietSanPham/ChiTietSanPham.html?id=${id}`;
+  // Chuyển đến trang chi tiết với id sản phẩm
+  caiParamUrl({ idtrangchitietsanpham: id }, false, false, newUrl);
 }
+
 function hienThiSanPham(duLieuDaTinh, wrapperSelector) {
   // TODO: hien thi danh sach san Pham sau khi load, trang 1
   const khiBamTrang = () =>
