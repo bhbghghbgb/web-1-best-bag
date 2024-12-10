@@ -65,6 +65,13 @@ function convertNumberToPrice(number) {
   return result;
 }
 
+function showLogOutDialog() {
+  const existingDialog = document.getElementById("logoutDialog");
+  if (existingDialog) {
+    existingDialog.showModal();
+    return;
+  }
+}
 
 function showLoginDialog() {
   // Sliding panel script
@@ -79,6 +86,8 @@ function showLoginDialog() {
   signInButton.addEventListener("click", () => {
     container.classList.remove("right-panel-active");
   });
+
+  
 
   // Show/Hide password script
   const showPasswordCheckboxSignIn = document.getElementById("showPasswordCheckboxSignIn");
@@ -129,14 +138,6 @@ function showLoginDialog() {
   }
 }
 
-function checkLoginStatus() {
-  const currentUserId = localStorage.getItem("currentUserId");
-  if (currentUserId) {
-    return true;
-  }
-  return false;
-};
-
 function layThongTinNguoiDung() {
   const currentUserId = localStorage.getItem("currentUserId");
   if (currentUserId) {
@@ -147,4 +148,5 @@ function layThongTinNguoiDung() {
   }
   return null;
 }
+
 

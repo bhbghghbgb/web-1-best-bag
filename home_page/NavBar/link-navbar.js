@@ -25,7 +25,13 @@ fetch('./NavBar/navbar.html').then(request => request.text())
         if (thongTinNguoiDung) {
             document.getElementById('navbar-right-non-login').remove();
             const navBarRight  = document.getElementById("navbar-right-logged-in");
-            const userName = document.createElement("h3");
+            const logoutPopover  = document.getElementById("logout-popover");
+            const userName = document.createElement("button");
+            userName.id = "navbar-user-name";
+            userName.style="font-size:24px;font-weight:700;cursor:pointer;background:none;border:none";
+            userName.addEventListener("click", () => {
+                logoutPopover.showPopover();
+            });
             userName.innerText = thongTinNguoiDung["name"];
             navBarRight.appendChild(userName);
             
