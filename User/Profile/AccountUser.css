@@ -1,0 +1,74 @@
+.main-account .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.main-account .main-account-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.main-account .main-account-header h3 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.main-account .main-account-header p {
+    margin: 5px 0 0;
+    color: #777;
+}
+
+.main-account .main-account-body {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.main-account .main-account-body-col {
+    flex: 1;
+}
+
+.main-account .form-group {
+    margin-bottom: 15px;
+}
+
+.main-account .form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.main-account .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.main-account .form-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.main-account #save-info-user,
+.main-account #save-password {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.main-account #save-info-user:hover,
+.main-account #save-password:hover {
+    background-color: darkgreen;
+}

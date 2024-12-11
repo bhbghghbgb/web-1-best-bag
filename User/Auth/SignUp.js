@@ -12,7 +12,6 @@ function SignUp() {
   const nameValue = name.value;
 
 
-
   themNguoiDung(null, {
     name: nameValue,
     username: usernameValue,
@@ -64,8 +63,7 @@ function kiemTraInputSignUp() {
 }
 
 window.addEventListener("load", () => {
-  taiDuLieuTongMainJs(() => taiNguoiDung(() => {
-
+  taiNguoiDung(() => {
     const signUpForm = document.getElementById("signUpForm");
     signUpForm.addEventListener("submit", (event) => {
       console.log("submit signup");
@@ -75,7 +73,6 @@ window.addEventListener("load", () => {
       }
       SignUp();
     });
-
-  }))
+  })
 })
 

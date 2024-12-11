@@ -202,8 +202,10 @@ function adminThemSanPham() {
         style: "currency",
         currency: "VND",
       }),
+
       "image-file": document.getElementById("hinhAnhSanPham1").files[0]?.name || null,
       "image2-file": document.getElementById("hinhAnhSanPham2").files[0]?.name || null,
+
       "price-n": parseInt(document.getElementById("giaSanPham").value),
       "price-sale-n": parseInt(document.getElementById("giaKhuyenMai").value),
       category: loaiSanPham,
@@ -237,6 +239,7 @@ function adminSuaSanPham(id) {
   });
   infoForm.addEventListener("submit", (event) => {
     event.preventDefault();
+
     const tenSanPham = document.getElementById("tenSanPham").value.trim();
     const giaSanPham = parseInt(document.getElementById("giaSanPham").value);
     const giaKhuyenMai = parseInt(document.getElementById("giaKhuyenMai").value);
@@ -272,6 +275,7 @@ function adminSuaSanPham(id) {
       document.getElementById("loaiSanPham").focus();
       return;
     }
+
     const newSanPham = {
       "web-scraper-start-url":sanPham["web-scraper-start-url"],
       "image-src":document.getElementById("linkHinhAnh1").value,
