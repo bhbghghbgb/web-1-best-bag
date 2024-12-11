@@ -30,7 +30,7 @@ dialog[open] ~ body {
 }
 
 #cartDialog .cart-content {
-  background-color: #ffffff;
+  background-color: #52a57d;
   padding: 24px;
   border-radius: 8px;
   width: 100%;
@@ -49,7 +49,7 @@ dialog[open] ~ body {
 
 #cartDialog .cart-header h2 {
   font-size: 24px;
-  color: #333;
+  color: #b42323;
   margin: 0;
 }
 
@@ -74,9 +74,9 @@ dialog[open] ~ body {
 #cartDialog .cart-summary {
   position: sticky;
   bottom: 0;
-  background: #ffffff;
+  background: #52a57d;
   padding-top: 16px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #100e0e;
   margin-top: 16px;
 }
 
@@ -94,7 +94,7 @@ dialog[open] ~ body {
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s;
-  color: white;
+  color: rgb(248, 245, 245);
 }
 
 #cartDialog .cart-btn-buy {
@@ -122,7 +122,7 @@ dialog[open] ~ body {
 }
 
 #detailDialog .detail-content {
-  background-color: #ffffff;
+  background-color: #100c03e0;
   padding: 24px;
   border-radius: 8px;
   width: 100%;
@@ -140,13 +140,13 @@ dialog[open] ~ body {
 }
 
 #detailDialog .detail-header h2 {
-  font-size: 24px;
-  color: #333;
+  font-size: 40px;
+  color: #cc0c0c;
   margin: 0;
 }
 
 #detailDialog .detail-close {
-  color: #666;
+  color: #f5efef;
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
@@ -166,7 +166,7 @@ dialog[open] ~ body {
 /* Detail Dialog - Image Slider */
 #detailDialog .detail-image {
   flex: 0.8;
-  max-width: 500px;
+  max-width: px;
   position: relative;
   margin-bottom: 30px;
 }
@@ -212,17 +212,17 @@ dialog[open] ~ body {
 }
 
 #detailDialog .detail-slider-btn:hover {
-  background-color: #f8f9fa;
+  background-color: #97a7b6;
   transform: translateY(-50%) scale(1.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 #detailDialog .detail-slider-btn.prev {
-  left: -22px;
+  left: 0px;
 }
 
 #detailDialog .detail-slider-btn.next {
-  right: -22px;
+  right: 0px;
 }
 
 #detailDialog .detail-slider-btn i {
@@ -242,21 +242,21 @@ dialog[open] ~ body {
 #detailDialog .detail-title {
   font-size: 28px;
   margin-bottom: 16px;
-  color: #333;
+  color: #a184d0;
   font-weight: bold;
   line-height: 1.3;
 }
 
 #detailDialog .detail-category {
   font-size: 18px;
-  color: #666;
+  color: #d2cece;
   margin-bottom: 16px;
 }
 
 #detailDialog .detail-description {
   font-size: 16px;
   line-height: 1.6;
-  color: #444;
+  color: #938f8f;
   margin-bottom: 24px;
 }
 
@@ -271,14 +271,40 @@ dialog[open] ~ body {
 
 #detailDialog .detail-price-original {
   font-size: 20px;
-  color: #666;
+  color: #9d9494;
   text-decoration: line-through;
   margin-bottom: 8px;
 }
+#detailDialog .detail-quantity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+}
 
+#detailDialog .detail-quantity label {
+  font-size: 20px;
+  font-weight: 500;
+  color: #c7bcbc;
+}
+
+#detailDialog .detail-quantity-input {
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  font-size: 24px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+#detailDialog .detail-quantity-input:focus {
+  outline: none;
+  border-color: #132213;
+}
 #detailDialog .detail-price-sale {
-  font-size: 32px;
-  color: #e53935;
+  font-size: 20px;
+  color: #0d0c0c;
   font-weight: bold;
 }
 
@@ -295,8 +321,8 @@ dialog[open] ~ body {
   justify-content: space-between;
   align-items: center;
   margin: 0;
-  font-size: 18px;
-  color: #333;
+  font-size: 32px;
+  color: #e53935;
 }
 
 #detailDialog .detail-total span {
@@ -491,4 +517,169 @@ dialog::-webkit-scrollbar-thumb:hover {
 .cart-body {
   scrollbar-width: thin;
   scrollbar-color: #ddd #f5f5f5;
+}
+/* hóa đơn */
+.order-history-content {
+  padding: 20px;
+  min-width: 800px;
+  background-color: white;
+}
+
+.order-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.order-history-close {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.order-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.order-history-table th,
+.order-history-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.order-history-table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.order-status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.order-status.dang {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.order-status.roi {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.order-status.huy {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.btn-view-detail,
+.btn-cancel-order {
+  padding: 6px 12px;
+  margin: 0 4px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-view-detail {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-cancel-order {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-view-detail:hover {
+  background-color: #0056b3;
+}
+
+.btn-cancel-order:hover {
+  background-color: #c82333;
+}
+
+.cart-btn-history {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 8px;
+}
+
+.cart-btn-history:hover {
+  background-color: #5a6268;
+}
+
+/* Thêm style cho dialog chi tiết đơn hàng */
+.order-detail-content {
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.order-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.order-detail-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.order-detail-close {
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.order-detail-info {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.order-detail-info p {
+  margin: 8px 0;
+}
+
+.order-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.order-detail-table th,
+.order-detail-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.order-detail-table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.order-detail-table tfoot td {
+  font-weight: bold;
+  background-color: #f8f9fa;
+}
+
+.order-detail-table img {
+  border-radius: 4px;
+  border: 1px solid #ddd;
 }
