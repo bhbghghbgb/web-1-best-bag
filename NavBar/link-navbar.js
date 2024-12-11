@@ -22,48 +22,48 @@ function showLogOutDialog() {
       return;
     }
   }
-  
+
   function showLoginDialog() {
     // Sliding panel script
     const signUpButton = document.getElementById("signUpSlide");
     const signInButton = document.getElementById("signInSlide");
     const container = document.getElementById("login-container");
-  
+
     signUpButton.addEventListener("click", () => {
       container.classList.add("right-panel-active");
     });
-  
+
     signInButton.addEventListener("click", () => {
       container.classList.remove("right-panel-active");
     });
-  
-    
-  
+
+
+
     // Show/Hide password script
     const showPasswordCheckboxSignIn = document.getElementById("showPasswordCheckboxSignIn");
     const showPasswordCheckboxSignUp = document.getElementById("showPasswordCheckboxSignUp");
     const passwordFieldSignIn = document.getElementById("password_signin");
     const passwordFieldSignUp = document.getElementById("password_signup");
-  
+
     showPasswordCheckboxSignIn.addEventListener("change", () => {
       passwordFieldSignIn.type = showPasswordCheckboxSignIn.checked ? "text" : "password";
     });
-  
+
     showPasswordCheckboxSignUp.addEventListener("change", () => {
       passwordFieldSignUp.type = showPasswordCheckboxSignUp.checked ? "text" : "password";
     });
-  
+
     // URL parameter handling
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get('status');
     if (status === "signup") {
       container.classList.add("right-panel-active");
     }
-  
+
     // Form submission handlers
     const signUpForm = document.getElementById('signUpForm');
     const signInForm = document.getElementById('signInForm');
-  
+
     signUpForm.addEventListener('submit', (event) => {
       event.preventDefault();
       const username = document.getElementById('username').value;
@@ -73,7 +73,7 @@ function showLogOutDialog() {
       console.log('Sign Up:', { username, name, email, password });
       // Add your sign-up logic here
     });
-  
+
     signInForm.addEventListener('submit', (event) => {
       event.preventDefault();
       const emailOrUsername = document.getElementById('emailOrUsernameField').value;
@@ -87,12 +87,12 @@ function showLogOutDialog() {
       return;
     }
   }
-  
+
   function dangXuat()
   {
     xoaDuLieuLocalStorage("currentUserId");
   }
-  
+
 
 watchNavbarBg.active = false;
 fetch('/NavBar/navbar.html').then(request => request.text())

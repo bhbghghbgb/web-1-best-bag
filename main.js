@@ -58,9 +58,10 @@ async function taiDuLieu(datakey, datafile, dataobj) {
   // thi can phai tai du lieu ban dau tu file
   const response = await fetch(`${mainJsScriptDirectory}/Data/${datafile}`);
   const json = await response.json();
-  console.debug("taiDuLieu", { response, datakey, datafile, json });
+  console.debug("taiDuLieu", {response, datakey, datafile, json});
   return json;
 }
+
 function taoIndexMapping(g_duLieu, entityImKey, entityIdKey, i_duLieu) {
   return (
     i_duLieu ?? // da tao roi ma van dc goi tiep (de chac an)
@@ -68,6 +69,7 @@ function taoIndexMapping(g_duLieu, entityImKey, entityIdKey, i_duLieu) {
     createIndexMapping(g_duLieu, entityIdKey)
   );
 }
+
 async function taiSanPham(sauKhiTai) {
   g_theLoaiSanPham = await taiDuLieu(
     theLoaiSanPhamKey,
@@ -78,6 +80,7 @@ async function taiSanPham(sauKhiTai) {
   i_sanPham = taoIndexMapping(g_sanPham, sanPhamImKey, sanPhamIdKey, i_sanPham);
   await sauKhiTai();
 }
+
 function taiNguoiDung(sauKhiTai) {
   taiDuLieu(nguoiDungKey, nguoiDungFile, g_nguoiDung).then((data) => {
     g_nguoiDung = data;
@@ -90,6 +93,7 @@ function taiNguoiDung(sauKhiTai) {
     sauKhiTai();
   });
 }
+
 function taiGioHang(sauKhiTai) {
   taiDuLieu(gioHangKey, gioHangFile, g_gioHang).then((data) => {
     g_gioHang = data;
@@ -102,6 +106,7 @@ function taiGioHang(sauKhiTai) {
     sauKhiTai();
   });
 }
+
 function taiHoaDon(sauKhiTai) {
   taiDuLieu(hoaDonKey, hoaDonFile, g_hoaDon).then((data) => {
     g_hoaDon = data;
@@ -117,7 +122,7 @@ function taoBoLocSanPham() {
     return;
   }
   // cac param muon giu lai khi sua bo loc
-  const { search, min, max, sort, categories } = layParamUrl();
+  const {search, min, max, sort, categories} = layParamUrl();
   // Dynamically add categories to the form
   g_theLoaiSanPham.forEach((category) => {
     const checkbox = document.createElement("input");
@@ -267,7 +272,7 @@ function tinhSanPhamHienThi(wrapperSelector = ".product-list") {
     console.info("tinhSanPhamHienThi khong tim thay wrapper");
     return;
   }
-  let { page, sort, min, max, search, categories } = layParamUrl();
+  let {page, sort, min, max, search, categories} = layParamUrl();
   let sanPhamsDaLoc = [...g_sanPham];
   sanPhamsDaLoc = locGiaSanPham(min, max, sanPhamsDaLoc);
   sanPhamsDaLoc = locTheLoaiSanPham(categories, sanPhamsDaLoc);
@@ -288,7 +293,7 @@ function tinhSanPhamHienThi(wrapperSelector = ".product-list") {
     soSanPhamMoiTrang,
   });
 
-  duLieuDaTinh = { duLieuDaLoc: sanPhamsDaLoc, soPageToiDa, pageHienTai: page };
+  duLieuDaTinh = {duLieuDaLoc: sanPhamsDaLoc, soPageToiDa, pageHienTai: page};
 
   hienThiSanPham(duLieuDaTinh, wrapperSelector);
 }
@@ -310,13 +315,13 @@ function tinhHoaDonHienThi(wrapperSelector = ".order-list") {
 }
 
 function hienTrangChiTiet(id) {
-  // alert("Chua cai dat chuc nang hien trang chi tier");
-  const sanPham = timSanPham(id);
-  console.info(id, sanPham);
-
-  // TODO: mo trang chi tiet san pham
-  window.location.href = `Product/ChiTietSanPham/ChiTietSanPham.html?id=${id}`;
+  alert(
+    `Chua cai dat chuc nang hien trang chi tier | id: ${id}, sp: ${JSON.stringify(
+      readSanPham(id)
+    )}`
+  );
 }
+
 function hienThiSanPham(duLieuDaTinh, wrapperSelector) {
   // TODO: hien thi danh sach san Pham sau khi load, trang 1
   const khiBamTrang = () =>
@@ -393,8 +398,8 @@ function hienThiDanhSach(duLieuDaTinh, hamRenderItem, wrapperSelector) {
   wrapper.innerHTML = "";
   const container = document.createElement("div");
   container.classList.add("grid-container");
-  const { duLieuDaLoc, soPageToiDa } = duLieuDaTinh;
-  let { pageHienTai } = duLieuDaTinh;
+  const {duLieuDaLoc, soPageToiDa} = duLieuDaTinh;
+  let {pageHienTai} = duLieuDaTinh;
   let chiSoBatDau = 0;
   let chiSoPage = 0;
   if (pageHienTai < 1 || isNaN(pageHienTai) || pageHienTai == null) {
@@ -404,7 +409,7 @@ function hienThiDanhSach(duLieuDaTinh, hamRenderItem, wrapperSelector) {
   chiSoBatDau = chiSoPage * soSanPhamMoiTrang;
   // phan trang bam vuot gioi han so trang
   if (chiSoBatDau > duLieuDaTinh.length) {
-    caiParamUrl({ page: soPageToiDa }, false, true);
+    caiParamUrl({page: soPageToiDa}, false, true);
   }
   // mang sau khi chia phan trang
   const duLieuPhanTrang = duLieuDaLoc.slice(
@@ -426,15 +431,15 @@ function hienThiPagination(
   khiBamTrang,
   wrapperSelector = ".pagination"
 ) {
-  const { soPageToiDa } = duLieuDaTinh;
-  let { pageHienTai } = duLieuDaTinh;
+  const {soPageToiDa} = duLieuDaTinh;
+  let {pageHienTai} = duLieuDaTinh;
   if (soPageToiDa === 0) return;
   if (pageHienTai < 1 || isNaN(pageHienTai) || pageHienTai == null) {
     pageHienTai = 1;
   }
   const onPaginationChange = (goToPage) => {
     goToPage = parseInt(goToPage, 10);
-    caiParamUrl({ page: goToPage }, false, false);
+    caiParamUrl({page: goToPage}, false, false);
     duLieuDaTinh.pageHienTai = goToPage;
     // Calculate the scroll position relative to the bottom
     const distanceFromBottom =
@@ -448,8 +453,8 @@ function hienThiPagination(
       window.scrollTo(
         0,
         document.documentElement.scrollHeight -
-          window.innerHeight -
-          distanceFromBottom
+        window.innerHeight -
+        distanceFromBottom
       );
     }, 0);
     khiBamTrang(goToPage);
@@ -523,6 +528,7 @@ function hienThiPagination(
     li.appendChild(button);
     container.appendChild(li);
   }
+
   // ham them nhanh dau 3 cham (e.g. 1 ... 5 6 7)
   function addEllipsis() {
     const li = document.createElement("li");
@@ -605,13 +611,16 @@ function locGiaSanPham(min, max, sanPhamsDaLoc) {
       return sanPhamsDaLoc.filter((sanPham) => sanPham["price-sale-n"] <= max);
     return sanPhamsDaLoc;
   }
+
   function locGiaThapNhat(min, sanPhamsDaLoc) {
     if (min != null && !isNaN(min))
       return sanPhamsDaLoc.filter((sanPham) => sanPham["price-sale-n"] >= min);
     return sanPhamsDaLoc;
   }
+
   return locGiaThapNhat(min, locGiaCaoNhat(max, sanPhamsDaLoc));
 }
+
 function locTheLoaiSanPham(theLoai, sanPhamsDaLoc) {
   if (Array.isArray(theLoai) && theLoai?.length > 0)
     return sanPhamsDaLoc.filter((sanPham) =>
@@ -619,6 +628,7 @@ function locTheLoaiSanPham(theLoai, sanPhamsDaLoc) {
     );
   return sanPhamsDaLoc;
 }
+
 function timTheoTen(name, sanPhamsDaLoc) {
   const sanitize = (string) =>
     transliterate(string).trim().replace(/\s+/g, " ").normalize().toLowerCase();
@@ -638,13 +648,13 @@ function timTheoTen(name, sanPhamsDaLoc) {
             (keyword === nameword
               ? Math.max(100, 25 * keyword.length)
               : nameword.startsWith(keyword)
-              ? Math.max(50, 10 * keyword.length)
-              : nameword.includes(keyword)
-              ? Math.max(
-                  10,
-                  3 * keyword.length * (nameword.split(keyword).length - 1)
-                )
-              : 0),
+                ? Math.max(50, 10 * keyword.length)
+                : nameword.includes(keyword)
+                  ? Math.max(
+                    10,
+                    3 * keyword.length * (nameword.split(keyword).length - 1)
+                  )
+                  : 0),
           0
         ),
       0
@@ -653,13 +663,13 @@ function timTheoTen(name, sanPhamsDaLoc) {
   console.table(
     matchScores
       .map((matchScore, i) => {
-        return { name: sanPhamsDaLoc[i]["name"], matchScore };
+        return {name: sanPhamsDaLoc[i]["name"], matchScore};
       })
       .sort((a, b) => a.score - b.score)
   );
   return matchScores
     .map((matchScore, i) => {
-      return { ...sanPhamsDaLoc[i], matchScore };
+      return {...sanPhamsDaLoc[i], matchScore};
     })
     .filter((sanPham) => sanPham.matchScore > 0);
 }
@@ -667,14 +677,17 @@ function timTheoTen(name, sanPhamsDaLoc) {
 function luuSanPhamLocalStorage() {
   luuDuLieuLocalStorage(sanPhamKey, g_sanPham);
 }
+
 function luuNguoiDungLocalStorage() {
   luuDuLieuLocalStorage(nguoiDungKey, g_nguoiDung);
 }
+
 function luuHoaDonLocalStorage() {
   luuDuLieuLocalStorage(hoaDonKey, g_hoaDon);
 }
+
 function luuDuLieuLocalStorage(datakey, g_duLieu) {
-  console.debug("luuDuLieuLocalStorage", { datakey, g_duLieu });
+  console.debug("luuDuLieuLocalStorage", {datakey, g_duLieu});
   localStorage.setItem(
     datakey,
     JSON.stringify(g_duLieu, (k, v) =>
@@ -686,25 +699,31 @@ function luuDuLieuLocalStorage(datakey, g_duLieu) {
 function taiSanPhamLocalStorage() {
   return taiDuLieuLocalStorage(sanPhamKey);
 }
+
 function taiNguoiDungLocalStorage() {
   return taiDuLieuLocalStorage(nguoiDungKey);
 }
+
 function taiHoaDonLocalStorage() {
   return taiDuLieuLocalStorage(hoaDonKey);
 }
+
 function taiDuLieuLocalStorage(datakey) {
   const dl = localStorage.getItem(datakey);
   const obj = JSON.parse(dl);
-  console.debug("taiDuLieuLocalStorage", { datakey, strlen: dl?.length, obj });
+  console.debug("taiDuLieuLocalStorage", {datakey, strlen: dl?.length, obj});
   return obj;
 }
+
 // xoa local storage de load lai danh sach san pham ban dau tu file data
 function xoaSanPhamLocalStorage() {
   xoaDuLieuLocalStorage(sanPham);
 }
+
 function xoaNguoiDungLocalStorage() {
   xoaDuLieuLocalStorage(nguoiDungKey);
 }
+
 function xoaHoaDonLocalStorage() {
   xoaDuLieuLocalStorage(hoaDonKey);
 }
@@ -1079,6 +1098,7 @@ function themSanPham(id, sanPham) {
   } else sanPham[sanPhamIdKey] = id;
   createSanPham(sanPham);
 }
+
 // tim san pham theo id
 function timSanPham(id) {
   if (id == null) {
@@ -1087,6 +1107,7 @@ function timSanPham(id) {
   }
   return readSanPham(id);
 }
+
 // sua san pham, phai nhap id de biet san pham can sua
 // san pham nhan vao se thay the san pham da co
 // dung timSanPhamTheoId de lay thong tin san pham cho nguoi dung sua
@@ -1126,7 +1147,7 @@ function themNguoiDung(id, nguoiDung) {
   }
   createNguoiDung(nguoiDung);
   if (readGioHang(id)) return;
-  createGioHang({ "nguoi-dung": id, "chi-tiet": [] });
+  createGioHang({"nguoi-dung": id, "chi-tiet": []});
 }
 
 // tim nguoi dung theo idOrUsernameOrEmail
@@ -1187,7 +1208,7 @@ function timGioHang(id) {
   }
   let gioHang = readGioHang(id);
   if (!gioHang) {
-    gioHang = { "nguoi-dung": id, "chi-tiet": [] };
+    gioHang = {"nguoi-dung": id, "chi-tiet": []};
     createGioHang(gioHang);
   }
   return gioHang;
@@ -1267,7 +1288,8 @@ async function taiDuLieuTongMainJs(sauKhiTai) {
   taiNguoiDung(() => {
     tinhNguoiDungHienThi();
   });
-  taiGioHang(() => {});
+  taiGioHang(() => {
+  });
   taiHoaDon(() => {
     tinhHoaDonHienThi();
   });
@@ -1353,7 +1375,7 @@ function showDebugMenu() {
 
   // Helper function to download a file
   function downloadFile(filename, content) {
-    const blob = new Blob([content], { type: "application/json" });
+    const blob = new Blob([content], {type: "application/json"});
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = filename;
@@ -1503,6 +1525,94 @@ function showDebugMenu() {
 
   dialog.showModal();
 }
+
+function showLoginDialog() {
+  const existingDialog = document.getElementById("loginDialog");
+  if (existingDialog) {
+    existingDialog.showModal();
+    return;
+  }
+
+  // Tạo dialog element
+  const dialog = document.getElementById("loginDialog");
+  // dialog.id = "loginDialog";
+  // dialog.style.width = "500px";
+  // dialog.style.padding = "20px";
+  // dialog.style.borderRadius = "10px";
+  //
+  // // Clone toàn bộ container để tránh di chuyển trực tiếp
+  // const containerClone = document.getElementById("login-container").cloneNode(true);
+  // dialog.appendChild(containerClone);
+  //
+  // // Thêm nút đóng dialog
+  // const closeButton = document.createElement("button");
+  // closeButton.textContent = "Đóng";
+  // closeButton.style.position = "absolute";
+  // closeButton.style.top = "10px";
+  // closeButton.style.right = "10px";
+  // closeButton.onclick = () => {
+  //   dialog.close();
+  // };
+  // dialog.appendChild(closeButton);
+  //
+  // document.body.appendChild(dialog);
+  //
+  // // Thêm sự kiện cho các nút chuyển đổi form
+  // const signInSlide = containerClone.querySelector("#signInSlide");
+  // const signUpSlide = containerClone.querySelector("#signUpSlide");
+  // const container = containerClone;
+  //
+  // signInSlide.addEventListener('click', () => {
+  //   container.classList.remove("right-panel-active");
+  // });
+  //
+  // signUpSlide.addEventListener('click', () => {
+  //   container.classList.add("right-panel-active");
+  // });
+  //
+  // // Xử lý show/hide password
+  // const showPasswordSignIn = containerClone.querySelector("#showPasswordCheckboxSignIn");
+  // const passwordSignIn = containerClone.querySelector("#password_signin");
+  // showPasswordSignIn.addEventListener('change', () => {
+  //   passwordSignIn.type = showPasswordSignIn.checked ? 'text' : 'password';
+  // });
+  //
+  // const showPasswordSignUp = containerClone.querySelector("#showPasswordCheckboxSignUp");
+  // const passwordSignUp = containerClone.querySelector("#password_signup");
+  // showPasswordSignUp.addEventListener('change', () => {
+  //   passwordSignUp.type = showPasswordSignUp.checked ? 'text' : 'password';
+  // });
+  //
+  // // Xử lý form submit
+  // const signInForm = containerClone.querySelector("#signInForm");
+  // const signUpForm = containerClone.querySelector("#signUpForm");
+  //
+  // signInForm.addEventListener('submit', (e) => {
+  //   e.preventDefault();
+  //   // Xử lý đăng nhập
+  //   const emailOrUsername = containerClone.querySelector("#emailOrUsernameField").value;
+  //   const password = containerClone.querySelector("#password_signin").value;
+  //
+  //   // Thêm logic xử lý đăng nhập tại đây
+  //   console.log("Đăng nhập:", emailOrUsername, password);
+  // });
+  //
+  // signUpForm.addEventListener('submit', (e) => {
+  //   e.preventDefault();
+  //   // Xử lý đăng ký
+  //   const username = containerClone.querySelector("#username").value;
+  //   const name = containerClone.querySelector("#name").value;
+  //   const email = containerClone.querySelector("#email").value;
+  //   const password = containerClone.querySelector("#password_signup").value;
+  //
+  //   // Thêm logic xử lý đăng ký tại đây
+  //   console.log("Đăng ký:", username, name, email, password);
+  // });
+
+  dialog.showModal();
+}
+// Gọi hàm này khi muốn hiển thị login dialog
+// Ví dụ: document.getElementById('loginButton').addEventListener('click', showLoginDialog);
 
 if (window.dayLaTrangIndex)
   // goi khi trang web load thanh cong
