@@ -1,3 +1,4 @@
+
 document.getElementById('navbar-sidebar-inject')
     .insertAdjacentHTML('afterbegin', `<div class="navbar-placeholder" id="navbar-placeholder" data-sidebar-collapsed>Navbar</div> `)
 function watchNavbarBg() {

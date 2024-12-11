@@ -1,46 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Best Bag - Trang chủ</title>
-    <link rel="shortcut icon" type="image/png" href="../images/icons8-bag-96.png" />
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="../images/icons8-bag-96.png"
+    />
     <script type="module">
-        import { transliterate } from "https://cdn.jsdelivr.net/npm/transliteration@2.3.5/+esm";
+      import { transliterate } from "https://cdn.jsdelivr.net/npm/transliteration@2.3.5/+esm";
 
-        window.transliterate = transliterate;
+      window.transliterate = transliterate;
     </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="../Product/ChiTietSanPham/ChiTietSanPham.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      rel="stylesheet"
+      href="../Product/ChiTietSanPham/ChiTietSanPham.css"
+    />
 
     <script type="text/javascript">
-        window.dayLaTrangChu = true;
+      window.dayLaTrangChu = true;
     </script>
     <script type="module">
-        import {
-            InvalidFormatError,
-            InvalidNumberError,
-            NotEnoughUnitError,
-            ReadingConfig,
-            doReadNumber,
-        } from " https://cdn.jsdelivr.net/npm/read-vietnamese-number@2.1.4/+esm";
-        // Config reading options
-        const config = new ReadingConfig();
-        config.unit = ["đồng"];
-        window.number2TextVietnamese = function (number) {
-            try {
-                return doReadNumber(config, number);
-            } catch (err) {
-                // Handle errors
-                if (err instanceof InvalidFormatError)
-                    return "Định dạng input không hợp lệ";
-                else if (err instanceof InvalidNumberError) return "Số không hợp lệ";
-                else if (err instanceof NotEnoughUnitError)
-                    return "Không đủ đơn vị đọc số";
-            }
-        };
+      import {
+        InvalidFormatError,
+        InvalidNumberError,
+        NotEnoughUnitError,
+        ReadingConfig,
+        doReadNumber,
+      } from " https://cdn.jsdelivr.net/npm/read-vietnamese-number@2.1.4/+esm";
+      // Config reading options
+      const config = new ReadingConfig();
+      config.unit = ["đồng"];
+      window.number2TextVietnamese = function (number) {
+        try {
+          return doReadNumber(config, number);
+        } catch (err) {
+          // Handle errors
+          if (err instanceof InvalidFormatError)
+            return "Định dạng input không hợp lệ";
+          else if (err instanceof InvalidNumberError) return "Số không hợp lệ";
+          else if (err instanceof NotEnoughUnitError)
+            return "Không đủ đơn vị đọc số";
+        }
+      };
     </script>
     <script src="../main.js"></script>
     <script src="./homeMain.js"></script>
@@ -49,49 +58,56 @@
     <script src="../admin/bieudo-test.js"></script>
     <script src="../User/Auth/SignIn.js"></script>
     <script src="../User/Auth/SignUp.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <!-- NAVBAR -->
     <div id="navbar-sidebar-inject">
-        <div id="navCartContainer"></div>
-        
+      <div id="navCartContainer"></div>
     </div>
-    
+
     <!-- END NAVBAR -->
 
     <!-- CAROUSEL -->
     <div class="carousel-inner img">
-        <img src="../images/bannerhomepage.jpg">
+      <img src="../images/bannerhomepage.jpg" />
     </div>
     <!-- END CAROUSEL -->
-    <div id="search-container" style="
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: 100%;
-">
-        <form id="productForm" style="border: 1px solid green">
-            <label for="search">Name:</label>
-            <input type="text" id="search" name="search" placeholder="Product Name" />
+    <div
+      id="search-container"
+      style="
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        width: 100%;
+      "
+    >
+      <form id="productForm" style="border: 1px solid green">
+        <label for="search">Name:</label>
+        <input
+          type="text"
+          id="search"
+          name="search"
+          placeholder="Product Name"
+        />
 
-            <label for="priceRange">Price Range:</label>
-            <input type="number" id="minPrice" name="min" placeholder="Min Price" />
-            <input type="number" id="maxPrice" name="max" placeholder="Max Price" />
+        <label for="priceRange">Price Range:</label>
+        <input type="number" id="minPrice" name="min" placeholder="Min Price" />
+        <input type="number" id="maxPrice" name="max" placeholder="Max Price" />
 
-            <label for="categories">Categories:</label>
-            <div id="categories"></div>
+        <label for="categories">Categories:</label>
+        <div id="categories"></div>
 
-            <label for="sortBy">Sort By:</label>
-            <select id="sortBy" name="sort">
-                <option value selected>(Chua chon)</option>
-                <option value="asc">Price Ascending</option>
-                <option value="desc">Price Descending</option>
-                <option value="best">Best Match</option>
-            </select>
+        <label for="sortBy">Sort By:</label>
+        <select id="sortBy" name="sort">
+          <option value selected>(Chua chon)</option>
+          <option value="asc">Price Ascending</option>
+          <option value="desc">Price Descending</option>
+          <option value="best">Best Match</option>
+        </select>
 
-            <button type="submit">Search</button>
-        </form>
+        <button type="submit">Search</button>
+      </form>
     </div>
     <!--    ============================
                        SEARCH CONTENT
@@ -101,74 +117,89 @@
     <!-- END CONTENT -->
     <!-- FOOTER -->
     <footer class="homepage-footer-content">
-        <div class="homepage-footer-logo">
-            <a href="./homepage_new.html" style="text-decoration: none;">
-                <img src="../images/icons8-bag-96.png" alt="" class="footer-img">
-            </a>
-            <div class="homepage-footer-address">
-                Địa chỉ: 273 An Dương Vương, phường 3, quận 5, thành phố Hồ Chí Minh
-            </div>
+      <div class="homepage-footer-logo">
+        <a href="./homepage_new.html" style="text-decoration: none">
+          <img src="../images/icons8-bag-96.png" alt="" class="footer-img" />
+        </a>
+        <div class="homepage-footer-address">
+          Địa chỉ: 273 An Dương Vương, phường 3, quận 5, thành phố Hồ Chí Minh
         </div>
-        <div class="homepage-footer-lincense">
-            Bản quyền © 2024 Best Bag. Đã đăng ký bản quyền. <br>
-            Hoạt động tốt nhất trên GoogleChrome.
-        </div>
+      </div>
+      <div class="homepage-footer-lincense">
+        Bản quyền © 2024 Best Bag. Đã đăng ký bản quyền. <br />
+        Hoạt động tốt nhất trên GoogleChrome.
+      </div>
     </footer>
     <!-- END FOOOTER -->
 
     <!-- Dialog login -->
     <dialog id="loginDialog">
-        <div class="login-container" id="login-container">
-            <div class="form-container sign-up-container">
-                <form action="#" id="signUpForm">
-                    <h1>Create Account</h1>
-                    <div class="social-container">
-                        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                    <span>or use your email for registration</span>
-                    <input type="text" id="username" placeholder="Username" />
-                    <input type="text" id="name" placeholder="Name" />
-                    <input type="email" id="email" placeholder="Email" />
-                    <input type="password" id="password_signup" placeholder="Password" />
-                    <input type="checkbox" id="showPasswordCheckboxSignUp" /> Show Password
-                    <button type="submit">Sign Up</button>
-                </form>
+      <div class="login-container" id="login-container">
+        <div class="form-container sign-up-container">
+          <form action="#" id="signUpForm">
+            <h1>Create Account</h1>
+            <div class="social-container">
+              <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" class="social"
+                ><i class="fab fa-google-plus-g"></i
+              ></a>
+              <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
             </div>
-            <div class="form-container sign-in-container">
-                <form id="signInForm">
-                    <h1>Sign in</h1>
-                    <div class="social-container">
-                        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                    <span>or use your account</span>
-                    <input type="text" id="emailOrUsernameField" placeholder="Email" />
-                    <input type="password" id="password_signin" placeholder="Password" />
-                    <input type="checkbox" id="showPasswordCheckboxSignIn" checked /> Show Password
-                    <a href="#">Forgot your password?</a>
-                    <button type="submit">Sign In</button>
-                </form>
-            </div>
-            <div class="overlay-container">
-                <div class="overlay">
-                    <div class="overlay-panel overlay-left">
-                        <h1>Welcome Back!</h1>
-                        <p>To keep connected with us please login with your personal info</p>
-                        <button class="ghost" id="signInSlide">Sign In</button>
-                    </div>
-                    <div class="overlay-panel overlay-right">
-                        <h1>Hello, Friend!</h1>
-                        <p>Enter your personal details and start journey with us</p>
-                        <button class="ghost" id="signUpSlide">Sign Up</button>
-                    </div>
-                </div>
-            </div>
+            <span>or use your email for registration</span>
+            <input type="text" id="username" placeholder="Username" />
+            <input type="text" id="name" placeholder="Name" />
+            <input type="email" id="email" placeholder="Email" />
+            <input
+              type="password"
+              id="password_signup"
+              placeholder="Password"
+            />
+            <input type="checkbox" id="showPasswordCheckboxSignUp" /> Show
+            Password
+            <button type="submit">Sign Up</button>
+          </form>
         </div>
+        <div class="form-container sign-in-container">
+          <form id="signInForm">
+            <h1>Sign in</h1>
+            <div class="social-container">
+              <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" class="social"
+                ><i class="fab fa-google-plus-g"></i
+              ></a>
+              <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <span>or use your account</span>
+            <input type="text" id="emailOrUsernameField" placeholder="Email" />
+            <input
+              type="password"
+              id="password_signin"
+              placeholder="Password"
+            />
+            <input type="checkbox" id="showPasswordCheckboxSignIn" checked />
+            Show Password
+            <a href="#">Forgot your password?</a>
+            <button type="submit">Sign In</button>
+          </form>
+        </div>
+        <div class="overlay-container">
+          <div class="overlay">
+            <div class="overlay-panel overlay-left">
+              <h1>Welcome Back!</h1>
+              <p>
+                To keep connected with us please login with your personal info
+              </p>
+              <button class="ghost" id="signInSlide">Sign In</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+              <h1>Hello, Friend!</h1>
+              <p>Enter your personal details and start journey with us</p>
+              <button class="ghost" id="signUpSlide">Sign Up</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </dialog>
     <!-- End Dialog -->
-</body>
-
+  </body>
 </html>

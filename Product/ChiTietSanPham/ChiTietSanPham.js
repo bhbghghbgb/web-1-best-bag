@@ -1,84 +1,71 @@
 // Thêm vào đầu file
-window.addEventListener("load", () => {
-  // Lấy id sản phẩm từ URL
-  const { idtrangchitietsanpham } = layParamUrl();
+window.addEventListener("load", async () => {
+  // Đợi tải dữ liệu trước
+  await taiDuLieuTongMainJs(() => {
+    console.info("Tai du lieu tong o mainjs");
+  });
 
-  if (!idtrangchitietsanpham) {
-    console.error("Không tìm thấy id sản phẩm trong URL");
-    return;
+  // Khởi tạo UI
+  const navCartContainer = document.getElementById("navCartContainer");
+  if (navCartContainer) {
+    navCartContainer.appendChild(createCartButton());
   }
 
-  // Load dữ liệu và hiển thị chi tiết sản phẩm
-  taiDuLieuTongMainJs(() => {
-    // Lấy thông tin sản phẩm
-    const sanPham = timSanPham(idtrangchitietsanpham);
-    if (!sanPham) {
-      console.error("Không tìm thấy thông tin sản phẩm");
-      return;
-    }
+  document.body.appendChild(createCartModal());
+  document.body.appendChild(createProductDetailModal());
 
-    // Cập nhật state và hiển thị thông tin sản phẩm
-    modalCart.currentProduct = sanPham;
-    modalCart.currentDetailImageIndex = 0;
+  // Kiểm tra đăng nhập và cập nhật giỏ hàng
+  const savedUserId = localStorage.getItem("currentUserId");
+  if (savedUserId) {
+    modalCart.currentUserId = savedUserId;
+    handleLogin(savedUserId);
+  }
 
-    // Hiển thị modal chi tiết sản phẩm
-    const modal = document.getElementById("productDetailModal");
-    if (modal) {
-      // Cập nhật thông tin trong modal
-      document.getElementById(
-        "productDetailImage"
-      ).src = `../../images/${sanPham["image-file"]}`;
-      document.getElementById(
-        "productDetailImage2"
-      ).src = `../../images/${sanPham["image2-file"]}`;
-      document.getElementById("productDetailName").textContent = sanPham.name;
-      document.getElementById(
-        "productDetailCategory"
-      ).textContent = `Túi ${sanPham.category}`;
-      document.getElementById("productDetailDescription").textContent =
-        sanPham.description || "Không có mô tả";
-      document.getElementById("productDetailOriginalPrice").textContent =
-        new Intl.NumberFormat("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        }).format(sanPham["price-n"]);
-      document.getElementById("productDetailSalePrice").textContent =
-        new Intl.NumberFormat("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        }).format(sanPham["price-sale-n"]);
-
-      // Hiển thị modal
-      modal.style.display = "block";
-      document.body.classList.add("product-detail-modal-open");
-
-      // Cập nhật tổng tiền
-      updateDetailTotal();
-    }
-  });
+  // Thêm dialog lịch sử đơn hàng
+  document.body.appendChild(createOrderHistoryModal());
 });
 
-// Đổi khai báo biến
 let modalCart = {
   currentProduct: null,
   currentDetailImageIndex: 0,
-  currentUserId: "ID_NGUOI_DUNG", // ID người dùng mặc định để test
+  currentUserId: "ID_NGUOI_DUNG",
 };
 
-// Các hàm xử lý Modal giỏ hàng
+function updateCurrentUserId(userId) {
+  if (!userId) return;
+
+  modalCart.currentUserId = userId;
+  localStorage.setItem("currentUserId", userId);
+  capNhatCart();
+}
+
 function openCartModal() {
   const dialog = document.getElementById("cartDialog");
-  if (!dialog) {
-    console.error("Không tìm thấy cart dialog");
+  if (!dialog) return;
+
+  // Kiểm tra xem người dùng đã đăng nhập chưa
+  const currentUserId = localStorage.getItem("currentUserId");
+  if (!currentUserId) {
+    alert("Vui lòng đăng nhập để xem giỏ hàng!");
+    // Mở dialog đăng nhập
+    const loginDialog = document.getElementById("loginDialog");
+    if (loginDialog) {
+      loginDialog.showModal();
+
+      // Thêm event listener để xử lý sau khi đăng nhập thành công
+      const checkLogin = setInterval(() => {
+        const newUserId = localStorage.getItem("currentUserId");
+        if (newUserId) {
+          clearInterval(checkLogin);
+          handleLogin(newUserId);
+          dialog.showModal();
+        }
+      }, 1000);
+    }
     return;
   }
 
-  const gioHang = timGioHang(modalCart.currentUserId);
-  if (gioHang) {
-    renderGioHang(gioHang["chi-tiet"], renderItemGioHang, "#cartItems");
-    capNhatCart();
-  }
-
+  handleLogin(currentUserId);
   document.body.classList.add("dialog-open");
   dialog.showModal();
 }
@@ -91,24 +78,24 @@ function closeCartModal() {
   }
 }
 
-// Các hàm xử lý Modal chi tiết sản phẩm
 function hienTrangChiTiet(id) {
   const sanPham = timSanPham(id);
-  if (!sanPham) {
-    console.error("Không tìm thấy sản phẩm với id:", id);
-    return;
-  }
+  if (!sanPham) return;
 
   modalCart.currentProduct = sanPham;
   modalCart.currentDetailImageIndex = 0;
 
-  // Cập nhật thông tin sản phẩm vào dialog
+  const formatter = new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
+
   document.getElementById(
     "productDetailImage"
-  ).src = `./images/${sanPham["image-file"]}`;
+  ).src = `../images/${sanPham["image-file"]}`;
   document.getElementById(
     "productDetailImage2"
-  ).src = `./images/${sanPham["image2-file"]}`;
+  ).src = `../images/${sanPham["image2-file"]}`;
   showDetailImage(0);
   document.getElementById("productDetailName").textContent = sanPham.name;
   document.getElementById(
@@ -117,16 +104,9 @@ function hienTrangChiTiet(id) {
   document.getElementById("productDetailDescription").textContent =
     sanPham.description || "Không có mô tả";
   document.getElementById("productDetailOriginalPrice").textContent =
-    new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(sanPham["price-n"]);
+    formatter.format(sanPham["price-n"]);
   document.getElementById("productDetailSalePrice").textContent =
-    new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(sanPham["price-sale-n"]);
-
+    formatter.format(sanPham["price-sale-n"]);
   document.getElementById("productDetailQuantity").value = 1;
   updateDetailTotal();
 
@@ -193,7 +173,7 @@ function renderItemGioHang(item, chiTietGioHang) {
   const hinhAnh = document.createElement("div");
   hinhAnh.style.position = "relative";
   const anhSanPham = document.createElement("img");
-  anhSanPham.src = "images/" + sanpham["image-file"];
+  anhSanPham.src = `../../images/${sanpham["image-file"]}`;
   anhSanPham.style.width = "100px";
   anhSanPham.style.height = "100px";
   anhSanPham.style.objectFit = "cover";
@@ -290,7 +270,7 @@ function updateDetailTotal() {
     currency: "VND",
   }).format(total);
 
-  // Thêm hiệu ứng highlight khi giá trị thay đổi
+  // Thêm hiệu ứng highlight khi giá tr thay đổi
   totalElement.classList.add("highlight");
   setTimeout(() => {
     totalElement.classList.remove("highlight");
@@ -300,6 +280,17 @@ function updateDetailTotal() {
 function addToCartFromDetail() {
   if (!modalCart.currentProduct) {
     console.error("Không tìm thấy thông tin sản phẩm");
+    return;
+  }
+
+  // Kiểm tra đăng nhập trước khi thêm vào giỏ
+  if (!modalCart.currentUserId || modalCart.currentUserId === "ID_NGUOI_DUNG") {
+    alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!");
+    // Mở dialog đăng nhập
+    const loginDialog = document.getElementById("loginDialog");
+    if (loginDialog) {
+      loginDialog.showModal();
+    }
     return;
   }
 
@@ -373,23 +364,105 @@ function capNhatCart() {
 
 // Hàm thanh toán (chưa hoàn thiện)
 function checkout() {
-  alert("Chức năng thanh toán đang được phát triển!");
-}
-
-// Khởi tạo giỏ hàng khi trang web tải xong
-window.addEventListener("load", () => {
-  cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  const navCartContainer = document.getElementById("navCartContainer");
-  if (navCartContainer) {
-    navCartContainer.appendChild(createCartButton());
+  // Kiểm tra đăng nhập
+  if (!modalCart.currentUserId) {
+    alert("Vui lòng đăng nhập để thanh toán!");
+    return;
   }
 
-  document.body.appendChild(createCartModal());
-  document.body.appendChild(createProductDetailModal());
+  // Lấy giỏ hàng hiện tại
+  const gioHang = timGioHang(modalCart.currentUserId);
+  if (!gioHang || !gioHang["chi-tiet"] || gioHang["chi-tiet"].length === 0) {
+    alert("Giỏ hàng trống!");
+    return;
+  }
 
+  // Tạo hóa đơn mới
+  const hoaDonMoi = {
+    id: crypto.randomUUID(),
+    "nguoi-dung": modalCart.currentUserId,
+    "ngay-tao": new Date().toISOString(),
+    "chi-tiet": [...gioHang["chi-tiet"]],
+    "xu-ly": "dang", // Trạng thái xử lý: dang, roi, huy
+  };
+
+  // Thêm hóa đơn vào database
+  themHoaDon(hoaDonMoi.id, hoaDonMoi);
+
+  // Xóa giỏ hàng sau khi tạo hóa đơn
+  xoaChiTietGioHang(modalCart.currentUserId);
+
+  // Cập nhật UI
   capNhatCart();
-});
+  renderGioHang([], renderItemGioHang, "#cartItems");
+
+  // Hiển thị thông báo thành công
+  alert("Đặt hàng thành công! Mã đơn hàng của bạn là: " + hoaDonMoi.id);
+
+  // Đóng modal giỏ hàng
+  closeCartModal();
+}
+
+// Thêm hàm mới để hiển thị chi tiết hóa đơn
+function showOrderDetails(hoaDon) {
+  const dialog = document.getElementById("orderDetailDialog");
+  if (!dialog) {
+    document.body.appendChild(createOrderDetailModal());
+  }
+
+  // Cập nhật thông tin đơn hàng
+  document.getElementById("orderDetailId").textContent = hoaDon.id;
+  document.getElementById("orderDetailDate").textContent = formatDateLocaleVn(
+    hoaDon["ngay-tao"]
+  );
+  document.getElementById("orderDetailStatus").textContent =
+    hoaDon["xu-ly"] === "dang"
+      ? "Đang xử lý"
+      : hoaDon["xu-ly"] === "roi"
+      ? "Đã hoàn thành"
+      : "Đã hủy";
+
+  // Cập nhật bảng sản phẩm
+  const tbody = document.getElementById("orderDetailTableBody");
+  tbody.innerHTML = "";
+  let totalAmount = 0;
+
+  hoaDon["chi-tiet"].forEach((item) => {
+    const sanPham = timSanPham(item["san-pham"]);
+    if (sanPham) {
+      const amount = sanPham["price-sale-n"] * item["so-luong"];
+      totalAmount += amount;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${sanPham.name}</td>
+        <td><img src="../../images/${sanPham["image-file"]}" alt="${
+        sanPham.name
+      }" style="width: 50px; height: 50px; object-fit: cover;"></td>
+        <td>${sanPham["price-sale-n"].toLocaleString("vi-VN")}đ</td>
+        <td>${item["so-luong"]}</td>
+        <td>${amount.toLocaleString("vi-VN")}đ</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+
+  // Cập nhật tổng tiền
+  document.getElementById("orderDetailTotal").textContent =
+    totalAmount.toLocaleString("vi-VN") + "đ";
+
+  // Hiển thị dialog
+  document.getElementById("orderDetailDialog").showModal();
+}
+
+// Thêm hàm đóng dialog chi tiết đơn hàng
+function closeOrderDetail() {
+  const dialog = document.getElementById("orderDetailDialog");
+  if (dialog) {
+    dialog.close();
+  }
+}
+
 // Các hàm tạo giao diện
 function createCartButton() {
   const container = document.createElement("div");
@@ -398,13 +471,11 @@ function createCartButton() {
   const button = document.createElement("button");
   button.id = "cartButton";
   button.onclick = openCartModal;
+
+  // Tạo span với giá trị mặc định là 0
   button.innerHTML = `
     <i class="fas fa-shopping-cart"></i>
-    <span>Giỏ hàng</span>
-    <span id="cartItemCount">${cart.reduce(
-      (total, item) => total + item["so-luong"],
-      0
-    )}</span>
+    <span id="cartItemCount">0</span>
   `;
 
   container.appendChild(button);
@@ -427,6 +498,7 @@ function createCartModal() {
         <div class="cart-summary">
           <div class="cart-buttons">
             <button onclick="closeCartModal()" class="cart-btn-close">Đóng</button>
+            <button onclick="openOrderHistory()" class="cart-btn-history">Xem hóa đơn</button>
             <button onclick="checkout()" class="cart-btn-buy" id="btn-s">Mua ngay</button>
           </div>
         </div>
@@ -499,6 +571,7 @@ function createProductDetailModal() {
 
   return dialog;
 }
+
 function renderGioHang(cart, hamRenderItem, wrapperSelector = "#cartItems") {
   const wrapper = document.querySelector(wrapperSelector);
   if (!wrapper) {
@@ -515,8 +588,13 @@ function renderGioHang(cart, hamRenderItem, wrapperSelector = "#cartItems") {
 
   if (!cart || cart.length === 0) {
     const noProductImg = document.createElement("img");
-    noProductImg.src = "images/no-product-cart.jpg"; // Sửa đường dẫn và thêm phần mở rộng
-    noProductImg.style.width = "60%";
+    noProductImg.src = "../../images/no-product-cart.jpg";
+    noProductImg.style.width = "105%";
+    noProductImg.style.maxHeight = "calc(100vh - 400px)"; // Giảm chiều cao xuống
+    noProductImg.style.objectFit = "contain";
+    noProductImg.style.display = "block";
+    noProductImg.style.margin = "0 auto";
+
     wrapper.appendChild(noProductImg);
     return;
   }
@@ -579,6 +657,7 @@ function renderGioHang(cart, hamRenderItem, wrapperSelector = "#cartItems") {
   wrapper.appendChild(gioHang);
   capNhatFinalTotalCost(cart);
 }
+
 function capNhatFinalTotalCost(cart) {
   const finalTotal = document.querySelector(".final-total-cost");
   if (!finalTotal) return;
@@ -595,4 +674,228 @@ function capNhatFinalTotalCost(cart) {
     style: "currency",
     currency: "VND",
   });
+}
+
+// Thêm hàm xử lý đăng nhập
+function handleLogin(userId) {
+  if (!userId) return;
+
+  modalCart.currentUserId = userId;
+  const gioHang = timGioHang(userId);
+  if (gioHang) {
+    renderGioHang(gioHang["chi-tiet"], renderItemGioHang, "#cartItems");
+    capNhatCart();
+  }
+}
+
+// Thêm dialog hiển thị lịch sử hóa đơn
+function createOrderHistoryModal() {
+  const dialog = document.createElement("dialog");
+  dialog.id = "orderHistoryDialog";
+
+  dialog.innerHTML = `
+    <div class="order-history-content">
+      <div class="order-history-header">
+        <h2>Lịch sử đơn hàng</h2>
+        <span class="order-history-close" onclick="closeOrderHistory()">&times;</span>
+      </div>
+      <div class="order-history-body">
+        <div id="orderHistoryItems"></div>
+      </div>
+    </div>
+  `;
+
+  return dialog;
+}
+
+// Thêm các hàm xử lý
+function openOrderHistory() {
+  if (!modalCart.currentUserId) {
+    alert("Vui lòng đăng nhập để xem lịch sử đơn hàng!");
+    return;
+  }
+
+  const dialog = document.getElementById("orderHistoryDialog");
+  if (!dialog) return;
+
+  // Lấy danh sách hóa đơn của người dùng từ g_hoaDon
+  const userOrders = g_hoaDon.filter(
+    (order) => order["nguoi-dung"] === modalCart.currentUserId
+  );
+
+  // Sắp xếp theo thời gian mới nhất
+  userOrders.sort((a, b) => new Date(b["ngay-tao"]) - new Date(a["ngay-tao"]));
+
+  const orderHistoryItems = document.getElementById("orderHistoryItems");
+  orderHistoryItems.innerHTML = "";
+
+  if (userOrders.length === 0) {
+    orderHistoryItems.innerHTML = "<p>Bạn chưa có đơn hàng nào</p>";
+    dialog.showModal();
+    return;
+  }
+
+  // Tạo bảng hiển thị đơn hàng
+  const table = document.createElement("table");
+  table.className = "order-history-table";
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Mã đơn hàng</th>
+        <th>Ngày đặt</th>
+        <th>Tổng tiền</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody id="orderHistoryTableBody"></tbody>
+  `;
+
+  const tbody = table.querySelector("tbody");
+  const formatter = new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
+
+  userOrders.forEach((order) => {
+    const totalAmount = order["chi-tiet"].reduce((sum, item) => {
+      const sanPham = timSanPham(item["san-pham"]);
+      return sum + (sanPham ? sanPham["price-sale-n"] * item["so-luong"] : 0);
+    }, 0);
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${order.id}</td>
+      <td>${formatDateLocaleVn(order["ngay-tao"])}</td>
+      <td>${formatter.format(totalAmount)}</td>
+      <td>
+        <span class="order-status ${order["xu-ly"]}">
+          ${
+            order["xu-ly"] === "dang"
+              ? "Đang xử lý"
+              : order["xu-ly"] === "roi"
+              ? "Đã hoàn thành"
+              : "Đã hủy"
+          }
+        </span>
+      </td>
+      <td>
+        <button onclick="showOrderDetails(${JSON.stringify(order).replace(
+          /"/g,
+          "&quot;"
+        )})" class="btn-view-detail">
+          Xem chi tiết
+        </button>
+        ${
+          order["xu-ly"] === "dang"
+            ? `<button onclick="cancelOrder('${order.id}')" class="btn-cancel-order">
+                Hủy đơn
+              </button>`
+            : ""
+        }
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  orderHistoryItems.appendChild(table);
+  dialog.showModal();
+}
+
+function closeOrderHistory() {
+  const dialog = document.getElementById("orderHistoryDialog");
+  if (dialog) {
+    dialog.close();
+  }
+}
+
+function cancelOrder(orderId) {
+  if (confirm("Bạn có chắc muốn hủy đơn hàng này?")) {
+    // Tìm index của hóa đơn trong mảng g_hoaDon
+    const orderIndex = g_hoaDon.findIndex((order) => order.id === orderId);
+
+    if (orderIndex !== -1 && g_hoaDon[orderIndex]["xu-ly"] === "dang") {
+      // Cập nhật trạng thái đơn hàng thành "huy"
+      g_hoaDon[orderIndex]["xu-ly"] = "huy";
+
+      // Lưu thay đổi vào localStorage và file
+      luuHoaDon(g_hoaDon);
+
+      // Refresh lại danh sách đơn hàng
+      openOrderHistory();
+
+      // Hiển thị thông báo thành công
+      alert("Đã hủy đơn hàng thành công!");
+    } else {
+      alert("Không thể hủy đơn hàng này!");
+    }
+  }
+}
+
+// Thêm hàm mới để lưu hóa đơn
+function luuHoaDon(danhSachHoaDon) {
+  try {
+    // Cập nhật biến toàn cục
+    g_hoaDon = danhSachHoaDon;
+
+    // Lưu vào localStorage
+    localStorage.setItem("hoaDon", JSON.stringify(danhSachHoaDon));
+
+    // Gửi request để lưu vào file
+    fetch("/api/hoa-don", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(danhSachHoaDon),
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Lỗi khi lưu hóa đơn:", error);
+    return false;
+  }
+}
+
+// Thêm hàm tạo dialog chi tiết đơn hàng
+function createOrderDetailModal() {
+  const dialog = document.createElement("dialog");
+  dialog.id = "orderDetailDialog";
+
+  dialog.innerHTML = `
+    <div class="order-detail-content">
+      <div class="order-detail-header">
+        <h2>Chi tiết đơn hàng</h2>
+        <span class="order-detail-close" onclick="closeOrderDetail()">&times;</span>
+      </div>
+      <div class="order-detail-info">
+        <p><strong>Mã đơn hàng:</strong> <span id="orderDetailId"></span></p>
+        <p><strong>Ngày đặt:</strong> <span id="orderDetailDate"></span></p>
+        <p><strong>Trạng thái:</strong> <span id="orderDetailStatus"></span></p>
+      </div>
+      <div class="order-detail-products">
+        <table class="order-detail-table">
+          <thead>
+            <tr>
+              <th>Sản phẩm</th>
+              <th>Hình ảnh</th>
+              <th>Đơn giá</th>
+              <th>Số lượng</th>
+              <th>Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody id="orderDetailTableBody">
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4" style="text-align: right;"><strong>Tổng tiền:</strong></td>
+              <td id="orderDetailTotal"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  `;
+
+  return dialog;
 }

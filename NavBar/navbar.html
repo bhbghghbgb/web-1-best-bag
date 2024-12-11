@@ -1,62 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="shortcut icon" type="image/png" href="../images/icons8-bag-96.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="../images/icons8-bag-96.png"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Navigation bar</title>
     <style>
-        .navbar {
-            display: flex;
-            flex-flow: row nowrap;
-            overflow: hidden;
-            padding: 4px 24px 0;
-            border-bottom: 2px solid transparent;
-            background: #4caf50;
-            transition-property: background-color, backdrop-filter;
-            transition-duration: .35s, .35s;
-            transition-timing-function: ease;
-        }
+      .navbar {
+        display: flex;
+        flex-flow: row nowrap;
+        overflow: hidden;
+        padding: 4px 24px 0;
+        border-bottom: 2px solid transparent;
+        background: #4caf50;
+        transition-property: background-color, backdrop-filter;
+        transition-duration: 0.35s, 0.35s;
+        transition-timing-function: ease;
+      }
 
-        .navbar-left,
-        .navbar-right {
-            display: flex;
-            align-items: center;
-            column-gap: 16px;
-        }
-
-        .navbar-left {
-            margin: 10px 0;
-        }
+      .navbar-left,
+      .navbar-right {
+        display: flex;
+        align-items: center;
+        column-gap: 16px;
+      }
+      .navbar-right h3 {
+        color: rgb(253, 253, 253);
+        font-size: 20px;
+        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+          1px 1px 0 #000;
+      }
+      .navbar-right button {
+        padding: 8px 16px;
+        font-size: 20px;
+        color: #151313;
+        background-color: red;
+        border: 2px solid #1a1616;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: bold;
+      }
+      .navbar-left {
+        margin: 10px 0;
+      }
 
         .navbar-right {
             margin-left: auto;
         }
 
-        .navbar-search-pseudo {
-            display: flex;
-            align-items: center;
-            height: 32px;
-            background-color: rgba(128, 128, 128, .5);
-        }
+      .navbar-search-pseudo {
+        display: flex;
+        align-items: center;
+        height: 32px;
+        background-color: rgba(128, 128, 128, 0.5);
+      }
 
         .navbar-search-pseudo>svg {
             position: relative;
             left: 12px;
         }
 
-        .navbar-search-pseudo>input {
-            padding-top: 0;
-            background-color: transparent;
-            outline-color: transparent;
-            border: 0;
-            width: 300px;
-            height: 100%;
-            margin-left: 20px;
-            transition: width .3s ease, opacity .3s linear, visibility .3s step-end;
-        }
+      .navbar-search-pseudo > input {
+        padding-top: 0;
+        background-color: transparent;
+        outline-color: transparent;
+        border: 0;
+        width: 300px;
+        height: 100%;
+        margin-left: 20px;
+        transition: width 0.3s ease, opacity 0.3s linear,
+          visibility 0.3s step-end;
+      }
 
         .navbar-search-pseudo>input:focus {
             outline: none;
@@ -85,11 +105,11 @@
             color: inherit;
         }
 
-        .navbar-scrolleddown {
-            background-color: rgba(0, 0, 0, .7);
-            backdrop-filter: blur(2px);
-            border-color: var(--color-highlight-0);
-        }
+      .navbar-scrolleddown {
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(2px);
+        border-color: var(--color-highlight-0);
+      }
     </style>
     <!-- <link rel="stylesheet" href="common.css">
     <script src="link-navbar.js" defer></script> -->
@@ -97,27 +117,40 @@
 
 <body>
     <div class="navbar">
-        <div class="navbar-left">
-            <a>
-                <img src="../images/icons8-bag-96.png"  alt="Logo" width="50px" height="50px">
-            </a>
-            <a href="../index.html">
-                <h1 style="color: black;">Best Bag</h1>
-            </a>
-        </div>
-        <div class="navbar-right" id="navbar-right-non-login">
-            <a id="user-icon">
-                <svg class="selectable circle-icon" width="40" height="40" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2m8-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-            </a>
-        </div>
-        <div class="navbar-right" id="navbar-right-logged-in">
-
-        </div>
-
+      <div class="navbar-left">
+        <a>
+          <img
+            src="../images/icons8-bag-96.png"
+            alt="Logo"
+            width="50px"
+            height="50px"
+          />
+        </a>
+        <a href="../index.html">
+          <h1 style="color: black">Best Bag</h1>
+        </a>
+      </div>
+      <div class="navbar-right" id="navbar-right-non-login">
+        <a id="user-icon">
+          <svg
+            class="selectable circle-icon"
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2m8-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+        </a>
+      </div>
+      <div class="navbar-right" id="navbar-right-logged-in"></div>
     </div>
 </body>
 
