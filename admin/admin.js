@@ -157,20 +157,58 @@ function adminThemSanPham() {
   });
   infoForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    const tenSanPham = document.getElementById("tenSanPham").value.trim();
+    const giaSanPham = parseInt(document.getElementById("giaSanPham").value);
+    const giaKhuyenMai = parseInt(document.getElementById("giaKhuyenMai").value);
+    const loaiSanPham = document.getElementById("loaiSanPham").value.trim();
+
+    // Kiểm tra dữ liệu nhập
+    if (tenSanPham === "") {
+      alert("Tên sản phẩm không được để trống.");
+      document.getElementById("tenSanPham").focus();
+      return;
+    }
+
+    if (isNaN(giaSanPham) || giaSanPham < 0) {
+      alert("Giá sản phẩm phải là số dương.");
+      document.getElementById("giaSanPham").focus();
+      return;
+    }
+
+    if (isNaN(giaKhuyenMai) || giaKhuyenMai < 0) {
+      alert("Giá khuyến mãi phải là số dương.");
+      document.getElementById("giaKhuyenMai").focus();
+      return;
+    }
+
+    if (giaKhuyenMai > giaSanPham) {
+      alert("Giá khuyến mãi không được lớn hơn giá sản phẩm.");
+      document.getElementById("giaKhuyenMai").focus();
+      return;
+    }
+
+    if (loaiSanPham === "") {
+      alert("Vui lòng chọn loại sản phẩm.");
+      document.getElementById("loaiSanPham").focus();
+      return;
+    }
+
     const sanPham = {
       "web-scraper-start-url": "https://lynvn.com/collections/view-all-bags?page=16",
       "image-src": document.getElementById("linkHinhAnh1").value,
       "image2-src": document.getElementById("linkHinhAnh2").value,
-      name: document.getElementById("tenSanPham").value,
-      price: document.getElementById("giaSanPham").toLocaleString("vi-VN", {
+      name: tenSanPham,
+      price: giaSanPham.toLocaleString("vi-VN", {
         style: "currency",
         currency: "VND",
       }),
-      "image-file": document.getElementById("hinhAnhSanPham1").files[0]?.name || "",
-      "image2-file": document.getElementById("hinhAnhSanPham2").files[0]?.name || "",
+
+      "image-file": document.getElementById("hinhAnhSanPham1").files[0]?.name || null,
+      "image2-file": document.getElementById("hinhAnhSanPham2").files[0]?.name || null,
+
       "price-n": parseInt(document.getElementById("giaSanPham").value),
       "price-sale-n": parseInt(document.getElementById("giaKhuyenMai").value),
-      category: document.getElementById("loaiSanPham").value,
+      category: loaiSanPham,
       description: document.getElementById("moTaSanPham").value,
     };
     themSanPham(null, sanPham);
@@ -201,12 +239,49 @@ function adminSuaSanPham(id) {
   });
   infoForm.addEventListener("submit", (event) => {
     event.preventDefault();
+
+    const tenSanPham = document.getElementById("tenSanPham").value.trim();
+    const giaSanPham = parseInt(document.getElementById("giaSanPham").value);
+    const giaKhuyenMai = parseInt(document.getElementById("giaKhuyenMai").value);
+    const loaiSanPham = document.getElementById("loaiSanPham").value.trim();
+
+    // Kiểm tra dữ liệu nhập
+    if (tenSanPham === "") {
+      alert("Tên sản phẩm không được để trống.");
+      document.getElementById("tenSanPham").focus();
+      return;
+    }
+
+    if (isNaN(giaSanPham) || giaSanPham < 0) {
+      alert("Giá sản phẩm phải là số dương.");
+      document.getElementById("giaSanPham").focus();
+      return;
+    }
+
+    if (isNaN(giaKhuyenMai) || giaKhuyenMai < 0) {
+      alert("Giá khuyến mãi phải là số dương.");
+      document.getElementById("giaKhuyenMai").focus();
+      return;
+    }
+
+    if (giaKhuyenMai > giaSanPham) {
+      alert("Giá khuyến mãi không được lớn hơn giá sản phẩm.");
+      document.getElementById("giaKhuyenMai").focus();
+      return;
+    }
+
+    if (loaiSanPham === "") {
+      alert("Vui lòng chọn loại sản phẩm.");
+      document.getElementById("loaiSanPham").focus();
+      return;
+    }
+
     const newSanPham = {
       "web-scraper-start-url":sanPham["web-scraper-start-url"],
       "image-src":document.getElementById("linkHinhAnh1").value,
       "image2-src":document.getElementById("linkHinhAnh2").value,
-      name: document.getElementById("tenSanPham").value,
-      price: document.getElementById("giaSanPham").toLocaleString("vi-VN", {
+      name: tenSanPham,
+      price: giaSanPham.toLocaleString("vi-VN", {
         style: "currency",
         currency: "VND",
       }),
@@ -214,7 +289,7 @@ function adminSuaSanPham(id) {
       "image2-file":document.getElementById("hinhAnhSanPham2").files[0]?.name || sanPham["image2-file"],
       "price-n": parseInt(document.getElementById("giaSanPham").value),
       "price-sale-n": parseInt(document.getElementById("giaKhuyenMai").value),
-      category: document.getElementById("loaiSanPham").value,
+      category: loaiSanPham,
       description: document.getElementById("moTaSanPham").value,
     };
     
@@ -463,14 +538,39 @@ function adminThemNguoiDung() {
   document.getElementById("ngay-tao").value = formattedDate; // Gán giá trị ngày hiện tại vào input
   document.getElementById("ngay-tao").disabled = true;
   editForm.addEventListener("submit", (event) => {
-    event.preventDefault(); // Ngừng sự kiện mặc định của
+    event.preventDefault(); 
+    const name =document.getElementById("name").value;
+    const userName = document.getElementById("username").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if(name===""){
+      alert("Tên người dùng không được để trống.");
+      document.getElementById("name").focus();
+      return;
+    }
+    if(userName===""){
+      alert("Tên đăng nhập không được để trống.");
+      document.getElementById("username").focus();
+      return;
+    }
+    if(email===""){
+      alert("Email không được để trống.");
+      document.getElementById("email").focus();
+      return;
+    }
+    if(password.length < 8){
+      alert("Mật khẩu không được ít hơn 8 kí tự.");
+      document.getElementById("password").focus();
+      return;
+    }
 
     const newNguoiDung = {
-      name: document.getElementById("name").value,
-      username: document.getElementById("username").value,
-      email: document.getElementById("email").value,
-      password: document.getElementById("password").value,
-      ["ngay-tao"]: formattedDate,
+      name: name,
+      username: userName,
+      email: email,
+      password: password,
+      "ngay-tao": formattedDate,
       disabled: document.getElementById("disabled2").checked,
     };
     themNguoiDung(null,newNguoiDung);
@@ -509,13 +609,38 @@ function adminSuaNguoiDung(id) {
     });
   // Lắng nghe sự kiện submit của form
   editForm.onsubmit = function (event) {
-    event.preventDefault(); // Ngừng sự kiện mặc định của
+    event.preventDefault(); 
+    const name =document.getElementById("name").value;
+    const userName = document.getElementById("username").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if(name===""){
+      alert("Tên người dùng không được để trống.");
+      document.getElementById("name").focus();
+      return;
+    }
+    if(userName===""){
+      alert("Tên đăng nhập không được để trống.");
+      document.getElementById("username").focus();
+      return;
+    }
+    if(email===""){
+      alert("Email không được để trống.");
+      document.getElementById("email").focus();
+      return;
+    }
+    if(password.length < 8){
+      alert("Mật khẩu không được ít hơn 8 kí tự.");
+      document.getElementById("password").focus();
+      return;
+    }
 
     const newNguoiDung = {
-      name: document.getElementById("name").value,
-      username: document.getElementById("username").value,
-      email: document.getElementById("email").value,
-      password: document.getElementById("password").value,
+      name: name,
+      username: userName,
+      email: email,
+      password: password,
       "ngay-tao": nguoiDung["ngay-tao"],
       disabled: document.getElementById("disabled2").checked,
     };
@@ -1111,6 +1236,16 @@ function adminThemHoaDon() {
   });
   invoiceForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    const nguoidung = document.getElementById("khach-hang").value;
+    if(nguoidung==="--Chọn--"){
+      alert("Chọn khách hàng.");
+      document.getElementById("khach-hang").focus();
+      return;
+    }
+    if(cart.length===0){
+      alert("Thêm sản phẩm vào giỏ.");
+      return;
+    }
     const newHoaDon = {
       "nguoi-dung": document.getElementById("khach-hang").value,
       "ngay-tao": document.getElementById("ngayTaoHoaDon").value,
@@ -1156,6 +1291,10 @@ function adminSuaHoaDon(id) {
   });
   invoiceForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    if(cart.length===0){
+      alert("Thêm sản phẩm vào giỏ.");
+      return;
+    }
     const newHoaDon = {
       "nguoi-dung": document.getElementById("khach-hang").value,
       "ngay-tao": hoaDon["ngay-tao"],
