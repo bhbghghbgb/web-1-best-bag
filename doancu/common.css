@@ -1,0 +1,161 @@
+/* Huynh Gia Bao */
+@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Manrope:wght@400;700&display=swap);
+
+:root {
+    --color-bg-0: rgb(25, 26, 28);
+    --color-bg-0i0: rgba(25, 26, 28, .0);
+    --color-bg-0i9: rgba(25, 26, 28, .9);
+    --color-bg-0i5: rgba(25, 26, 28, .5);
+    --color-bg-1: rgb(44, 44, 44);
+    --color-bg-2: rgb(61, 61, 61);
+    --color-bg-3: rgb(79, 79, 79);
+    --color-highlight-0: rgb(255, 103, 64);
+    --color-highlight-1: rgb(206, 64, 29);
+    --color-selection-0: rgb(0, 122, 204);
+    --color-selection-0i0: rgba(0, 122, 204, 0);
+    --color-selection-0i5: rgba(0, 122, 204, .5);
+    --color-outline-0: peachpuff;
+    --color-outline-0i0: rgba(255, 218, 185, 0);
+    --color-outline-0i5: rgba(255, 218, 185, 5);
+    --color-text: white;
+    --zindex-modal: 9;
+    --zindex-modal-overlay: 8;
+    --zindex-selectable: 1;
+    --zindex: 0;
+}
+
+::-webkit-scrollbar {
+    height: 9px;
+    width: 9px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--color-bg-2);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--color-highlight-0);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-highlight-1);
+}
+
+::-webkit-scrollbar {
+    height: 9px;
+    width: 9px;
+}
+
+.scrollbar-gray::-webkit-scrollbar-track {
+    background-color: var(--color-bg-1);
+    border-radius: 3px;
+}
+
+.scrollbar-gray::-webkit-scrollbar-thumb {
+    background-color: var(--color-bg-2);
+    border-radius: 3px;
+}
+
+.scrollbar-gray::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-bg-3);
+}
+
+.sidebar-placeholder {
+    position: fixed;
+    left: 0;
+    top: 0;
+    /* force bottom to sit at bottom viewport */
+    bottom: 0;
+    z-index: var(--zindex-modal);
+    width: 220px;
+    height: 100vh;
+    background-color: var(--color-bg-1);
+    transition: transform .25s ease;
+    overflow-y: auto;
+}
+
+.sidebar-placeholder[data-sidebar-collapsed] {
+    transform: translate(-100%, 0);
+}
+
+.navbar-placeholder {
+    position: fixed;
+    left: 0;
+    /* force right to sit at right viewport */
+    right: 0;
+    top: 0;
+    z-index: var(--zindex-modal-overlay);
+}
+
+.body-modal-overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: var(--zindex-modal-overlay);
+    /* scrollbar offset */
+    width: calc(100vw - 9px);
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    content: "";
+    transition-property: opacity, visibility;
+    transition-duration: .35s, .35s;
+    transition-timing-function: ease;
+}
+
+.body-modal-overlay[data-sidebar-collapsed] {
+    opacity: 0;
+    visibility: hidden;
+    backdrop-filter: none;
+}
+
+.selectable {
+    outline: 3px solid var(--color-outline-0i0);
+    outline-offset: 10px;
+    border-radius: 2px;
+    transition-property: outline-color, outline-offset, z-index;
+    transition-duration: .3s, 0s, .3s;
+    transition-timing-function: linear, step-end, step-end;
+    transition-delay: 0s, .3s, 0s;
+    z-index: var(--zindex);
+}
+
+.selectable:hover {
+    outline-color: var(--color-outline-0i5);
+    outline-offset: 2px;
+    transition-property: outline-color, outline-offset, z-index;
+    transition-duration: .3s;
+    transition-timing-function: linear, ease, step-start;
+    transition-delay: 0s;
+    z-index: var(--zindex-selectable);
+}
+
+.circle-icon {
+    border-radius: 50%;
+}
+
+html,
+body,
+a,
+p,
+ul,
+li,
+button,
+svg {
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--color-bg-0);
+}
+
+* {
+    font-family: Poppins, Manrope, sans-serif, Tahoma, Geneva, Verdana;
+    font-size: 14px;
+    font-weight: 400;
+    color: white;
+}

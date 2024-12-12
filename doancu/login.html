@@ -1,0 +1,71 @@
+<!-- Duong Ngoc Le -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="form-duong.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />   
+    <title> Login</title>
+    <link rel="stylesheet" href="common.css">
+    <script src="link-navbar-sidebar.js" defer></script>
+  </head>
+  <body>
+    <div class="wapper" id="navbar-sidebar-inject">
+      <form action="" id="form-login" >
+      
+        <div class="wapper-heading">
+        
+          <h1 class="fonts" > <i  style="size: 20px;" class="fa fa-solid fa-arrow-left"  onclick="trolai()" ></i> Log in</h1>
+        </div>
+        
+        <div class="input__field">
+          <input id="username" type="text"  required=""  />
+          <label > Username </label>
+
+
+        </div>
+ 
+        <div class="input__field">
+         
+          
+          <input id="password" type="password" required="" />
+          <label> Password </label>
+        
+        </div>
+        
+        <a href="forgot.html" class="Forgot">Forgot Username/Password</a>
+
+        <div class="squaredcheck">
+          <input  type="checkbox" value="None" id="checkbox1" name="check" checked />
+          <label for="squaredcheck" class="checkboxname"><span  style="font-size: 25px;">Remember Me</span></label>
+        
+        </div>
+        <button class="btn btn-login"  >Log in</button>
+        <button  type="button"  onclick="dangky()" class="ls-link" >  Create an Account   </button>
+      </form>
+    
+    </div>
+    
+    <script src="login.js"></script>
+    <script>
+  function dangky(){
+          location.assign("signup.html");
+      }
+     function trolai()
+     {
+      // location.assign("hello.html");
+      location.assign("index.html");
+     }
+ </script>
+ 
+
+  </body>
+</html>
