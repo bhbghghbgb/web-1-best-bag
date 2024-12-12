@@ -6,22 +6,25 @@
 
 #### Nhom 6: xay dung web doc truyen
 
-- 3121410100 Trần Đức Cường
-- 3121410129 Lê Ngọc Dương
-- 3121410300 Hoàng Bảo Lộc
-- 3121410071 Huỳnh Gia Bảo
-- 3121440088 Đinh Hoàng Chiến
+| ma so sinh vien | ho ten           |
+| --------------- | ---------------- |
+| 3121410100      | Trần Đức Cường   |
+| 3121410129      | Lê Ngọc Dương    |
+| 3121410300      | Hoàng Bảo Lộc    |
+| 3121410071      | Huỳnh Gia Bảo    |
+| 3121440088      | Đinh Hoàng Chiến |
 
 ##### Link source (old repo): https://github.com/bhbghghbgb/miniature-octo-barnacle
 
 ##### Link source (after mirgation): https://github.com/bhbghghbgb/web-1-best-bag/tree/main/doancu/
 
-##### Link deploy github pages (old repo): https://bhbghghbgb.github.io/web-1-best-bag/index.html
+##### Link deploy github pages (old repo): https://bhbghghbgb.github.io/miniature-octo-barnacle/index.html
 
 ##### Link deploy github pages (after mirgation): https://bhbghghbgb.github.io/web-1-best-bag/doancu/index.html
 
 ## Disclaimer:
 
+- **mirgation note:** day la thong tin o do an cu, vui long truy cap link **Link source (old repo)**, neu ban da o day thi ok
 - Trang nay co the se thay doi trong qua trinh cho doi cham bai, do nhom toi co the ban bac thay doi mot so chi tiet.
 - Neu can thiet, thuc hien cac buoc sau de xem repo nay phien ban trong qua khu:
   1. Browse repo nay va bao dam ban dang o nhanh main
