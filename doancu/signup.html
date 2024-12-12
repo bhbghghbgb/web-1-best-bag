@@ -1,0 +1,92 @@
+<!-- Duong Ngoc Le -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="form-duong.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+  <title>Sign up</title>
+  <link rel="stylesheet" href="common.css">
+  <script src="link-navbar-sidebar.js" defer></script>
+</head>
+
+<body>
+  <div class="wapper" id="navbar-sidebar-inject">
+
+
+    <form action="" id="form-login">
+
+      <div class="wapper-heading">
+        <h1 class="fonts" > <i class="fa fa-solid fa-arrow-left"  onclick="trolai()" > </i> Create Account </h1>
+      </div>
+
+      <div class="yeucau" style="font-size: 25px; color: #f5f5f5; ">Your username must be unique and will be visible to
+        other users.</div>
+
+
+      <div class="input__field">
+        <input id="username" type="text" required="" />
+        <label> Username </label>
+      </div>
+
+      <div class="input__field">
+        <input type="text" name="" id="email" required="" />
+        <label>Email</label>
+      </div>
+
+      <div class="input__field">
+        <input type="text" name="" id="emailcf" required="" />
+        <label>Confirm Email</label>
+      </div>
+
+
+      <div class="input__field">
+
+        <input id="password" type="password" required="" />
+        <label>Password</label>
+
+      </div>
+
+      <div class="input__field">
+
+        <input id="passwordcf" type="password" required="" />
+        <label>Confirm Password</label>
+
+      </div>
+
+      <div class="squaredcheck">
+        <input type="checkbox" value="1" id="checkbox1" name="check" />
+        <label for="squaredcheck" class="checkboxname"><span style="font-size: 25px;">I have read and accept the </span>
+          <a class="rules" href="rules.html" style="font-size: 25px;"> Rules. </a> </label>
+      </div>
+
+      <button class="btn btn-signup">Create Account</button>
+
+      <button type="button" onclick="trolai()" class="ls-link">Log in</button>
+
+
+    </form>
+
+  </div>
+
+  <!-- <script src="main.js"></script> -->
+  <script src="signup.js"></script>
+  <script>
+    function trolai() 
+    {
+      location.assign("login.html");
+    }
+  </script>
+
+
+</body>
+
+</html>
