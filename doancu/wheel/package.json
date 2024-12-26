@@ -1,0 +1,7 @@
+{
+  "name": "wheel",
+  "packageManager": "yarn@4.4.1",
+  "dependencies": {
+    "acorn": "^8.14.0"
+  }
+}
