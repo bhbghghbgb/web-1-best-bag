@@ -1,13 +1,13 @@
 import { Parser } from "acorn";
-import { readFileSync } from "fs";
-import { traverse, builders } from "estree-toolkit";
-import { generate } from "escodegen";
+import { readFileSync, writeFileSync } from "fs";
+import { traverse, builders, is as nodeIs } from "estree-toolkit";
+import { generate, FORMAT_MINIFY } from "escodegen";
 import obsfucator from "javascript-obfuscator";
-const wholeFileNode_Body = Parser.parse(
+const wholeFileNode = Parser.parse(
   readFileSync("./wheel.min.js", { encoding: "utf-8" }),
-  { sourceType: "script" }
-).body;
-
+  { sourceType: "script", locations: false }
+);
+const wholeFileNode_Body = wholeFileNode.body;
 const stringDecoder_Name = (function () {
   // const stringDecoder_VariableDeclaration = wholeFileNode.body[0]; // always first line in the code?
   const stringDecoder_VariableDeclaration = wholeFileNode_Body.filter(
@@ -107,86 +107,93 @@ const loadWheel_Body = (function () {
   const loadWheel_BlockStatement = loadWheel_FunctionDeclaration[0].body;
   return loadWheel_BlockStatement.body;
 })();
-const [sectorAngles_Name, currentWheelAngle_Name] = (function () {
-  const failureReturn = [null, null];
-  if (!loadWheel_Body) return failureReturn;
-  const calcCurrentSectorIndex_VariableDeclaration = loadWheel_Body.filter(
-    (node) =>
-      node.type === "VariableDeclaration" &&
-      node.kind === "const" &&
-      node.declarations?.length === 1 &&
-      node.declarations[0].init.type === "ArrowFunctionExpression"
-  );
-  if (calcCurrentSectorIndex_VariableDeclaration.length !== 1)
-    return failureReturn;
-  const calcCurrentSectorIndex_VariableDeclarator =
-    calcCurrentSectorIndex_VariableDeclaration[0].declarations[0];
-  const arrowFunctionBlockStatement =
-    calcCurrentSectorIndex_VariableDeclarator.init.body;
-  const body = arrowFunctionBlockStatement.body;
-  if (
-    body.length !== 3 ||
-    body[0].type !== "VariableDeclaration" ||
-    body[1].type !== "ForStatement" ||
-    body[2].type !== "ReturnStatement"
-  )
-    return failureReturn;
-  const forStatement = body[1];
-  const forStatementTest = forStatement.test;
-  if (
-    forStatementTest.type !== "BinaryExpression" ||
-    forStatementTest.operator !== "<"
-  )
-    return failureReturn;
-  const forStatementExpressionRightSide = forStatementTest.right;
-  if (forStatementExpressionRightSide.type !== "MemberExpression")
-    return failureReturn;
-  const property = forStatementExpressionRightSide.property;
-  if (property.type !== "Literal" || property.value !== "length")
-    return failureReturn;
-  if (forStatementExpressionRightSide.object.type !== "Identifier")
-    return failureReturn;
-  const sanityTrySectorAngle = forStatementExpressionRightSide.object.name;
-  const forStatementBody = forStatement.body.body;
-  if (
-    forStatementBody.length !== 2 ||
-    forStatementBody[0].type !== "ExpressionStatement" ||
-    forStatementBody[1].type !== "IfStatement"
-  )
-    return failureReturn;
-  const forStatementExpression = forStatementBody[0].expression;
-  if (
-    forStatementExpression.type !== "AssignmentExpression" ||
-    forStatementExpression.operator !== "+="
-  )
-    return failureReturn;
-  const inForStatementExpressionRightSide = forStatementExpression.right;
-  if (
-    inForStatementExpressionRightSide.type !== "MemberExpression" ||
-    inForStatementExpressionRightSide.object.type !== "Identifier" ||
-    inForStatementExpressionRightSide.property.type !== "Identifier"
-  )
-    return failureReturn;
-  if (sanityTrySectorAngle !== inForStatementExpressionRightSide.object.name)
-    return failureReturn;
-  // continue the code
-  const inForStatementIfStatement = forStatementBody[1];
-  if (
-    inForStatementIfStatement.test.type !== "BinaryExpression" ||
-    inForStatementIfStatement.test.operator !== "<" ||
-    inForStatementIfStatement.test.left.type !== "CallExpression" ||
-    inForStatementIfStatement.test.left.callee.type !== "MemberExpression" ||
-    inForStatementIfStatement.test.left.callee.object.type !== "Identifier" ||
-    inForStatementIfStatement.test.left.callee.object.name !== "Math" ||
-    inForStatementIfStatement.test.left.callee.property.type !== "Literal" ||
-    inForStatementIfStatement.test.left.callee.property.value !== "abs"
-  )
-    return failureReturn;
-  const absArgument = inForStatementIfStatement.test.left.arguments[0];
-  if (absArgument.type !== "Identifier") return failureReturn;
-  const currentWheelAngle_Name = absArgument.name;
-  return [sanityTrySectorAngle, currentWheelAngle_Name];
-})();
+const [calcCurrentSectorIndex_Name, sectorAngles_Name, currentWheelAngle_Name] =
+  (function () {
+    const failureReturn = [null, null];
+    if (!loadWheel_Body) return failureReturn;
+    const calcCurrentSectorIndex_VariableDeclaration = loadWheel_Body.filter(
+      (node) =>
+        node.type === "VariableDeclaration" &&
+        node.kind === "const" &&
+        node.declarations?.length === 1 &&
+        node.declarations[0].init.type === "ArrowFunctionExpression"
+    );
+    if (calcCurrentSectorIndex_VariableDeclaration.length !== 1)
+      return failureReturn;
+    const calcCurrentSectorIndex_VariableDeclarator =
+      calcCurrentSectorIndex_VariableDeclaration[0].declarations[0];
+    const calcCurrentSectorIndexName =
+      calcCurrentSectorIndex_VariableDeclarator.id.name;
+    const arrowFunctionBlockStatement =
+      calcCurrentSectorIndex_VariableDeclarator.init.body;
+    const body = arrowFunctionBlockStatement.body;
+    if (
+      body.length !== 3 ||
+      body[0].type !== "VariableDeclaration" ||
+      body[1].type !== "ForStatement" ||
+      body[2].type !== "ReturnStatement"
+    )
+      return failureReturn;
+    const forStatement = body[1];
+    const forStatementTest = forStatement.test;
+    if (
+      forStatementTest.type !== "BinaryExpression" ||
+      forStatementTest.operator !== "<"
+    )
+      return failureReturn;
+    const forStatementExpressionRightSide = forStatementTest.right;
+    if (forStatementExpressionRightSide.type !== "MemberExpression")
+      return failureReturn;
+    const property = forStatementExpressionRightSide.property;
+    if (property.type !== "Literal" || property.value !== "length")
+      return failureReturn;
+    if (forStatementExpressionRightSide.object.type !== "Identifier")
+      return failureReturn;
+    const sanityTrySectorAngle = forStatementExpressionRightSide.object.name;
+    const forStatementBody = forStatement.body.body;
+    if (
+      forStatementBody.length !== 2 ||
+      forStatementBody[0].type !== "ExpressionStatement" ||
+      forStatementBody[1].type !== "IfStatement"
+    )
+      return failureReturn;
+    const forStatementExpression = forStatementBody[0].expression;
+    if (
+      forStatementExpression.type !== "AssignmentExpression" ||
+      forStatementExpression.operator !== "+="
+    )
+      return failureReturn;
+    const inForStatementExpressionRightSide = forStatementExpression.right;
+    if (
+      inForStatementExpressionRightSide.type !== "MemberExpression" ||
+      inForStatementExpressionRightSide.object.type !== "Identifier" ||
+      inForStatementExpressionRightSide.property.type !== "Identifier"
+    )
+      return failureReturn;
+    if (sanityTrySectorAngle !== inForStatementExpressionRightSide.object.name)
+      return failureReturn;
+    // continue the code
+    const inForStatementIfStatement = forStatementBody[1];
+    if (
+      inForStatementIfStatement.test.type !== "BinaryExpression" ||
+      inForStatementIfStatement.test.operator !== "<" ||
+      inForStatementIfStatement.test.left.type !== "CallExpression" ||
+      inForStatementIfStatement.test.left.callee.type !== "MemberExpression" ||
+      inForStatementIfStatement.test.left.callee.object.type !== "Identifier" ||
+      inForStatementIfStatement.test.left.callee.object.name !== "Math" ||
+      inForStatementIfStatement.test.left.callee.property.type !== "Literal" ||
+      inForStatementIfStatement.test.left.callee.property.value !== "abs"
+    )
+      return failureReturn;
+    const absArgument = inForStatementIfStatement.test.left.arguments[0];
+    if (absArgument.type !== "Identifier") return failureReturn;
+    const currentWheelAngle_Name = absArgument.name;
+    return [
+      calcCurrentSectorIndexName,
+      sanityTrySectorAngle,
+      currentWheelAngle_Name,
+    ];
+  })();
 const wheelSectors_Name = (function () {
   if (!loadWheel_Body) return null;
   const wheelSectors_VariableDeclaration = loadWheel_Body.filter((node) => {
@@ -219,7 +226,7 @@ const wheelSectors_Name = (function () {
     wheelSectors_VariableDeclaration[0].declarations[0];
   return wheelSectors_VariableDeclarator.id.name;
 })();
-const [spinDecrement_Name, spinDecrementRandomizer_Name] = (function () {
+const [spinAcceleration_Name, spinAccelerationRandomizer_Name] = (function () {
   const failureReturn = [null, null];
   if (!loadWheel_Body) return failureReturn;
   const spinElementClick_ExpressionStatement = loadWheel_Body.filter((node) => {
@@ -244,15 +251,15 @@ const [spinDecrement_Name, spinDecrementRandomizer_Name] = (function () {
   const spinElementClick_listener_BlockStatement =
     spinElementClick_listener_ArrowFunctionExpression.body;
   const body = spinElementClick_listener_BlockStatement.body;
-  const spinDecrementZero = body[body.length - 1];
-  if (spinDecrementZero?.type !== "IfStatement") return failureReturn;
-  const test = spinDecrementZero.test;
+  const spinAccelerationZero = body[body.length - 1];
+  if (spinAccelerationZero?.type !== "IfStatement") return failureReturn;
+  const test = spinAccelerationZero.test;
   if (test.type !== "UnaryExpression" || test.operator !== "!")
     return failureReturn;
   const testArgument = test.argument;
   if (testArgument.type !== "Identifier") return failureReturn;
-  const spinDecrementName = testArgument.name;
-  const consequent = spinDecrementZero.consequent;
+  const spinAccelerationName = testArgument.name;
+  const consequent = spinAccelerationZero.consequent;
   if (consequent.type !== "ExpressionStatement") return failureReturn;
   const consequentExpression = consequent.expression;
   if (
@@ -271,8 +278,8 @@ const [spinDecrement_Name, spinDecrementRandomizer_Name] = (function () {
     randFunctionArguments[0].value >= randFunctionArguments[1].value
   )
     return failureReturn;
-  const spinDecrementRandomizerName = randFunctionCallee.name;
-  return [spinDecrementName, spinDecrementRandomizerName];
+  const spinAccelerationRandomizerName = randFunctionCallee.name;
+  return [spinAccelerationName, spinAccelerationRandomizerName];
 })();
 const [accelerationFactor_Name, stopThreshold_Value] = (function () {
   if (!loadWheel_Body) return [null, 1];
@@ -289,15 +296,15 @@ const [accelerationFactor_Name, stopThreshold_Value] = (function () {
       body[4].type !== "ExpressionStatement"
     )
       continue;
-    const spinDecrementZero = body[1];
-    const spinDecrementZeroTest = spinDecrementZero.test;
+    const spinAccelerationZero = body[1];
+    const spinAccelerationZeroTest = spinAccelerationZero.test;
     if (
-      spinDecrementZeroTest.type !== "UnaryExpression" ||
-      spinDecrementZeroTest.operator !== "!" ||
-      spinDecrementZeroTest.argument.type !== "Identifier" ||
-      spinDecrementZeroTest.argument.name !== spinDecrement_Name ||
-      spinDecrementZero.consequent.type !== "ReturnStatement" ||
-      spinDecrementZero.consequent.argument !== null
+      spinAccelerationZeroTest.type !== "UnaryExpression" ||
+      spinAccelerationZeroTest.operator !== "!" ||
+      spinAccelerationZeroTest.argument.type !== "Identifier" ||
+      spinAccelerationZeroTest.argument.name !== spinAcceleration_Name ||
+      spinAccelerationZero.consequent.type !== "ReturnStatement" ||
+      spinAccelerationZero.consequent.argument !== null
     )
       continue;
     const accelerateTickExpression = body[2].expression;
@@ -305,56 +312,62 @@ const [accelerationFactor_Name, stopThreshold_Value] = (function () {
       accelerateTickExpression.type !== "AssignmentExpression" ||
       accelerateTickExpression.operator !== "*=" ||
       accelerateTickExpression.left.type !== "Identifier" ||
-      accelerateTickExpression.left.name !== spinDecrement_Name ||
+      accelerateTickExpression.left.name !== spinAcceleration_Name ||
       accelerateTickExpression.right.type !== "Identifier"
     )
       continue;
     const accelerationFactorName = accelerateTickExpression.right.name;
-    const spinDecrementThreshold = body[3];
-    const spinDecrementThresholdTest = spinDecrementThreshold.test;
+    const spinAccelerationThreshold = body[3];
+    const spinAccelerationThresholdTest = spinAccelerationThreshold.test;
     if (
-      spinDecrementThresholdTest.type !== "BinaryExpression" ||
-      spinDecrementThresholdTest.operator !== "<" ||
-      spinDecrementThresholdTest.left.type !== "Identifier" ||
-      spinDecrementThresholdTest.left.name !== spinDecrement_Name ||
-      spinDecrementThresholdTest.right.type !== "Literal"
+      spinAccelerationThresholdTest.type !== "BinaryExpression" ||
+      spinAccelerationThresholdTest.operator !== "<" ||
+      spinAccelerationThresholdTest.left.type !== "Identifier" ||
+      spinAccelerationThresholdTest.left.name !== spinAcceleration_Name ||
+      spinAccelerationThresholdTest.right.type !== "Literal"
     )
       continue;
-    const spinDecrementStopThresholdValue =
-      spinDecrementThresholdTest.right.value;
+    const spinAccelerationStopThresholdValue =
+      spinAccelerationThresholdTest.right.value;
     if (
-      spinDecrementThreshold.consequent.type !== "BlockStatement" ||
-      spinDecrementThreshold.consequent.body.length < 2
+      spinAccelerationThreshold.consequent.type !== "BlockStatement" ||
+      spinAccelerationThreshold.consequent.body.length < 2
     )
       continue;
-    const spinDecrementThresholdFirstStatement =
-      spinDecrementThreshold.consequent.body[0];
-    const spinDecrementThresholdFirstExpression =
-      spinDecrementThresholdFirstStatement.expression;
+    const spinAccelerationThresholdFirstStatement =
+      spinAccelerationThreshold.consequent.body[0];
+    const spinAccelerationThresholdFirstExpression =
+      spinAccelerationThresholdFirstStatement.expression;
     if (
-      spinDecrementThresholdFirstStatement.type !== "ExpressionStatement" ||
-      spinDecrementThresholdFirstExpression.type !== "AssignmentExpression" ||
-      spinDecrementThresholdFirstExpression.operator !== "=" ||
-      spinDecrementThresholdFirstExpression.left.type !== "Identifier" ||
-      spinDecrementThresholdFirstExpression.left.name !== spinDecrement_Name ||
-      spinDecrementThresholdFirstExpression.right.type !== "Literal" ||
-      spinDecrementThresholdFirstExpression.right.value !== 0
+      spinAccelerationThresholdFirstStatement.type !== "ExpressionStatement" ||
+      spinAccelerationThresholdFirstExpression.type !==
+        "AssignmentExpression" ||
+      spinAccelerationThresholdFirstExpression.operator !== "=" ||
+      spinAccelerationThresholdFirstExpression.left.type !== "Identifier" ||
+      spinAccelerationThresholdFirstExpression.left.name !==
+        spinAcceleration_Name ||
+      spinAccelerationThresholdFirstExpression.right.type !== "Literal" ||
+      spinAccelerationThresholdFirstExpression.right.value !== 0
     )
       continue;
-    return [accelerationFactorName, spinDecrementStopThresholdValue];
+    return [accelerationFactorName, spinAccelerationStopThresholdValue];
   }
   return [null, null];
 })();
 
 const patchIdentifierMap = {
+  stringDecoder: stringDecoder_Name,
+  calcCurrentSectorIndex: calcCurrentSectorIndex_Name,
   sectorAngles: sectorAngles_Name,
   currentWheelAngle: currentWheelAngle_Name,
   wheelSectors: wheelSectors_Name,
+  spinAcceleration: spinAcceleration_Name,
+  originalFunction: spinAccelerationRandomizer_Name,
   accelerationFactor: accelerationFactor_Name,
 };
 const patchValueMap = {
   riggedIndexes: [],
-  riggedValues: ["Dũng"],
+  riggedValues: ["Mai", "Hương", "Giang"],
   stopThreshold: stopThreshold_Value,
 };
 const patchFunctionExpression = Parser.parse(
@@ -362,25 +375,49 @@ const patchFunctionExpression = Parser.parse(
   { sourceType: "script" }
 ).body[0].expression;
 traverse(patchFunctionExpression, {
+  // _astreplace_identifier_* is  replaced to an identifier within the scope of the original code
   Identifier(path) {
     if (!path.node.name.startsWith("_astreplace_")) return;
     const [type, name] = path.node.name.slice(12).split("_");
     switch (type) {
       case "identifier":
-        path.replaceWith(builders.identifier(patchIdentifierMap[name]));
+        path.replaceWith(
+          patchIdentifierMap[name] != null
+            ? builders.identifier(patchIdentifierMap[name])
+            : builders.literal(null)
+        );
         break;
+    }
+  },
+  // _astreplace_value_* is replaced to a constant defined locally
+  VariableDeclarator(path) {
+    if (
+      !nodeIs.identifier(path.node.id) ||
+      !path.node.id.name.startsWith("_astreplace_") ||
+      path.node.init.name !== "undefined"
+    )
+      return;
+    const [type, name] = path.node.id.name.slice(12).split("_");
+    switch (type) {
       case "value":
         path.replaceWith(
-          Parser.parse(JSON.stringify(patchValueMap[name]), {
-            sourceType: "script",
-          }).body[0].expression
+          builders.variableDeclarator(
+            structuredClone(path.node.id),
+            patchValueMap[name] != null
+              ? Parser.parse(JSON.stringify(patchValueMap[name]), {
+                  sourceType: "script",
+                }).body[0].expression
+              : builders.literal(null)
+          )
         );
         break;
     }
   },
 });
 
-const patchFunctionExpressionString = generate(patchFunctionExpression);
+const patchFunctionExpressionString = generate(patchFunctionExpression, {
+  format: FORMAT_MINIFY,
+});
 // obfuscate it so it looks like the original code, but minimize its effects
 // (use only identifierNamesGenerator: 'hexadecimal')
 const obfuscatedPatchFunctionString = obsfucator
@@ -397,7 +434,8 @@ const obfuscatedPatchFunctionString = obsfucator
     numbersToExpressions: false,
     renameGlobals: false,
     renameProperties: false,
-    seed: 0,
+    // expect same obfuscation result
+    seed: 1,
     selfDefending: false,
     simplify: true,
     sourceMap: false,
@@ -413,4 +451,30 @@ const obfuscatedPatchFunctionExpression = Parser.parse(
   obfuscatedPatchFunctionString,
   { sourceType: "script" }
 ).body[0].expression;
-console.log(generate(obfuscatedPatchFunctionExpression));
+
+traverse(loadWheel_Body, {
+  VariableDeclarator(path) {
+    if (
+      !nodeIs.identifier(path.node.id) ||
+      path.node.id.name !== spinAccelerationRandomizer_Name
+    )
+      return;
+    path.replaceWith(
+      builders.variableDeclarator(
+        structuredClone(path.node.id),
+        obfuscatedPatchFunctionExpression
+      )
+    );
+    this.stop();
+  },
+});
+writeFileSync(
+  "./wheel.replace.js",
+  generate(obfuscatedPatchFunctionExpression, { format: FORMAT_MINIFY }),
+  { encoding: "utf-8" }
+);
+writeFileSync(
+  "./wheel.complete.js",
+  generate(wholeFileNode, { format: FORMAT_MINIFY }),
+  { encoding: "utf-8" }
+);

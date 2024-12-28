@@ -3,37 +3,28 @@
   const [minOutput, maxOutput] = ((a, b) => {
     const defaultA = 0.25;
     const defaultB = 0.35;
-    if (a === undefined && b === undefined) {
+    if (a == null && b == null) {
       a = defaultA;
       b = defaultB;
-    } else if (a === undefined) a = (b / defaultB) * defaultA;
-    else if (b === undefined) b = (a / defaultA) * defaultB;
+    } else if (a == null) a = (b / defaultB) * defaultA;
+    else if (b == null) b = (a / defaultA) * defaultB;
     if (a >= b) return [b, a];
     return [a, b];
   })(a, b);
-  const originalFunction = typeof (
-    astreplace_value_originalFunction !== "undefined"
-  )
-    ? astreplace_value_originalFunction
-    : (min, max) => randBetween(min, max);
+  const randBetween = (min, max) => Math.random() * (max - min) + min;
+  const originalFunction = randBetween;
   const defaultFunction = () => originalFunction(minOutput, maxOutput);
   // anything else can error out if thay want
   try {
     // gather info stage
-    const randBetween = (min, max) => Math.random() * (max - min) + min;
-    const riggedIndexes = typeof (_astreplace_value_riggedIndexes !== "undefined")
-      ? _astreplace_value_riggedIndexes
-      : [];
-    const riggedValues = typeof (_astreplace_value_riggedValues !== "undefined")
-      ? _astreplace_value_riggedValues
-      : [];
-    if (riggedIndexes < 0 || riggedValues.length < 1) return defaultFunction();
-    const stopThreshold = typeof (
-      _astreplace_value_stopThreshold !== "undefined"
-    )
-      ? _astreplace_value_stopThreshold
-      : 0.002;
-    if (typeof (_astreplace_identifier_accelerationFactor !== "undefined"))
+    const _astreplace_value_riggedIndexes = undefined;
+    const riggedIndexes = _astreplace_value_riggedIndexes ?? [];
+    const _astreplace_value_riggedValues = undefined;
+    const riggedValues = _astreplace_value_riggedValues ?? [];
+    if (riggedValues.length < 1) return defaultFunction();
+    const _astreplace_value_stopThreshold = undefined;
+    const stopThreshold = _astreplace_value_stopThreshold ?? 0.002;
+    if (typeof _astreplace_identifier_accelerationFactor === "undefined")
       return defaultFunction();
     const accelerationFactor = parseFloat(
       _astreplace_identifier_accelerationFactor
@@ -52,21 +43,26 @@
       ...riggedIndexes.filter(
         (index) => index >= 0 && index < sectorAngles.length
       ),
-      ...wheelSectors.reduce(
-        (indexes, sectorInfo, index) =>
-          Object.values(sectorInfo).some((text) =>
-            riggedValues.some((value) => text == value)
-          )
-            ? indexes.concat(index)
-            : indexes,
-        []
-      ),
+      ...riggedValues.reduce((indexes, value) => {
+        indexes.push(
+          ...wheelSectors.reduce((indexes, sectorInfo, index) => {
+            if (
+              Object.values(sectorInfo)
+                .filter((value) => typeof value === "string")
+                .some((text) => text == value)
+            )
+              indexes.push(index);
+            return indexes;
+          }, [])
+        );
+        return indexes;
+      }, []),
     ];
     if (riggedSectorIndexes.length < 1) return defaultFunction();
     // logic stage
     const twoPi = 2 * Math.PI;
-    const minDeceleration = stopThreshold,
-      maxDeceleration = (() => {
+    const minAcceleration = stopThreshold,
+      maxAcceleration = (() => {
         const higherBound = stopThreshold / accelerationFactor;
         return higherBound - (higherBound - stopThreshold) / 10;
       })();
@@ -86,7 +82,7 @@
         let simulatingWheelAngle = currentWheelAngle;
         const possibleSpinDecelerations = [];
         for (
-          let deceleration = randBetween(minDeceleration, maxDeceleration);
+          let deceleration = randBetween(minAcceleration, maxAcceleration);
           deceleration <= maxOutput;
           deceleration /= accelerationFactor
         ) {
