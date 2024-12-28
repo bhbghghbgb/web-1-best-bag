@@ -1,9 +1,13 @@
 import { Parser } from "acorn";
 import { readFileSync } from "fs";
+import { traverse, builders } from "estree-toolkit";
+import { generate } from "escodegen";
+import obsfucator from "javascript-obfuscator";
 const wholeFileNode_Body = Parser.parse(
   readFileSync("./wheel.min.js", { encoding: "utf-8" }),
-  { sourceType: "module" }
+  { sourceType: "script" }
 ).body;
+
 const stringDecoder_Name = (function () {
   // const stringDecoder_VariableDeclaration = wholeFileNode.body[0]; // always first line in the code?
   const stringDecoder_VariableDeclaration = wholeFileNode_Body.filter(
@@ -270,7 +274,7 @@ const [spinDecrement_Name, spinDecrementRandomizer_Name] = (function () {
   const spinDecrementRandomizerName = randFunctionCallee.name;
   return [spinDecrementName, spinDecrementRandomizerName];
 })();
-const [decelerationFactor_Name, stopThreshold_Value] = (function () {
+const [accelerationFactor_Name, stopThreshold_Value] = (function () {
   if (!loadWheel_Body) return [null, 1];
   for (const node of loadWheel_Body) {
     if (node.type !== "FunctionDeclaration") continue;
@@ -296,16 +300,16 @@ const [decelerationFactor_Name, stopThreshold_Value] = (function () {
       spinDecrementZero.consequent.argument !== null
     )
       continue;
-    const decelerateTickExpression = body[2].expression;
+    const accelerateTickExpression = body[2].expression;
     if (
-      decelerateTickExpression.type !== "AssignmentExpression" ||
-      decelerateTickExpression.operator !== "*=" ||
-      decelerateTickExpression.left.type !== "Identifier" ||
-      decelerateTickExpression.left.name !== spinDecrement_Name ||
-      decelerateTickExpression.right.type !== "Identifier"
+      accelerateTickExpression.type !== "AssignmentExpression" ||
+      accelerateTickExpression.operator !== "*=" ||
+      accelerateTickExpression.left.type !== "Identifier" ||
+      accelerateTickExpression.left.name !== spinDecrement_Name ||
+      accelerateTickExpression.right.type !== "Identifier"
     )
       continue;
-    const decelerationFactorName = decelerateTickExpression.right.name;
+    const accelerationFactorName = accelerateTickExpression.right.name;
     const spinDecrementThreshold = body[3];
     const spinDecrementThresholdTest = spinDecrementThreshold.test;
     if (
@@ -337,15 +341,76 @@ const [decelerationFactor_Name, stopThreshold_Value] = (function () {
       spinDecrementThresholdFirstExpression.right.value !== 0
     )
       continue;
-    return [decelerationFactorName, spinDecrementStopThresholdValue];
+    return [accelerationFactorName, spinDecrementStopThresholdValue];
   }
   return [null, null];
 })();
-console.log({ stringDecoder_Name });
-console.log({ sectorAngles_Name });
-console.log({ currentWheelAngle_Name });
-console.log({ wheelSectors_Name });
-console.log({ spinDecrement_Name });
-console.log({ spinDecrementRandomizer_Name });
-console.log({ decelerationFactor_Name });
-console.log({ stopThreshold_Value });
+
+const patchIdentifierMap = {
+  sectorAngles: sectorAngles_Name,
+  currentWheelAngle: currentWheelAngle_Name,
+  wheelSectors: wheelSectors_Name,
+  accelerationFactor: accelerationFactor_Name,
+};
+const patchValueMap = {
+  riggedIndexes: [],
+  riggedValues: ["Dũng"],
+  stopThreshold: stopThreshold_Value,
+};
+const patchFunctionExpression = Parser.parse(
+  readFileSync("./wheel.patch.js", { encoding: "utf-8" }),
+  { sourceType: "script" }
+).body[0].expression;
+traverse(patchFunctionExpression, {
+  Identifier(path) {
+    if (!path.node.name.startsWith("_astreplace_")) return;
+    const [type, name] = path.node.name.slice(12).split("_");
+    switch (type) {
+      case "identifier":
+        path.replaceWith(builders.identifier(patchIdentifierMap[name]));
+        break;
+      case "value":
+        path.replaceWith(
+          Parser.parse(JSON.stringify(patchValueMap[name]), {
+            sourceType: "script",
+          }).body[0].expression
+        );
+        break;
+    }
+  },
+});
+
+const patchFunctionExpressionString = generate(patchFunctionExpression);
+// obfuscate it so it looks like the original code, but minimize its effects
+// (use only identifierNamesGenerator: 'hexadecimal')
+const obfuscatedPatchFunctionString = obsfucator
+  .obfuscate(patchFunctionExpressionString, {
+    compact: true,
+    controlFlowFlattening: false,
+    deadCodeInjection: false,
+    debugProtection: false,
+    disableConsoleOutput: false,
+    // only use this
+    identifierNamesGenerator: "hexadecimal",
+    ignoreImports: true,
+    log: false,
+    numbersToExpressions: false,
+    renameGlobals: false,
+    renameProperties: false,
+    seed: 0,
+    selfDefending: false,
+    simplify: true,
+    sourceMap: false,
+    splitStrings: false,
+    stringArray: false,
+    target: "browser",
+    transformObjectKeys: false,
+    unicodeEscapeSequence: false,
+  })
+  .getObfuscatedCode();
+
+const obfuscatedPatchFunctionExpression = Parser.parse(
+  obfuscatedPatchFunctionString,
+  { sourceType: "script" }
+).body[0].expression;
+console.log(generate(obfuscatedPatchFunctionExpression));
