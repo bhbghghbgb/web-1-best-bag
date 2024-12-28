@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      textarea {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px;
+        font-size: 16px;
+      }
+      button {
+        display: block;
+        margin-bottom: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+      }
+    </style>
+    <script src="./wheel.bundle.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <textarea id="inputText1" placeholder="Enter wheel.min.js here"></textarea>
+    <textarea
+      id="inputText2"
+      placeholder="Enter wheel.patch.js here"
+    ></textarea>
+    <textarea
+      id="inputText3"
+      placeholder="Enter names to target here"
+    ></textarea>
+    <button id="submitButton">Submit</button>
+    <textarea
+      id="resultText1"
+      placeholder="Result wheel.replace.js here"
+      readonly
+    ></textarea>
+    <textarea
+      id="resultText2"
+      placeholder="Result wheel.complete.js here"
+      readonly
+    ></textarea>
+  </body>
+</html>
