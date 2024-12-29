@@ -1,5 +1,6 @@
-import { translate } from "./wheel.rig.js";
 import $ from "jquery";
+import { translate } from "./wheel.rig.js";
+
 $(() => {
   $("#submitButton").on("click", () => {
     const wheelMinJs = $("#inputText1").val();
@@ -19,5 +20,6 @@ $(() => {
         ]);
     $("#resultText1").val(sourceComplete);
     $("#resultText2").val(sourceCompleteObfuscated);
+    $(document).scrollTop($(document).height());
   });
 });

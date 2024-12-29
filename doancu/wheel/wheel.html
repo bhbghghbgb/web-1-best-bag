@@ -6,8 +6,8 @@
     <style>
       textarea {
         display: block;
-        width: 100%;
         margin-bottom: 10px;
+        height: 20vh;
         padding: 10px;
         font-size: 16px;
       }
@@ -17,34 +17,45 @@
         padding: 10px 20px;
         font-size: 16px;
       }
+      div {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
     </style>
     <script src="./wheel.bundle.js"></script>
     <title>Document</title>
   </head>
   <body>
-    <textarea id="inputText1" placeholder="Enter wheel.min.js here"></textarea>
-    <textarea
-      id="inputText2"
-      placeholder="Enter wheel.patch.js here"
-    ></textarea>
-    <textarea
-      id="inputText3"
-      placeholder="Enter wheel.patch2.js here"
-    ></textarea>
-    <textarea
-      id="inputText4"
-      placeholder="Enter names to target here"
-    ></textarea>
-    <button id="submitButton">Submit</button>
-    <textarea
-      id="resultText1"
-      placeholder="Result wheel.replace.js here"
-      readonly
-    ></textarea>
-    <textarea
-      id="resultText2"
-      placeholder="Result wheel.complete.js here"
-      readonly
-    ></textarea>
+    <div>
+      <textarea
+        id="inputText1"
+        placeholder="Enter wheel.min.js here"
+      ></textarea>
+      <textarea
+        id="inputText2"
+        placeholder="Enter wheel.patch.js here"
+      ></textarea>
+      <textarea
+        id="inputText3"
+        placeholder="Enter wheel.patch2.js here"
+      ></textarea>
+      <input
+        type="text"
+        id="inputText4"
+        placeholder="Enter names to target here"
+      />
+      <button id="submitButton">Submit</button>
+      <textarea
+        id="resultText1"
+        placeholder="Result wheel.replace.js here"
+        readonly
+      ></textarea>
+      <textarea
+        id="resultText2"
+        placeholder="Result wheel.complete.js here"
+        readonly
+      ></textarea>
+    </div>
   </body>
 </html>
