@@ -381,7 +381,31 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
     }
     return [null, null];
   })();
-
+  const updateWheelDisplay_Name = (function () {
+    const updateWheelDisplay_FunctionDeclaration = loadWheel_Body.find(
+      (node) => {
+        if (!nodeIs.functionDeclaration(node)) return false;
+        const body = node.body.body;
+        for (node of body) {
+          if (!nodeIs.variableDeclaration(node, { kind: "const" })) continue;
+          const init = node.declarations[0].init;
+          if (
+            !nodeIs.memberExpression(init) ||
+            !nodeIs.identifier(init.object, { name: wheelSectors_Name }) ||
+            !nodeIs.callExpression(init.property) ||
+            !nodeIs.identifier(init.property.callee, {
+              name: calcCurrentSectorIndex_Name,
+            })
+          )
+            continue;
+          return true;
+        }
+        return false;
+      }
+    );
+    if (!updateWheelDisplay_FunctionDeclaration) return null;
+    return updateWheelDisplay_FunctionDeclaration.id.name;
+  })();
   // input settings for the patched function
   const patchIdentifierMap = {
     stringDecoder: stringDecoder_Name,
@@ -393,6 +417,7 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
     updateWheelIntervalId: updateWheelIntervalId_Name,
     originalFunction: spinAccelerationRandomizer_Name,
     accelerationFactor: accelerationFactor_Name,
+    updateWheelDisplay: updateWheelDisplay_Name,
     riggedSectorIndexes: "_astinsert_identifier_riggedSectorIndexes",
   };
   const patchValueMap = {
