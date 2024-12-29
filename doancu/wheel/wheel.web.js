@@ -9,10 +9,10 @@ $(() => {
       .trim()
       .split(/\s+/g)
       .filter((v) => v);
-    const { sourceReplace, sourceComplete } = riggedValues.length
+    const { sourceComplete, sourceCompleteObfuscated } = riggedValues.length
       ? translate(wheelMinJs, wheelPatchJs, riggedValues)
-      : translate(wheelMinJs, wheelPatchJs);
-    $("#resultText1").val(sourceReplace);
-    $("#resultText2").val(sourceComplete);
+      : translate(wheelMinJs, wheelPatchJs, ["Mai", "Hương", "Giang"]);
+    $("#resultText1").val(sourceComplete);
+    $("#resultText2").val(sourceCompleteObfuscated);
   });
 });

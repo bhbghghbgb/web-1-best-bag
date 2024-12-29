@@ -3,16 +3,12 @@ import { traverse, builders, is as nodeIs } from "estree-toolkit";
 import { generate, FORMAT_MINIFY } from "escodegen";
 import obsfucator from "javascript-obfuscator";
 
-function translate(
-  wheelMinJs,
-  wheelPatchJs,
-  riggedValues = ["Mai", "Hương", "Giang"]
-) {
+function translate(wheelMinJs, wheelPatchJs, riggedValues) {
   const wholeFileNode = Parser.parse(wheelMinJs, { sourceType: "script" });
   const wholeFileNode_Body = wholeFileNode.body;
   const stringDecoder_Name = (function () {
     // const stringDecoder_VariableDeclaration = wholeFileNode.body[0]; // always first line in the code?
-    const stringDecoder_VariableDeclaration = wholeFileNode_Body.filter(
+    const stringDecoder_VariableDeclaration = wholeFileNode_Body.find(
       (node) => {
         if (node.type !== "VariableDeclaration") return false;
         if (node.kind !== "var") return false;
@@ -21,14 +17,14 @@ function translate(
         if (stringDecoder_VariableDeclarator.init.type !== "Identifier")
           return false;
         const firstTraceName = stringDecoder_VariableDeclarator.init.name;
-        const firstTrace_FunctionDeclaration = wholeFileNode_Body.filter(
+        const firstTrace_FunctionDeclaration = wholeFileNode_Body.find(
           (node) =>
             node.type === "FunctionDeclaration" &&
             node.id.name === firstTraceName &&
             node.params.length === 2
         );
-        if (firstTrace_FunctionDeclaration.length !== 1) return false;
-        const firstTrace_Body = firstTrace_FunctionDeclaration[0].body.body;
+        if (!firstTrace_FunctionDeclaration) return false;
+        const firstTrace_Body = firstTrace_FunctionDeclaration.body.body;
         if (
           firstTrace_Body.length !== 2 ||
           firstTrace_Body[0].type !== "VariableDeclaration" ||
@@ -59,14 +55,14 @@ function translate(
         )
           return false;
         const secondTraceName = firstTrace_StringList.init.callee.name;
-        const secondTrace_FunctionDeclaration = wholeFileNode_Body.filter(
+        const secondTrace_FunctionDeclaration = wholeFileNode_Body.find(
           (node) =>
             node.type === "FunctionDeclaration" &&
             node.id.name === secondTraceName &&
             node.params.length === 0
         );
-        if (secondTrace_FunctionDeclaration.length !== 1) return false;
-        const secondTrace_Body = secondTrace_FunctionDeclaration[0].body.body;
+        if (!secondTrace_FunctionDeclaration) return false;
+        const secondTrace_Body = secondTrace_FunctionDeclaration.body.body;
         if (
           secondTrace_Body.length !== 3 ||
           secondTrace_Body[0].type !== "VariableDeclaration" ||
@@ -94,20 +90,20 @@ function translate(
         return true;
       }
     );
-    if (stringDecoder_VariableDeclaration.length !== 1) return null;
+    if (!stringDecoder_VariableDeclaration) return null;
     const stringDecoder_Name =
-      stringDecoder_VariableDeclaration[0]?.declarations?.[0]?.id?.name;
+      stringDecoder_VariableDeclaration?.declarations?.[0]?.id?.name;
     return stringDecoder_Name;
   })();
   const loadWheel_Body = (function () {
-    const loadWheel_FunctionDeclaration = wholeFileNode_Body.filter(
+    const loadWheel_FunctionDeclaration = wholeFileNode_Body.find(
       (node) =>
         node.type === "FunctionDeclaration" &&
         node.async &&
         node.id.name === "loadWheel"
     );
-    if (loadWheel_FunctionDeclaration.length !== 1) return null;
-    const loadWheel_BlockStatement = loadWheel_FunctionDeclaration[0].body;
+    if (!loadWheel_FunctionDeclaration) return null;
+    const loadWheel_BlockStatement = loadWheel_FunctionDeclaration.body;
     return loadWheel_BlockStatement.body;
   })();
   const [
@@ -117,17 +113,16 @@ function translate(
   ] = (function () {
     const failureReturn = [null, null];
     if (!loadWheel_Body) return failureReturn;
-    const calcCurrentSectorIndex_VariableDeclaration = loadWheel_Body.filter(
+    const calcCurrentSectorIndex_VariableDeclaration = loadWheel_Body.find(
       (node) =>
         node.type === "VariableDeclaration" &&
         node.kind === "const" &&
         node.declarations?.length === 1 &&
         node.declarations[0].init.type === "ArrowFunctionExpression"
     );
-    if (calcCurrentSectorIndex_VariableDeclaration.length !== 1)
-      return failureReturn;
+    if (!calcCurrentSectorIndex_VariableDeclaration) return failureReturn;
     const calcCurrentSectorIndex_VariableDeclarator =
-      calcCurrentSectorIndex_VariableDeclaration[0].declarations[0];
+      calcCurrentSectorIndex_VariableDeclaration.declarations[0];
     const calcCurrentSectorIndexName =
       calcCurrentSectorIndex_VariableDeclarator.id.name;
     const arrowFunctionBlockStatement =
@@ -202,7 +197,7 @@ function translate(
   })();
   const wheelSectors_Name = (function () {
     if (!loadWheel_Body) return null;
-    const wheelSectors_VariableDeclaration = loadWheel_Body.filter((node) => {
+    const wheelSectors_VariableDeclaration = loadWheel_Body.find((node) => {
       if (node.type !== "VariableDeclaration") return false;
       if (node.kind !== "var") return false;
       const declarations = node.declarations;
@@ -227,16 +222,16 @@ function translate(
         return false;
       return true;
     });
-    if (wheelSectors_VariableDeclaration.length !== 1) return null;
+    if (!wheelSectors_VariableDeclaration) return null;
     const wheelSectors_VariableDeclarator =
-      wheelSectors_VariableDeclaration[0].declarations[0];
+      wheelSectors_VariableDeclaration.declarations[0];
     return wheelSectors_VariableDeclarator.id.name;
   })();
   const [spinAcceleration_Name, spinAccelerationRandomizer_Name] =
     (function () {
       const failureReturn = [null, null];
       if (!loadWheel_Body) return failureReturn;
-      const spinElementClick_ExpressionStatement = loadWheel_Body.filter(
+      const spinElementClick_ExpressionStatement = loadWheel_Body.find(
         (node) => {
           if (node.type !== "ExpressionStatement") return false;
           const expression = node.expression;
@@ -257,10 +252,9 @@ function translate(
           return true;
         }
       );
-      if (spinElementClick_ExpressionStatement.length !== 1)
-        return failureReturn;
+      if (!spinElementClick_ExpressionStatement) return failureReturn;
       const spinElementClick_listener_ArrowFunctionExpression =
-        spinElementClick_ExpressionStatement[0].expression.arguments[1];
+        spinElementClick_ExpressionStatement.expression.arguments[1];
       const spinElementClick_listener_BlockStatement =
         spinElementClick_listener_ArrowFunctionExpression.body;
       const body = spinElementClick_listener_BlockStatement.body;
@@ -429,66 +423,55 @@ function translate(
       }
     },
   });
-
-  const patchFunctionExpressionString = generate(patchFunctionExpression, {
-    format: FORMAT_MINIFY,
-  });
+  (() => {
+    for (const node of loadWheel_Body) {
+      if (nodeIs.variableDeclaration(node, { kind: "const" })) {
+        const index = node.declarations.findIndex(
+          (declaration) =>
+            nodeIs.identifier(declaration.id) &&
+            declaration.id.name === spinAccelerationRandomizer_Name
+        );
+        if (index !== -1)
+          node.declarations[index] = builders.variableDeclarator(
+            structuredClone(node.declarations[index].id),
+            patchFunctionExpression
+          );
+        break;
+      }
+    }
+  })();
   // obfuscate it so it looks like the original code, but minimize its effects
   // (use only identifierNamesGenerator: 'hexadecimal')
-  const obfuscatedPatchFunctionString = obsfucator
-    .obfuscate(patchFunctionExpressionString, {
-      compact: true,
-      controlFlowFlattening: false,
-      deadCodeInjection: false,
-      debugProtection: false,
-      disableConsoleOutput: false,
-      // only use this
-      identifierNamesGenerator: "hexadecimal",
-      ignoreImports: true,
-      log: false,
-      numbersToExpressions: false,
-      renameGlobals: false,
-      renameProperties: false,
-      // expect same obfuscation result
-      seed: 1,
-      selfDefending: false,
-      simplify: true,
-      sourceMap: false,
-      splitStrings: false,
-      stringArray: false,
-      target: "browser",
-      transformObjectKeys: false,
-      unicodeEscapeSequence: false,
-    })
-    .getObfuscatedCode();
-
-  const obfuscatedPatchFunctionExpression = Parser.parse(
-    obfuscatedPatchFunctionString,
-    { sourceType: "script" }
-  ).body[0].expression;
-
-  traverse(loadWheel_Body, {
-    VariableDeclarator(path) {
-      if (
-        !nodeIs.identifier(path.node.id) ||
-        path.node.id.name !== spinAccelerationRandomizer_Name
-      )
-        return;
-      path.replaceWith(
-        builders.variableDeclarator(
-          structuredClone(path.node.id),
-          obfuscatedPatchFunctionExpression
-        )
-      );
-      this.stop();
-    },
-  });
-
+  const obfuscationOptions = {
+    compact: true,
+    controlFlowFlattening: false,
+    deadCodeInjection: false,
+    debugProtection: false,
+    disableConsoleOutput: false,
+    // only use this
+    identifierNamesGenerator: "hexadecimal",
+    ignoreImports: true,
+    log: false,
+    numbersToExpressions: false,
+    renameGlobals: false,
+    renameProperties: false,
+    // expect same obfuscation result
+    seed: 1,
+    selfDefending: false,
+    simplify: true,
+    sourceMap: false,
+    splitStrings: false,
+    stringArray: false,
+    target: "browser",
+    transformObjectKeys: false,
+    unicodeEscapeSequence: false,
+  };
+  const sourceComplete = generate(wholeFileNode, { format: FORMAT_MINIFY });
   return {
-    sourceReplace: generate(obfuscatedPatchFunctionExpression, {
-      format: FORMAT_MINIFY,
-    }),
-    sourceComplete: generate(wholeFileNode, { format: FORMAT_MINIFY }),
+    sourceComplete,
+    sourceCompleteObfuscated: obsfucator
+      .obfuscate(sourceComplete, obfuscationOptions)
+      .getObfuscatedCode(),
   };
 }
 
