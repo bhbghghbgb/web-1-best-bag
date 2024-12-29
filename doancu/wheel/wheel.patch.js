@@ -16,27 +16,28 @@
   const defaultFunction = () => originalFunction(minOutput, maxOutput);
   // anything else can error out if thay want
   try {
+    const originalFunctionResult = defaultFunction();
     // gather info stage
     const _astreplace_value_riggedIndexes = undefined;
     const riggedIndexes = _astreplace_value_riggedIndexes ?? [];
     const _astreplace_value_riggedValues = undefined;
     const riggedValues = _astreplace_value_riggedValues ?? [];
-    if (riggedValues.length < 1) return defaultFunction();
+    if (riggedValues.length < 1) return originalFunctionResult;
     const _astreplace_value_stopThreshold = undefined;
     const stopThreshold = _astreplace_value_stopThreshold ?? 0.002;
     if (typeof _astreplace_identifier_accelerationFactor === "undefined")
-      return defaultFunction();
+      return originalFunctionResult;
     const accelerationFactor = parseFloat(
       _astreplace_identifier_accelerationFactor
     );
     if (typeof _astreplace_identifier_sectorAngles === "undefined")
-      return defaultFunction();
+      return originalFunctionResult;
     const sectorAngles = _astreplace_identifier_sectorAngles;
     if (typeof _astreplace_identifier_wheelSectors === "undefined")
-      return defaultFunction();
+      return originalFunctionResult;
     const wheelSectors = _astreplace_identifier_wheelSectors;
     if (typeof _astreplace_identifier_currentWheelAngle === "undefined")
-      return defaultFunction();
+      return originalFunctionResult;
     const currentWheelAngle = _astreplace_identifier_currentWheelAngle;
     // don't use Set, we want the more an index appears the more likely it is to be chosen
     const riggedSectorIndexes = [
@@ -58,7 +59,10 @@
         return indexes;
       }, []),
     ];
-    if (riggedSectorIndexes.length < 1) return defaultFunction();
+    // output for calcCurrentSectorIndex
+    if (typeof _astreplace_identifier_riggedSectorIndexes !== "undefined")
+      _astreplace_identifier_riggedSectorIndexes = riggedSectorIndexes;
+    if (riggedSectorIndexes.length < 1) return originalFunctionResult;
     // logic stage
     const twoPi = 2 * Math.PI;
     const minAcceleration = stopThreshold,
@@ -103,7 +107,7 @@
     for (const riggedSpinDeceleration of generateSpinDecelerations())
       if (riggedSpinDeceleration != null && isFinite(riggedSpinDeceleration))
         return riggedSpinDeceleration;
-    return defaultFunction();
+    return originalFunctionResult;
   } catch (_) {
     return defaultFunction();
   }

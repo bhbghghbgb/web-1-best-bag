@@ -3,7 +3,7 @@ import { traverse, builders, is as nodeIs } from "estree-toolkit";
 import { generate, FORMAT_MINIFY } from "escodegen";
 import obsfucator from "javascript-obfuscator";
 
-function translate(wheelMinJs, wheelPatchJs, riggedValues) {
+function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
   const wholeFileNode = Parser.parse(wheelMinJs, { sourceType: "script" });
   const wholeFileNode_Body = wholeFileNode.body;
   const stringDecoder_Name = (function () {
@@ -95,6 +95,8 @@ function translate(wheelMinJs, wheelPatchJs, riggedValues) {
       stringDecoder_VariableDeclaration?.declarations?.[0]?.id?.name;
     return stringDecoder_Name;
   })();
+
+  // locate names, identifiers, values, commonly accessed nodes in the original code
   const loadWheel_Body = (function () {
     const loadWheel_FunctionDeclaration = wholeFileNode_Body.find(
       (node) =>
@@ -110,8 +112,9 @@ function translate(wheelMinJs, wheelPatchJs, riggedValues) {
     calcCurrentSectorIndex_Name,
     sectorAngles_Name,
     currentWheelAngle_Name,
+    calcCurrentSectorIndex_VariableDeclaration,
   ] = (function () {
-    const failureReturn = [null, null];
+    const failureReturn = [null, null, null, null];
     if (!loadWheel_Body) return failureReturn;
     const calcCurrentSectorIndex_VariableDeclaration = loadWheel_Body.find(
       (node) =>
@@ -193,6 +196,7 @@ function translate(wheelMinJs, wheelPatchJs, riggedValues) {
       calcCurrentSectorIndexName,
       sanityTrySectorAngle,
       currentWheelAngle_Name,
+      calcCurrentSectorIndex_VariableDeclaration,
     ];
   })();
   const wheelSectors_Name = (function () {
@@ -227,69 +231,82 @@ function translate(wheelMinJs, wheelPatchJs, riggedValues) {
       wheelSectors_VariableDeclaration.declarations[0];
     return wheelSectors_VariableDeclarator.id.name;
   })();
-  const [spinAcceleration_Name, spinAccelerationRandomizer_Name] =
-    (function () {
-      const failureReturn = [null, null];
-      if (!loadWheel_Body) return failureReturn;
-      const spinElementClick_ExpressionStatement = loadWheel_Body.find(
-        (node) => {
-          if (node.type !== "ExpressionStatement") return false;
-          const expression = node.expression;
-          if (expression?.type !== "CallExpression") return false;
-          const callee = expression.callee;
-          if (callee.type !== "MemberExpression") return false;
-          const property = callee.property;
-          if (
-            property.type !== "Literal" ||
-            property.value !== "addEventListener"
-          )
-            return false;
-          if (
-            expression.arguments.length !== 2 ||
-            expression.arguments[1].type !== "ArrowFunctionExpression"
-          )
-            return false;
-          return true;
-        }
-      );
-      if (!spinElementClick_ExpressionStatement) return failureReturn;
-      const spinElementClick_listener_ArrowFunctionExpression =
-        spinElementClick_ExpressionStatement.expression.arguments[1];
-      const spinElementClick_listener_BlockStatement =
-        spinElementClick_listener_ArrowFunctionExpression.body;
-      const body = spinElementClick_listener_BlockStatement.body;
-      const spinAccelerationZero = body[body.length - 1];
-      if (spinAccelerationZero?.type !== "IfStatement") return failureReturn;
-      const test = spinAccelerationZero.test;
-      if (test.type !== "UnaryExpression" || test.operator !== "!")
-        return failureReturn;
-      const testArgument = test.argument;
-      if (testArgument.type !== "Identifier") return failureReturn;
-      const spinAccelerationName = testArgument.name;
-      const consequent = spinAccelerationZero.consequent;
-      if (consequent.type !== "ExpressionStatement") return failureReturn;
-      const consequentExpression = consequent.expression;
+  const [
+    spinAcceleration_Name,
+    spinAccelerationRandomizer_Name,
+    updateWheelIntervalId_Name,
+    updateWheelClearInterval_Expression,
+  ] = (function () {
+    const failureReturn = [null, null, null, null];
+    if (!loadWheel_Body) return failureReturn;
+    const spinElementClick_ExpressionStatement = loadWheel_Body.find((node) => {
+      if (node.type !== "ExpressionStatement") return false;
+      const expression = node.expression;
+      if (expression?.type !== "CallExpression") return false;
+      const callee = expression.callee;
+      if (callee.type !== "MemberExpression") return false;
+      const property = callee.property;
+      if (property.type !== "Literal" || property.value !== "addEventListener")
+        return false;
       if (
-        consequentExpression.type !== "AssignmentExpression" ||
-        consequentExpression.operator !== "="
+        expression.arguments.length !== 2 ||
+        expression.arguments[1].type !== "ArrowFunctionExpression"
       )
-        return failureReturn;
-      const expressionRightSide = consequentExpression.right;
-      const randFunctionCallee = expressionRightSide.callee;
-      const randFunctionArguments = expressionRightSide.arguments;
-      if (
-        expressionRightSide.type !== "CallExpression" ||
-        randFunctionCallee.type !== "Identifier" ||
-        randFunctionArguments.length !== 2 ||
-        !randFunctionArguments.every(
-          (argument) => argument.type === "Literal"
-        ) ||
-        randFunctionArguments[0].value >= randFunctionArguments[1].value
-      )
-        return failureReturn;
-      const spinAccelerationRandomizerName = randFunctionCallee.name;
-      return [spinAccelerationName, spinAccelerationRandomizerName];
-    })();
+        return false;
+      return true;
+    });
+    if (!spinElementClick_ExpressionStatement) return failureReturn;
+    const spinElementClick_listener_ArrowFunctionExpression =
+      spinElementClick_ExpressionStatement.expression.arguments[1];
+    const spinElementClick_listener_BlockStatement =
+      spinElementClick_listener_ArrowFunctionExpression.body;
+    const body = spinElementClick_listener_BlockStatement.body;
+    const spinAccelerationZero = body[body.length - 1];
+    if (spinAccelerationZero?.type !== "IfStatement") return failureReturn;
+    const test = spinAccelerationZero.test;
+    if (test.type !== "UnaryExpression" || test.operator !== "!")
+      return failureReturn;
+    const testArgument = test.argument;
+    if (testArgument.type !== "Identifier") return failureReturn;
+    const spinAccelerationName = testArgument.name;
+    const consequent = spinAccelerationZero.consequent;
+    if (consequent.type !== "ExpressionStatement") return failureReturn;
+    const consequentExpression = consequent.expression;
+    if (
+      consequentExpression.type !== "AssignmentExpression" ||
+      consequentExpression.operator !== "="
+    )
+      return failureReturn;
+    const expressionRightSide = consequentExpression.right;
+    const randFunctionCallee = expressionRightSide.callee;
+    const randFunctionArguments = expressionRightSide.arguments;
+    if (
+      expressionRightSide.type !== "CallExpression" ||
+      randFunctionCallee.type !== "Identifier" ||
+      randFunctionArguments.length !== 2 ||
+      !randFunctionArguments.every((argument) => argument.type === "Literal") ||
+      randFunctionArguments[0].value >= randFunctionArguments[1].value
+    )
+      return failureReturn;
+    const spinAccelerationRandomizerName = randFunctionCallee.name;
+    const clearInvervalExpression = body.find(
+      (node) =>
+        nodeIs.expressionStatement(node) &&
+        nodeIs.callExpression(node.expression) &&
+        nodeIs.identifier(node.expression.callee, { name: "clearInterval" }) &&
+        node.expression.arguments.length === 1 &&
+        nodeIs.identifier(node.expression.arguments[0])
+    );
+    if (!clearInvervalExpression) return failureReturn;
+    const clearIntervalIdName =
+      clearInvervalExpression.expression.arguments[0].name;
+    return [
+      spinAccelerationName,
+      spinAccelerationRandomizerName,
+      clearIntervalIdName,
+      clearInvervalExpression,
+    ];
+  })();
   const [accelerationFactor_Name, stopThreshold_Value] = (function () {
     if (!loadWheel_Body) return [null, 1];
     for (const node of loadWheel_Body) {
@@ -365,6 +382,7 @@ function translate(wheelMinJs, wheelPatchJs, riggedValues) {
     return [null, null];
   })();
 
+  // input settings for the patched function
   const patchIdentifierMap = {
     stringDecoder: stringDecoder_Name,
     calcCurrentSectorIndex: calcCurrentSectorIndex_Name,
@@ -372,18 +390,22 @@ function translate(wheelMinJs, wheelPatchJs, riggedValues) {
     currentWheelAngle: currentWheelAngle_Name,
     wheelSectors: wheelSectors_Name,
     spinAcceleration: spinAcceleration_Name,
+    updateWheelIntervalId: updateWheelIntervalId_Name,
     originalFunction: spinAccelerationRandomizer_Name,
     accelerationFactor: accelerationFactor_Name,
+    riggedSectorIndexes: "_astinsert_identifier_riggedSectorIndexes",
   };
   const patchValueMap = {
     riggedIndexes: [],
     riggedValues,
     stopThreshold: stopThreshold_Value,
   };
-  const patchFunctionExpression = Parser.parse(wheelPatchJs, {
+
+  // replace the identifiers and values in the patched function
+  const randomizerPatchFunctionExpression = Parser.parse(wheelPatchJs, {
     sourceType: "script",
   }).body[0].expression;
-  traverse(patchFunctionExpression, {
+  traverse(randomizerPatchFunctionExpression, {
     // _astreplace_identifier_* is  replaced to an identifier within the scope of the original code
     Identifier(path) {
       if (!path.node.name.startsWith("_astreplace_")) return;
@@ -423,6 +445,8 @@ function translate(wheelMinJs, wheelPatchJs, riggedValues) {
       }
     },
   });
+
+  // replace spinAccelerationRandomizer declaration with the patched function
   (() => {
     for (const node of loadWheel_Body) {
       if (nodeIs.variableDeclaration(node, { kind: "const" })) {
@@ -434,13 +458,108 @@ function translate(wheelMinJs, wheelPatchJs, riggedValues) {
         if (index !== -1)
           node.declarations[index] = builders.variableDeclarator(
             structuredClone(node.declarations[index].id),
-            patchFunctionExpression
+            randomizerPatchFunctionExpression
           );
         break;
       }
     }
   })();
-  // obfuscate it so it looks like the original code, but minimize its effects
+
+  // replace the identifiers and values in the patched function
+  const sectorIndexPatchFunctionExpression = Parser.parse(wheelPatch2Js, {
+    sourceType: "script",
+  }).body[0].expression;
+  traverse(sectorIndexPatchFunctionExpression, {
+    Identifier(path) {
+      if (!path.node.name.startsWith("_astreplace_")) return;
+      const [type, name] = path.node.name.slice(12).split("_");
+      switch (type) {
+        case "identifier":
+          path.replaceWith(
+            patchIdentifierMap[name] != null
+              ? builders.identifier(patchIdentifierMap[name])
+              : builders.literal(null)
+          );
+          break;
+      }
+    },
+  });
+  (() => {
+    // patch the code inside spinElementClickListener so it sets the interval id to null
+    // after calling clearInterval, this allows us to test it and restore the original functionality
+    // of calcCurrentSectorIndex when loadWheel is called again
+    const clearIntervalCallExpression =
+      updateWheelClearInterval_Expression.expression;
+    // now we explicitly set it to null after calling clearInterval
+    // replace the node with a sequence expression so we don't have to insert nodes
+    // in the middle
+    traverse(updateWheelClearInterval_Expression, {
+      CallExpression(path) {
+        if (!nodeIs.identifier(path.node.callee, { name: "clearInterval" }))
+          return;
+        path.replaceWith(
+          builders.sequenceExpression([
+            structuredClone(clearIntervalCallExpression),
+            builders.assignmentExpression(
+              "=",
+              builders.identifier(updateWheelIntervalId_Name),
+              builders.literal(null)
+            ),
+          ])
+        );
+        this.stop();
+      },
+    });
+    // patches the calcCurrentSectorIndex function
+    traverse(calcCurrentSectorIndex_VariableDeclaration, {
+      ArrowFunctionExpression(path) {
+        const declarator = path.findParent((node) =>
+          nodeIs.variableDeclarator(node)
+        );
+        if (
+          !nodeIs.identifier(declarator.node.id, {
+            name: calcCurrentSectorIndex_Name,
+          })
+        )
+          return;
+        path.replaceWith(sectorIndexPatchFunctionExpression);
+        this.stop();
+      },
+    });
+    // find a var or let variable declaration and borrow it to initialize
+    // _astinsert_identifier_riggedSectorIndexes
+    // try to settle it nearby for easy debugging
+    const indexInBody = loadWheel_Body.findIndex(
+      (node) => node === calcCurrentSectorIndex_VariableDeclaration
+    );
+    if (indexInBody === -1) return;
+    for (let i = 2; i <= loadWheel_Body.length / 2; i++) {
+      const j = i % 2 === 0 ? i / 2 : -i / 2;
+      const nearbyVariableDeclaration = loadWheel_Body[indexInBody + j];
+      if (
+        !nodeIs.variableDeclaration(nearbyVariableDeclaration, {
+          kind: "var",
+        }) &&
+        !nodeIs.variableDeclaration(nearbyVariableDeclaration, { kind: "let" })
+      )
+        continue;
+      const nodesToInsert = [
+        builders.variableDeclarator(
+          builders.identifier(patchIdentifierMap.riggedSectorIndexes),
+          builders.arrayExpression([])
+        ),
+      ];
+      traverse(nearbyVariableDeclaration, {
+        VariableDeclaration(path) {
+          if (j < 0) path.pushContainer("declarations", nodesToInsert);
+          else path.unshiftContainer("declarations", nodesToInsert);
+          this.stop();
+        },
+      });
+      break;
+    }
+  })();
+  // reobfuscate so the patch blends into the original code, but minimize techniques used
   // (use only identifierNamesGenerator: 'hexadecimal')
   const obfuscationOptions = {
     compact: true,
@@ -458,10 +577,13 @@ function translate(wheelMinJs, wheelPatchJs, riggedValues) {
     // expect same obfuscation result
     seed: 1,
     selfDefending: false,
+    // lowers code size a bit
     simplify: true,
+    // source is already obfuscated lol
     sourceMap: false,
     splitStrings: false,
     stringArray: false,
+    // nothing relies on node
     target: "browser",
     transformObjectKeys: false,
     unicodeEscapeSequence: false,
