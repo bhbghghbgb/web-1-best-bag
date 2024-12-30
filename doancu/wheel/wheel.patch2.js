@@ -26,69 +26,74 @@
       return originalFunctionResult;
     if (typeof _astreplace_identifier_riggedSectorIndexes === "undefined")
       return originalFunctionResult;
+    const twoPi = 2 * Math.PI;
     const riggedSectorIndexes = _astreplace_identifier_riggedSectorIndexes;
     // logic stage
-    const targetIndexes = [...new Set(riggedSectorIndexes)];
+    // left/right is opposite on the wheel
+    const [closetRight, closetLeft] = (() => {
+      const target = originalFunctionResult;
+      let min = Infinity;
+      let max = -Infinity;
+      let left = -Infinity;
+      let right = Infinity;
+      for (const num of riggedSectorIndexes) {
+        if (num === target) return [target, target];
+        if (num < min) min = num;
+        if (num > max) max = num;
+        if (num < target && num > left) left = num;
+        if (num > target && num < right) right = num;
+      }
+      if (!isFinite(left)) left = max;
+      if (!isFinite(right)) right = min;
+      return [left, right];
+    })();
     if (
-      targetIndexes.length < 1 ||
-      targetIndexes.includes(originalFunctionResult)
+      !isFinite(closetLeft) ||
+      !isFinite(closetRight) ||
+      closetLeft === originalFunctionResult
     )
       return originalFunctionResult;
-    const twoPi = 2 * Math.PI;
-    const [resultIndex, snapAngle] = (() => {
-      const cumulativeAngle = sectorAngles.map(
-        (
-          (sum) => (value) =>
-            (sum += value)
-        )(0)
-      );
-      const distancesToSectorStart = cumulativeAngle.map((angle) => {
-        const diff = Math.abs(angle - currentWheelAngle) % twoPi;
-        return diff > Math.PI ? twoPi - diff : diff;
-      });
-      // this condition happens after we checked that originalFunctionResult is not in targetIndexes
-      // and is there are two sectors, but the originalFunctionResult is not in the targetIndexes
-      // then targetIndexes should only have one element
-      const sectorCount = sectorAngles.length;
-      const indexResult = (index) => {
-        const previousIndex = (index - 1 + sectorCount) % sectorCount;
-        const distanceToEnd = distancesToSectorStart[index];
-        const distanceToStart = distancesToSectorStart[previousIndex];
-        const minDistance = Math.min(distanceToStart, distanceToEnd);
-        // on the right side
-        if (minDistance < distanceToStart)
-          return [minDistance, cumulativeAngle[index] - Number.EPSILON];
-        // on the left side
-        return [minDistance, cumulativeAngle[previousIndex] + Number.EPSILON];
+    const snapToClosest = (leftIndex, rightIndex) => {
+      const relativeToTarget = (targetIndex, isLeft) => {
+        const cumulativeAngles = (() => {
+          const acc = [0];
+          for (let i = 0; i < sectorAngles.length; i++) {
+            acc.push(acc[i] + sectorAngles[i]);
+          }
+          return acc;
+        })();
+        const targetStart = cumulativeAngles[targetIndex];
+        const targetEnd = cumulativeAngles[targetIndex + 1] % twoPi;
+        if (isLeft)
+          return [
+            (targetStart - currentWheelAngle + twoPi) % twoPi,
+            targetStart,
+          ];
+        return [(currentWheelAngle - targetEnd + twoPi) % twoPi, targetEnd];
       };
-      if (targetIndexes.length === 1 || sectorCount <= 2)
-        return [targetIndexes[0], indexResult(targetIndexes[0])[1]];
-      let closetIndex = null;
-      let minDistance = Infinity;
-      let snappedAngle = null;
-      for (const targetIndex of targetIndexes) {
-        const [distance, snapAngle] = indexResult(targetIndex);
-        if (distance > minDistance) continue;
-        if (distance < minDistance) {
-          minDistance = distance;
-          closetIndex = targetIndex;
-        } else if (targetIndex > closetIndex)
-          // because the originalFunction priotizes the latter sector
-          // (if currentWheelAngle === cumulativeAngle condition still not stop)
-          closetIndex = targetIndex;
-        snappedAngle = snapAngle;
+      const [distanceLeft, snapLeft] = relativeToTarget(leftIndex, true);
+      const [distanceRight, snapRight] = relativeToTarget(rightIndex, false);
+      function trySnapDisplay(snapAngle, toLeft) {
+        const ensureRestOnSector =
+          toLeft != null ? (toLeft ? +Number.EPSILON : -Number.EPSILON) : 0;
+        _astreplace_identifier_currentWheelAngle =
+          (snapAngle + ensureRestOnSector) % twoPi;
+        if (typeof _astreplace_identifier_updateWheelDisplay !== "undefined")
+          _astreplace_identifier_updateWheelDisplay();
       }
-      if (closetIndex != null && isFinite(minDistance))
-        return [closetIndex, snappedAngle];
-      return [null, null];
-    })();
-    if (resultIndex == null) return originalFunctionResult;
-    if (snapAngle != null) {
-      _astreplace_identifier_currentWheelAngle = snapAngle % twoPi;
-      if (typeof _astreplace_identifier_updateWheelDisplay !== "undefined")
-        _astreplace_identifier_updateWheelDisplay();
-    }
-    return resultIndex;
+      // priotize left, because the spin direction is clockwise
+      if (distanceLeft <= distanceRight) {
+        trySnapDisplay(snapLeft);
+        return leftIndex;
+      }
+      trySnapDisplay(snapRight);
+      return rightIndex;
+    };
+    // there is only one target at all
+    // actually no need to check, this just here to debug easier
+    if (closetLeft === closetRight)
+      return snapToClosest(closetLeft, closetLeft);
+    return snapToClosest(closetLeft, closetRight);
   } catch (_) {
     return originalFunction();
   }
