@@ -37,7 +37,8 @@
       let left = -Infinity;
       let right = Infinity;
       for (const num of riggedSectorIndexes) {
-        if (num === target) return [target, target];
+        // if it failed, we would return originalFunctionResult anyway
+        if (num === target) return [NaN, NaN];
         if (num < min) min = num;
         if (num > max) max = num;
         if (num < target && num > left) left = num;
