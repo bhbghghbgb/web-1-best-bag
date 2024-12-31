@@ -3,98 +3,9 @@ import { traverse, builders, is as nodeIs } from "estree-toolkit";
 import { generate, FORMAT_MINIFY } from "escodegen";
 import obsfucator from "javascript-obfuscator";
 
-function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
-  const wholeFileNode = Parser.parse(wheelMinJs, { sourceType: "script" });
+function translate(wheelDeobJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
+  const wholeFileNode = Parser.parse(wheelDeobJs, { sourceType: "script" });
   const wholeFileNode_Body = wholeFileNode.body;
-  const stringDecoder_Name = (function () {
-    // const stringDecoder_VariableDeclaration = wholeFileNode.body[0]; // always first line in the code?
-    const stringDecoder_VariableDeclaration = wholeFileNode_Body.find(
-      (node) => {
-        if (node.type !== "VariableDeclaration") return false;
-        if (node.kind !== "var") return false;
-        if (node.declarations.length !== 1) return false;
-        const stringDecoder_VariableDeclarator = node.declarations[0];
-        if (stringDecoder_VariableDeclarator.init.type !== "Identifier")
-          return false;
-        const firstTraceName = stringDecoder_VariableDeclarator.init.name;
-        const firstTrace_FunctionDeclaration = wholeFileNode_Body.find(
-          (node) =>
-            node.type === "FunctionDeclaration" &&
-            node.id.name === firstTraceName &&
-            node.params.length === 2
-        );
-        if (!firstTrace_FunctionDeclaration) return false;
-        const firstTrace_Body = firstTrace_FunctionDeclaration.body.body;
-        if (
-          firstTrace_Body.length !== 2 ||
-          firstTrace_Body[0].type !== "VariableDeclaration" ||
-          firstTrace_Body[0].kind !== "var" ||
-          firstTrace_Body[0].declarations.length !== 1 ||
-          firstTrace_Body[1].type !== "ReturnStatement" ||
-          firstTrace_Body[1].argument.type !== "SequenceExpression" ||
-          firstTrace_Body[1].argument.expressions.length !== 2
-        )
-          return false;
-        const firstTrace_ReturnCall =
-          firstTrace_Body[1].argument.expressions[1];
-        if (
-          firstTrace_ReturnCall.type !== "CallExpression" ||
-          firstTrace_ReturnCall.arguments.length !== 2 ||
-          !firstTrace_ReturnCall.arguments.every(
-            (a) => a.type === "Identifier"
-          ) ||
-          firstTrace_ReturnCall.callee.type !== "Identifier" ||
-          firstTrace_ReturnCall.callee.name !== firstTraceName
-        )
-          return false;
-        const firstTrace_StringList = firstTrace_Body[0].declarations[0];
-        if (
-          firstTrace_StringList.init.type !== "CallExpression" ||
-          firstTrace_StringList.init.callee.type !== "Identifier" ||
-          firstTrace_StringList.init.arguments.length !== 0
-        )
-          return false;
-        const secondTraceName = firstTrace_StringList.init.callee.name;
-        const secondTrace_FunctionDeclaration = wholeFileNode_Body.find(
-          (node) =>
-            node.type === "FunctionDeclaration" &&
-            node.id.name === secondTraceName &&
-            node.params.length === 0
-        );
-        if (!secondTrace_FunctionDeclaration) return false;
-        const secondTrace_Body = secondTrace_FunctionDeclaration.body.body;
-        if (
-          secondTrace_Body.length !== 3 ||
-          secondTrace_Body[0].type !== "VariableDeclaration" ||
-          secondTrace_Body[0].kind !== "var" ||
-          secondTrace_Body[0].declarations.length !== 1 ||
-          secondTrace_Body[0].declarations[0].init.type !== "ArrayExpression" ||
-          secondTrace_Body[0].declarations[0].init.elements.length !== 818 ||
-          !secondTrace_Body[0].declarations[0].init.elements.every(
-            (e) => e.type === "Literal"
-          ) ||
-          secondTrace_Body[1].type !== "ExpressionStatement" ||
-          secondTrace_Body[1].expression.type !== "AssignmentExpression" ||
-          secondTrace_Body[1].expression.operator !== "=" ||
-          secondTrace_Body[1].expression.left.type !== "Identifier" ||
-          secondTrace_Body[1].expression.left.name !== secondTraceName ||
-          secondTrace_Body[1].expression.right.type !== "FunctionExpression" ||
-          secondTrace_Body[1].expression.right.params.length !== 0 ||
-          secondTrace_Body[2].type !== "ReturnStatement" ||
-          secondTrace_Body[2].argument.type !== "CallExpression" ||
-          secondTrace_Body[2].argument.arguments.length !== 0 ||
-          secondTrace_Body[2].argument.callee.type !== "Identifier" ||
-          secondTrace_Body[2].argument.callee.name !== secondTraceName
-        )
-          return false;
-        return true;
-      }
-    );
-    if (!stringDecoder_VariableDeclaration) return null;
-    const stringDecoder_Name =
-      stringDecoder_VariableDeclaration?.declarations?.[0]?.id?.name;
-    return stringDecoder_Name;
-  })();
 
   // locate names, identifiers, values, commonly accessed nodes in the original code
   const loadWheel_Body = (function () {
@@ -118,10 +29,10 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
     if (!loadWheel_Body) return failureReturn;
     const calcCurrentSectorIndex_VariableDeclaration = loadWheel_Body.find(
       (node) =>
-        node.type === "VariableDeclaration" &&
-        node.kind === "const" &&
-        node.declarations?.length === 1 &&
-        node.declarations[0].init.type === "ArrowFunctionExpression"
+        nodeIs.variableDeclaration(node, { kind: "const" }) &&
+        node.declarations.length === 1 &&
+        node.declarations[0].init.type === "ArrowFunctionExpression" &&
+        node.declarations[0].init.params.length === 0
     );
     if (!calcCurrentSectorIndex_VariableDeclaration) return failureReturn;
     const calcCurrentSectorIndex_VariableDeclarator =
@@ -149,7 +60,7 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
     if (forStatementExpressionRightSide.type !== "MemberExpression")
       return failureReturn;
     const property = forStatementExpressionRightSide.property;
-    if (property.type !== "Literal" || property.value !== "length")
+    if (property.type !== "Identifier" || property.name !== "length")
       return failureReturn;
     if (forStatementExpressionRightSide.object.type !== "Identifier")
       return failureReturn;
@@ -179,14 +90,17 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
     // continue the code
     const inForStatementIfStatement = forStatementBody[1];
     if (
-      inForStatementIfStatement.test.type !== "BinaryExpression" ||
-      inForStatementIfStatement.test.operator !== "<" ||
-      inForStatementIfStatement.test.left.type !== "CallExpression" ||
-      inForStatementIfStatement.test.left.callee.type !== "MemberExpression" ||
-      inForStatementIfStatement.test.left.callee.object.type !== "Identifier" ||
-      inForStatementIfStatement.test.left.callee.object.name !== "Math" ||
-      inForStatementIfStatement.test.left.callee.property.type !== "Literal" ||
-      inForStatementIfStatement.test.left.callee.property.value !== "abs"
+      !nodeIs.binaryExpression(inForStatementIfStatement.test, {
+        operator: "<",
+      }) ||
+      !nodeIs.callExpression(inForStatementIfStatement.test.left) ||
+      !nodeIs.memberExpression(inForStatementIfStatement.test.left.callee) ||
+      !nodeIs.identifier(inForStatementIfStatement.test.left.callee.object, {
+        name: "Math",
+      }) ||
+      !nodeIs.identifier(inForStatementIfStatement.test.left.callee.property, {
+        name: "abs",
+      })
     )
       return failureReturn;
     const absArgument = inForStatementIfStatement.test.left.arguments[0];
@@ -218,9 +132,10 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
         properties.length !== 3 ||
         !properties.every(
           (property) =>
-            property.key.type === "Literal" &&
-            property.value.type === "Literal" &&
-            defaultProperties[property.key.value] === property.value.value
+            nodeIs.identifier(property.key) &&
+            nodeIs.literal(property.value, {
+              value: defaultProperties[property.key.name],
+            })
         )
       )
         return false;
@@ -246,10 +161,11 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
       const callee = expression.callee;
       if (callee.type !== "MemberExpression") return false;
       const property = callee.property;
-      if (property.type !== "Literal" || property.value !== "addEventListener")
+      if (!nodeIs.identifier(property, { name: "addEventListener" }))
         return false;
       if (
         expression.arguments.length !== 2 ||
+        !nodeIs.literal(expression.arguments[0], { value: "click" }) ||
         expression.arguments[1].type !== "ArrowFunctionExpression"
       )
         return false;
@@ -270,8 +186,12 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
     if (testArgument.type !== "Identifier") return failureReturn;
     const spinAccelerationName = testArgument.name;
     const consequent = spinAccelerationZero.consequent;
-    if (consequent.type !== "ExpressionStatement") return failureReturn;
-    const consequentExpression = consequent.expression;
+    if (
+      !nodeIs.blockStatement(consequent) ||
+      !nodeIs.expressionStatement(consequent.body[0])
+    )
+      return failureReturn;
+    const consequentExpression = consequent.body[0].expression;
     if (
       consequentExpression.type !== "AssignmentExpression" ||
       consequentExpression.operator !== "="
@@ -308,32 +228,35 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
     ];
   })();
   const [accelerationFactor_Name, stopThreshold_Value] = (function () {
-    if (!loadWheel_Body) return [null, 1];
+    if (!loadWheel_Body) return [null, null];
     for (const node of loadWheel_Body) {
       if (node.type !== "FunctionDeclaration") continue;
       if (node.params.length !== 0) continue;
       const body = node.body.body;
       if (
-        body.length !== 5 ||
-        body[0].type !== "VariableDeclaration" ||
-        body[1].type !== "IfStatement" ||
-        body[2].type !== "ExpressionStatement" ||
-        body[3].type !== "IfStatement" ||
-        body[4].type !== "ExpressionStatement"
+        body.length !== 6 ||
+        body[0].type !== "IfStatement" ||
+        body[1].type !== "ExpressionStatement" ||
+        body[2].type !== "IfStatement" ||
+        body[3].type !== "ExpressionStatement" ||
+        body[4].type !== "ExpressionStatement" ||
+        body[5].type !== "ExpressionStatement"
       )
         continue;
-      const spinAccelerationZero = body[1];
+      const spinAccelerationZero = body[0];
       const spinAccelerationZeroTest = spinAccelerationZero.test;
       if (
         spinAccelerationZeroTest.type !== "UnaryExpression" ||
         spinAccelerationZeroTest.operator !== "!" ||
         spinAccelerationZeroTest.argument.type !== "Identifier" ||
         spinAccelerationZeroTest.argument.name !== spinAcceleration_Name ||
-        spinAccelerationZero.consequent.type !== "ReturnStatement" ||
-        spinAccelerationZero.consequent.argument !== null
+        !nodeIs.blockStatement(spinAccelerationZero.consequent) ||
+        !nodeIs.returnStatement(spinAccelerationZero.consequent.body[0], {
+          argument: null,
+        })
       )
         continue;
-      const accelerateTickExpression = body[2].expression;
+      const accelerateTickExpression = body[1].expression;
       if (
         accelerateTickExpression.type !== "AssignmentExpression" ||
         accelerateTickExpression.operator !== "*=" ||
@@ -343,7 +266,7 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
       )
         continue;
       const accelerationFactorName = accelerateTickExpression.right.name;
-      const spinAccelerationThreshold = body[3];
+      const spinAccelerationThreshold = body[2];
       const spinAccelerationThresholdTest = spinAccelerationThreshold.test;
       if (
         spinAccelerationThresholdTest.type !== "BinaryExpression" ||
@@ -408,7 +331,6 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
   })();
   // input settings for the patched function
   const patchIdentifierMap = {
-    stringDecoder: stringDecoder_Name,
     calcCurrentSectorIndex: calcCurrentSectorIndex_Name,
     sectorAngles: sectorAngles_Name,
     currentWheelAngle: currentWheelAngle_Name,
@@ -425,7 +347,8 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
     riggedValues,
     stopThreshold: stopThreshold_Value,
   };
-
+  console.log({ patchIdentifierMap, patchValueMap });
+  debugger;
   // replace the identifiers and values in the patched function
   const randomizerPatchFunctionExpression = Parser.parse(wheelPatchJs, {
     sourceType: "script",
@@ -584,15 +507,14 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
       break;
     }
   })();
-  // reobfuscate so the patch blends into the original code, but minimize techniques used
-  // (use only identifierNamesGenerator: 'hexadecimal')
+  // reobfuscate to make final code looks like original, but minimize techniques used
   const obfuscationOptions = {
     compact: true,
     controlFlowFlattening: false,
     deadCodeInjection: false,
     debugProtection: false,
     disableConsoleOutput: false,
-    // only use this
+    // too obvious
     identifierNamesGenerator: "hexadecimal",
     ignoreImports: true,
     log: false,
@@ -607,7 +529,26 @@ function translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
     // source is already obfuscated lol
     sourceMap: false,
     splitStrings: false,
-    stringArray: false,
+    // allows to add some weird code on top of the file, makes it less obvious
+    stringArray: true,
+    // disable all string array options
+    stringArrayCallsTransform: false,
+    stringArrayCallsTransformThreshold: Number.EPSILON,
+    stringArrayEncoding: [],
+    // `stringArrayIndexesType` errors:
+    // - stringArrayIndexesType should not be empty
+    stringArrayIndexesType: ["hexadecimal-number"],
+    stringArrayIndexShift: false,
+    // only this one adds
+    stringArrayRotate: true,
+    stringArrayShuffle: false,
+    stringArrayWrappersCount: 1,
+    stringArrayWrappersChainedCalls: true,
+    // `stringArrayWrappersParametersMaxCount` errors:
+    // - stringArrayWrappersParametersMaxCount must not be less than 2
+    stringArrayWrappersParametersMaxCount: 2,
+    stringArrayWrappersType: "variable",
+    stringArrayThreshold: Number.EPSILON,
     // nothing relies on node
     target: "browser",
     transformObjectKeys: false,

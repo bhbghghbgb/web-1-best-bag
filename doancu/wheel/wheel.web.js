@@ -3,7 +3,7 @@ import { translate } from "./wheel.rig.js";
 
 $(() => {
   $("#submitButton").on("click", () => {
-    const wheelMinJs = $("#inputText1").val();
+    const wheelDeobJs = $("#inputText1").val();
     const wheelPatchJs = $("#inputText2").val();
     const wheelPatch2Js = $("#inputText3").val();
     const riggedValues = $("#inputText4")
@@ -12,8 +12,8 @@ $(() => {
       .split(/\s+/g)
       .filter((v) => v);
     const { sourceComplete, sourceCompleteObfuscated } = riggedValues.length
-      ? translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, riggedValues)
-      : translate(wheelMinJs, wheelPatchJs, wheelPatch2Js, [
+      ? translate(wheelDeobJs, wheelPatchJs, wheelPatch2Js, riggedValues)
+      : translate(wheelDeobJs, wheelPatchJs, wheelPatch2Js, [
           "Mai",
           "Hương",
           "Giang",

@@ -1,134 +1,22 @@
-var e = (function () {
-  var f = true;
-  return function (j, q) {
-    var z = f
-      ? function () {
-          if (q) {
-            var aa = q.apply(j, arguments);
-            q = null;
-            return aa;
-          }
-        }
-      : function () {};
-    f = false;
-    return z;
-  };
-})();
-var ab = e(this, function () {
-  var ac;
-  try {
-    var ad = Function('return (function() {}.constructor("return this")( ));');
-    ac = ad();
-  } catch (ae) {
-    ac = window;
-  }
-  var af = new RegExp(
-    "[QJPPEQAXBthTVTULjhBCJCFJwwbUSIpIjWMTtbOBRIZfbWQOiEYDtTSApPTTAHpXwXKNstWZJOKALfAfKPjfPtLQ]",
-    "g"
-  );
-  var ag =
-    "QJvPoPEngquQAXBaytmhaTVyTUmanL.cojhB;vConJgCqFuJwwabUSIypmIjWMaymTatbnO.BRlIZfbWQOociEYDtTSApPTTAHpXwXKNstWZJOKALfAfKPjfPtLQ"
-      .replace(af, "")
-      .split(";");
-  var ah;
-  var aj;
-  var ak;
-  var al;
-  var am = function (an, ao, ap) {
-    if (an.length != ao) {
-      return false;
-    }
-    for (var aq = 0; aq < ao; aq++) {
-      for (var ar = 0; ar < ap.length; ar += 2) {
-        if (aq == ap[ar] && an.charCodeAt(aq) != ap[ar + 1]) {
-          return false;
-        }
-      }
-    }
-    return true;
-  };
-  for (var as in ac) {
-    if (am(as, 8, [7, 116, 5, 101, 3, 117, 0, 100])) {
-      ah = as;
-      break;
-    }
-  }
-  for (var at in ac[ah]) {
-    if (am(at, 6, [5, 110, 0, 100])) {
-      aj = at;
-      break;
-    }
-  }
-  for (var au in ac[ah]) {
-    if (am(au, 8, [7, 110, 0, 108])) {
-      ak = au;
-      break;
-    }
-  }
-  if (!("~" > aj)) {
-    for (var av in ac[ah][ak]) {
-      if (am(av, 8, [7, 101, 0, 104])) {
-        al = av;
-        break;
-      }
-    }
-  }
-  if (!ah || !ac[ah]) {
-    return;
-  }
-  var aw = ac[ah][aj];
-  var ax = !!ac[ah][ak] && ac[ah][ak][al];
-  var ay = aw || ax;
-  if (!ay) {
-    return;
-  }
-  var ba = false;
-  for (var bb = 0; bb < ag.length; bb++) {
-    var aj = ag[bb];
-    var bc = aj[0] === String.fromCharCode(46) ? aj.slice(1) : aj;
-    var bd = ay.length - bc.length;
-    var be = ay.indexOf(bc, bd);
-    var bf = be !== -1 && be === bd;
-    if (bf) {
-      if (ay.length == aj.length || aj.indexOf(".") === 0) {
-        ba = true;
-      }
-    }
-  }
-  if (!ba) {
-    var bh = new RegExp(
-      "[fNZTxWLVrOZPzJLQJYQFiESdTNAOIiUiPCiZPPMWABbYAAWereGP]",
-      "g"
-    );
-    var bj =
-      "fhtNtpZs:T/x/vWoLVrOnZPgzJqLQJuYQaymaFiymESadTn.cNoAOIiUiPCiZPPMWABbYAAWereGP".replace(
-        bh,
-        ""
-      );
-    ac[ah][ak] = bj;
-  }
-});
-ab();
 const root = document.querySelector(":root");
 var extra_name = el("extra_name").value;
 const languages = ajax_object.languages;
-
-function measureText(bk, bl) {
-  const bm = document.createElement("span");
-  bm.appendChild(document.createTextNode(bk));
-  Object.assign(bm.style, {
-    font: bl,
+function measureText(p15, p16) {
+  const v28 = document.createElement("span");
+  v28.appendChild(document.createTextNode(p15));
+  Object.assign(v28.style, {
+    font: p16,
     margin: "0",
     padding: "0",
     border: "0",
     whiteSpace: "nowrap",
   });
-  document.body.appendChild(bm);
-  const { width: bn, height: bo } = bm.getBoundingClientRect();
-  bm.remove();
+  document.body.appendChild(v28);
+  const { width: _0x2d9726, height: _0x5acf55 } = v28.getBoundingClientRect();
+  v28.remove();
   return {
-    width: bn,
-    height: bo,
+    width: _0x2d9726,
+    height: _0x5acf55,
   };
 }
 if (
@@ -138,162 +26,156 @@ if (
 ) {
   window.location.href = b64DecodeUnicode("dm9uZ3F1YXltYXltYW4uY28=");
 }
-
-function getText(bp, bq) {
-  if (bp.nodeType === 3) {
-    bq.push(bp.nodeValue);
+function getText(p17, p18) {
+  if (p17.nodeType === 3) {
+    p18.push(p17.nodeValue);
+  } else if (p17.nodeName === "IMG") {
+    p18.push('<img src="' + p17.src + '" >');
   } else {
-    if (bp.nodeName === "IMG") {
-      bq.push('<img src="' + bp.src + '" >');
-    } else {
-      for (let bt of bp.childNodes) getText(bt, bq);
+    for (let v29 of p17.childNodes) {
+      getText(v29, p18);
     }
   }
 }
-
-function getItemList(bu) {
-  var bv = Array.from(bu.children);
-  var bw = [];
-  if (bv.length) {
-    for (var bx = 0; bx < bv.length; bx++) {
-      bw.push(bv[bx].innerHTML);
+function getItemList(p19) {
+  var v30 = Array.from(p19.children);
+  var v31 = [];
+  if (v30.length) {
+    for (var v32 = 0; v32 < v30.length; v32++) {
+      v31.push(v30[v32].innerHTML);
     }
   }
-  return bw;
+  return v31;
 }
-
-function getSectorItem(by) {
-  if (by) {
-    var bz = by.match(/<div>(.*?)<\/div>/g).map(function (ca) {
-      ca = ca.replace(/<\/?div>/g, "");
-      if (ca && !ca.includes("img")) {
-        ca = stripHtml(ca);
-        ca = ca.trim();
+function getSectorItem(p20) {
+  if (p20) {
+    var v33 = p20.match(/<div>(.*?)<\/div>/g).map(function (p21) {
+      p21 = p21.replace(/<\/?div>/g, "");
+      if (p21 && !p21.includes("img")) {
+        p21 = stripHtml(p21);
+        p21 = p21.trim();
       }
-      return ca;
+      return p21;
     });
-    return bz.filter(function (cb) {
-      return cb !== "";
+    return v33.filter(function (p22) {
+      return p22 !== "";
     });
   } else {
     return [];
   }
 }
-
-function getImgSrc(cc) {
-  const cd = document.createElement("div");
-  cd.innerHTML = cc;
-  const ce = cd.querySelector("img");
-  return ce.src;
+function getImgSrc(p23) {
+  const v34 = document.createElement("div");
+  v34.innerHTML = p23;
+  const v35 = v34.querySelector("img");
+  return v35.src;
 }
-
-function stripHtml(cf) {
-  var cg = document.createElement("div");
-  cg.innerHTML = cf;
-  return cg.textContent || cg.innerText || "";
+function stripHtml(p24) {
+  var v36 = document.createElement("div");
+  v36.innerHTML = p24;
+  return v36.textContent || v36.innerText || "";
 }
-
 function getCurrentStyleColor() {
-  var ci = [];
-  var cj = document.getElementsByName("chkcolor");
-  if (cj.length) {
-    for (var ck of cj) {
-      if (ck.checked) {
-        ci.push(el("color-" + ck.value).value);
+  var v37 = [];
+  var v38 = document.getElementsByName("chkcolor");
+  if (v38.length) {
+    for (var v39 of v38) {
+      if (v39.checked) {
+        v37.push(el("color-" + v39.value).value);
       }
     }
   }
-  if (ci.length == 0) {
-    ci = ["#D51025", "#3369E8", "#039924", "#EEB212"];
+  if (v37.length == 0) {
+    v37 = ["#D51025", "#3369E8", "#039924", "#EEB212"];
   }
-  return ci;
+  return v37;
 }
-
-function setBackgroundImage(cl, cm = "view") {
-  var cn = window.innerWidth;
-  let cp;
-  if (typeof cl === "string") {
-    cp = cl;
-    if (cm === "update") {
-      el("custom-bg-img").value = cl;
-      el("custom-bg-img-tablet").value = cl;
-      el("custom-bg-img-mobile").value = cl;
+function setBackgroundImage(p25, p26 = "view") {
+  var v40 = window.innerWidth;
+  let v41;
+  if (typeof p25 === "string") {
+    v41 = p25;
+    if (p26 === "update") {
+      el("custom-bg-img").value = p25;
+      el("custom-bg-img-tablet").value = p25;
+      el("custom-bg-img-mobile").value = p25;
     }
-  } else {
-    if (Array.isArray(cl)) {
-      if (cl[0]) {
-        cp = cl[0];
-      }
-      if (cn < 768 && cl[2]) {
-        cp = cl[2];
-      } else {
-        if (cn <= 1024 && cl[1]) {
-          cp = cl[1];
-        }
-      }
-      if (cm === "update") {
-        el("custom-bg-img").value = cl[0];
-        el("custom-bg-img-tablet").value = cl[1];
-        el("custom-bg-img-mobile").value = cl[2];
-      }
+  } else if (Array.isArray(p25)) {
+    if (p25[0]) {
+      v41 = p25[0];
+    }
+    if (v40 < 768 && p25[2]) {
+      v41 = p25[2];
+    } else if (v40 <= 1024 && p25[1]) {
+      v41 = p25[1];
+    }
+    if (p26 === "update") {
+      el("custom-bg-img").value = p25[0];
+      el("custom-bg-img-tablet").value = p25[1];
+      el("custom-bg-img-mobile").value = p25[2];
     }
   }
-  if (cp) {
-    document.body.style.backgroundImage = "url(" + cp + ")";
+  if (v41) {
+    document.body.style.backgroundImage = "url(" + v41 + ")";
   } else {
     document.body.style.backgroundImage = "";
   }
 }
-
 function getWheelSettingInArray() {
-  var cq = el("extra_name").value;
-  var cr = localStorage.getItem("wheelSetting" + cq);
-  var cs = null;
-  if (cr) {
-    cs = JSON.parse(cr);
+  var v42 = el("extra_name").value;
+  var v43 = localStorage.getItem("wheelSetting" + v42);
+  var v44 = null;
+  if (v43) {
+    v44 = JSON.parse(v43);
   }
-  return cs;
+  return v44;
 }
-
-function setWheelSettingFromArray(ct) {
-  var cu = el("extra_name").value;
-  localStorage.setItem("wheelSetting" + cu, JSON.stringify(ct));
+function setWheelSettingFromArray(p27) {
+  var v45 = el("extra_name").value;
+  localStorage.setItem("wheelSetting" + v45, JSON.stringify(p27));
 }
 async function loadWheel() {
-  var cv = getWheelSettingInArray();
-  if (cv == null) {
+  var vGetWheelSettingInArray = getWheelSettingInArray();
+  if (vGetWheelSettingInArray == null) {
     return false;
   }
-  var cw = cv.start_sound;
-  var cx = cv.end_sound;
-  var cy = cv.show_confetti;
-  var cz = cv.show_popup;
-  var da = cv.popup_label;
-  var db = cv.show_remove_button;
-  var dc = cv.btn_spin_label;
-  var de = "";
-  var df = cv.is_advance;
-  var dg = cv.entries;
-  var dh = cv.duration;
-  var di = cv.is_stroke;
-  var dj = "color";
-  var dk = "";
-  var dl = "no";
-  var dm = "#FF4D00";
-  var dn = "#F6FA00";
-  if (cv.hasOwnProperty("show_border")) {
-    dl = cv.show_border;
-    dm = cv.border_color;
-    dn = cv.diamond_color;
+  var v46 = ajax_object.home_url;
+  var v47 = ajax_object.theme_uri;
+  var v48 = vGetWheelSettingInArray.start_sound;
+  var v49 = vGetWheelSettingInArray.end_sound;
+  var v50 = vGetWheelSettingInArray.show_confetti;
+  var v51 = vGetWheelSettingInArray.show_popup;
+  var v52 = vGetWheelSettingInArray.popup_label;
+  var v53 = vGetWheelSettingInArray.show_remove_button;
+  var v54 = vGetWheelSettingInArray.btn_spin_label;
+  var v55 = "";
+  var v56 = vGetWheelSettingInArray.is_advance;
+  var v57 = vGetWheelSettingInArray.entries;
+  var v58 = vGetWheelSettingInArray.duration;
+  var v59 = vGetWheelSettingInArray.is_stroke;
+  var v60 = "color";
+  var v61 = "";
+  var v62 = 0;
+  var v63 = "";
+  var v64 = [];
+  var v65 = 0;
+  var v66 = [];
+  var v67 = "no";
+  var v68 = "#FF4D00";
+  var v69 = "#F6FA00";
+  if (vGetWheelSettingInArray.hasOwnProperty("show_border")) {
+    v67 = vGetWheelSettingInArray.show_border;
+    v68 = vGetWheelSettingInArray.border_color;
+    v69 = vGetWheelSettingInArray.diamond_color;
   }
-  if (cv.hasOwnProperty("btn_spin_img")) {
-    de = cv.btn_spin_img;
+  if (vGetWheelSettingInArray.hasOwnProperty("btn_spin_img")) {
+    v55 = vGetWheelSettingInArray.btn_spin_img;
   }
-  if (cv.hasOwnProperty("type")) {
-    dj = cv.type;
+  if (vGetWheelSettingInArray.hasOwnProperty("type")) {
+    v60 = vGetWheelSettingInArray.type;
   }
-  if (cv.hasOwnProperty("cover_img")) {
-    dk = cv.cover_img;
+  if (vGetWheelSettingInArray.hasOwnProperty("cover_img")) {
+    v61 = vGetWheelSettingInArray.cover_img;
   }
   if (
     !rt ||
@@ -302,596 +184,597 @@ async function loadWheel() {
   ) {
     window.location.href = b64DecodeUnicode("dm9uZ3F1YXltYXltYW4uY28=");
   }
-  var dp = 600;
-  var dq = document.body.clientWidth;
-  if (dq >= 1600) {
-    dp = 700;
+  var v70 = 600;
+  var v71 = document.body.clientHeight;
+  var v72 = document.body.clientWidth;
+  if (v72 >= 1600) {
+    v70 = 700;
   }
-  if (dq >= 2000) {
-    dp = 800;
+  if (v72 >= 2000) {
+    v70 = 800;
   }
-  if (dq >= 3000) {
-    dp = 900;
+  if (v72 >= 3000) {
+    v70 = 900;
   }
   el("wheel-container").innerHTML =
     '<div id="wheelOfFortune"><canvas id="wheel" width="' +
-    dp +
+    v70 +
     '" height="' +
-    dp +
+    v70 +
     '"></canvas><div id="spin">' +
-    dc +
+    v54 +
     '</div><div id="instruction"><img src="' +
     ajax_object.theme_uri +
     '/assets/images/instruction.svg"></div></div>';
-  var dr = [
+  var v73 = [
     {
       text: "",
       id: 0,
       color: "#ADB2B0",
     },
   ];
-  if (df == 0) {
-    el("sector_list").style.maxHeight = dp - 150 + "px";
-    if (dg.length) {
-      dr = dg;
-      var ds = cv.colors;
-      for (var dt = 0; dt < dr.length; dt++) {
-        dr[dt].color = ds[dt % ds.length].value;
-        dr[dt].weight = 1;
+  if (v56 == 0) {
+    el("sector_list").style.maxHeight = v70 - 150 + "px";
+    if (v57.length) {
+      v73 = v57;
+      var v74 = vGetWheelSettingInArray.colors;
+      for (var v75 = 0; v75 < v73.length; v75++) {
+        v73[v75].color = v74[v75 % v74.length].value;
+        v73[v75].weight = 1;
       }
     }
   } else {
-    el("scrollarea").style.maxHeight = dp - 200 + "px";
-    if (dg.length) {
-      dr = dg;
+    el("scrollarea").style.maxHeight = v70 - 200 + "px";
+    if (v57.length) {
+      v73 = v57;
     }
   }
-  const du = dr.reduce((dv, dw) => dv + dw.weight, 0);
-  const dx = dr.map((dy) => (dy.weight / du) * 2 * Math.PI);
-  const dz = document.querySelector("#spin");
-  const ea = document.querySelector("#instruction");
-  const eb = dz.offsetWidth;
-  const ec = document.querySelector("#wheel").getContext("2d");
-  const ed = ec.canvas.width;
-  const ee = ed / 2;
-  const ef = Math.PI;
-  const eg = 2 * ef;
-  const eh = eg / dr.length;
-  const ei = eh * ee;
-  let ej = 0;
-  let ek = 0;
-  const em = () => {
-    let eo = 0;
-    for (let ep = 0; ep < dx.length; ep++) {
-      eo += dx[ep];
-      if (Math.abs(ek) < eo) {
-        return ep;
+  const vF3 = (p28, p29) => Math.random() * (p29 - p28) + p28;
+  const v76 = v73.reduce((p30, p31) => p30 + p31.weight, 0);
+  const v77 = v73.map((p32) => (p32.weight / v76) * 2 * Math.PI);
+  const v78 = v73.length;
+  const v79 = document.querySelector("#spin");
+  const v80 = document.querySelector("#instruction");
+  const v81 = v79.offsetWidth;
+  const v82 = 30;
+  const v83 = document.querySelector("#wheel").getContext("2d");
+  const v84 = v83.canvas.width;
+  const v85 = v84 / 2;
+  const v86 = Math.PI;
+  const v87 = v86 * 2;
+  const v88 = v87 / v73.length;
+  const v89 = v88 * v85;
+  let v90 = 0;
+  let v91 = 0;
+  const vF4 = () => {
+    let v92 = 0;
+    for (let v93 = 0; v93 < v77.length; v93++) {
+      v92 += v77[v93];
+      if (Math.abs(v91) < v92) {
+        return v93;
       }
     }
     return 0;
   };
-  var eq = 60;
-  var er = 0;
-  var es = 0;
-  var et;
-  var eu = ei;
-  var ev = 20;
-  if (dl == "yes") {
-    ev = 30;
+  var v94 = 60;
+  var v95 = "normal";
+  var v96 = "sans-serif";
+  var v97 = 0;
+  var v98 = 0;
+  var v99;
+  var vV89 = v89;
+  var v100 = 20;
+  if (v67 == "yes") {
+    v100 = 30;
   }
-  ec.font = "normal " + eq + "px " + "sans-serif";
-  for (var dt = 0; dt < dr.length; dt++) {
-    dr[dt].alias = dr[dt].text;
-    if (dr[dt].text !== "") {
-      dr[dt].alias = truncateByLength(dr[dt].text, 17);
-      et = measureText(dr[dt].alias, ec.font);
-      es = et.height;
-      er = et.width;
-      eu = 2 * ef * (ee - er) * (dr[dt].weight / du);
-      while (eq > 6 && (es > eu || er > ee - eb - 30 - ev)) {
-        eq -= 1;
-        ec.font = "normal " + eq + "px " + "sans-serif";
-        et = measureText(dr[dt].alias, ec.font);
-        es = et.height;
-        er = et.width;
-        eu = 2 * ef * (ee - er) * (dr[dt].weight / du);
+  v83.font = v95 + " " + v94 + "px " + v96;
+  for (var v75 = 0; v75 < v73.length; v75++) {
+    v73[v75].alias = v73[v75].text;
+    if (v73[v75].text !== "") {
+      v73[v75].alias = truncateByLength(v73[v75].text, 17);
+      v99 = measureText(v73[v75].alias, v83.font);
+      v98 = v99.height;
+      v97 = v99.width;
+      vV89 = v86 * 2 * (v85 - v97) * (v73[v75].weight / v76);
+      while (v94 > 6 && (v98 > vV89 || v97 > v85 - v81 - v82 - v100)) {
+        v94 -= 1;
+        v83.font = v95 + " " + v94 + "px " + v96;
+        v99 = measureText(v73[v75].alias, v83.font);
+        v98 = v99.height;
+        v97 = v99.width;
+        vV89 = v86 * 2 * (v85 - v97) * (v73[v75].weight / v76);
       }
     }
   }
-  async function ew(ex) {
-    const ey = ex.map((ez) => {
-      if (ez.hasOwnProperty("image")) {
-        return fa(ez.image);
+  async function f6(p33) {
+    const v101 = p33.map((p34) => {
+      if (p34.hasOwnProperty("image")) {
+        return f7(p34.image);
       }
       return Promise.resolve(null);
     });
-    const fb = await Promise.all(ey);
-    return fb;
+    const v102 = await Promise.all(v101);
+    return v102;
   }
-
-  function fa(fc) {
-    return new Promise((fd, fe) => {
-      const ff = new Image();
-      ff.onload = () => fd(ff);
-      ff.onerror = (fg) => fe(fg);
-      ff.crossOrigin = "Anonymous";
-      ff.src = fc;
+  function f7(p35) {
+    return new Promise((p36, p37) => {
+      const v103 = new Image();
+      v103.onload = () => p36(v103);
+      v103.onerror = (p38) => p37(p38);
+      v103.crossOrigin = "Anonymous";
+      v103.src = p35;
     });
   }
-  async function fh(fi, fj, fk, fl) {
-    ec.save();
-    ec.beginPath();
-    ec.fillStyle = fi.color;
-    if (dj == "image") {
-      ec.fillStyle = "transparent";
+  async function f8(p39, p40, p41, p42) {
+    v83.save();
+    v83.beginPath();
+    v83.fillStyle = p39.color;
+    if (v60 == "image") {
+      v83.fillStyle = "transparent";
     }
-    ec.moveTo(ee, ee);
-    ec.arc(ee, ee, ee, fj - fk, fj);
-    ec.lineTo(ee, ee);
-    ec.fill();
-    if (di == "yes") {
-      ec.strokeStyle = "rgba(0,0,0,0.5)";
-      ec.fillStyle = "rgba(0,0,0,0.5)";
-      ec.lineWidth = 1;
-      ec.stroke();
+    v83.moveTo(v85, v85);
+    v83.arc(v85, v85, v85, p40 - p41, p40);
+    v83.lineTo(v85, v85);
+    v83.fill();
+    if (v59 == "yes") {
+      v83.strokeStyle = "rgba(0,0,0,0.5)";
+      v83.fillStyle = "rgba(0,0,0,0.5)";
+      v83.lineWidth = 1;
+      v83.stroke();
     }
-    ec.translate(ee, ee);
-    ec.rotate(fj - fk / 2);
-    if (!fi.hasOwnProperty("image")) {
-      ec.textAlign = "right";
-      ec.textBaseline = "middle";
-      ec.fillStyle = "#fff";
-      if (dj == "color") {
-        if (isWhite(fi.color)) {
-          ec.fillStyle = "#000";
+    v83.translate(v85, v85);
+    v83.rotate(p40 - p41 / 2);
+    if (!p39.hasOwnProperty("image")) {
+      v83.textAlign = "right";
+      v83.textBaseline = "middle";
+      v83.fillStyle = "#fff";
+      if (v60 == "color") {
+        if (isWhite(p39.color)) {
+          v83.fillStyle = "#000";
         }
       }
-      ec.fillText(fi.alias, ee - ev, 0);
+      v83.fillText(p39.alias, v85 - v100, 0);
     } else {
-      const fm = fl.width / fl.height;
-      let fn = 2 * ef * (eb / 2) * (fi.weight / du);
-      let fo = ee - eb / 2 - ev;
-      let fp = fn * fm;
-      let fq = fn;
-      let fr = ee - ev - fp;
-      let ft = -fq / 2;
-      let fu = 2 * ef * fr * (fi.weight / du);
-      if (fp < fo) {
-        while (fr > eb / 2 && fq < fu && fp < fo) {
-          fp += 1;
-          fq = fp / fm;
-          fr = ee - ev - fp;
-          ft = -fq / 2;
-          fu = 2 * ef * fr * (fi.weight / du);
+      const v104 = p42.width / p42.height;
+      let v105 = v86 * 2 * (v81 / 2) * (p39.weight / v76);
+      let v106 = v85 - v81 / 2 - v100;
+      let v107 = v105 * v104;
+      let vV105 = v105;
+      let v108 = v85 - v100 - v107;
+      let v109 = -vV105 / 2;
+      let v110 = v86 * 2 * v108 * (p39.weight / v76);
+      if (v107 < v106) {
+        while (v108 > v81 / 2 && vV105 < v110 && v107 < v106) {
+          v107 += 1;
+          vV105 = v107 / v104;
+          v108 = v85 - v100 - v107;
+          v109 = -vV105 / 2;
+          v110 = v86 * 2 * v108 * (p39.weight / v76);
         }
       } else {
-        while (fr < eb / 2 || fq > fu || fp > fo) {
-          fp -= 1;
-          fq = fp / fm;
-          fr = ee - ev - fp;
-          ft = -fq / 2;
-          fu = 2 * ef * fr * (fi.weight / du);
+        while (v108 < v81 / 2 || vV105 > v110 || v107 > v106) {
+          v107 -= 1;
+          vV105 = v107 / v104;
+          v108 = v85 - v100 - v107;
+          v109 = -vV105 / 2;
+          v110 = v86 * 2 * v108 * (p39.weight / v76);
         }
       }
-      if (fi.text !== "") {
-        ec.save();
-        ec.globalAlpha = 0.6;
-        ec.drawImage(fl, fr, ft, fp, fq);
-        ec.globalAlpha = 1;
-        ec.textAlign = "right";
-        ec.textBaseline = "middle";
-        ec.fillStyle = "#fff";
-        ec.lineWidth = 3;
-        ec.strokeStyle = "black";
-        if (dj == "color") {
-          if (isWhite(fi.color)) {
-            ec.fillStyle = "#000";
-            ec.strokeStyle = "white";
+      if (p39.text !== "") {
+        v83.save();
+        v83.globalAlpha = 0.6;
+        v83.drawImage(p42, v108, v109, v107, vV105);
+        v83.globalAlpha = 1;
+        v83.textAlign = "right";
+        v83.textBaseline = "middle";
+        v83.fillStyle = "#fff";
+        v83.lineWidth = 3;
+        v83.strokeStyle = "black";
+        if (v60 == "color") {
+          if (isWhite(p39.color)) {
+            v83.fillStyle = "#000";
+            v83.strokeStyle = "white";
           }
         }
-        ec.strokeText(fi.alias, ee - ev, 0);
-        ec.fillText(fi.alias, ee - ev, 0);
-        ec.restore();
+        v83.strokeText(p39.alias, v85 - v100, 0);
+        v83.fillText(p39.alias, v85 - v100, 0);
+        v83.restore();
       } else {
-        ec.drawImage(fl, fr, ft, fp, fq);
+        v83.drawImage(p42, v108, v109, v107, vV105);
       }
     }
-    ec.restore();
+    v83.restore();
   }
-
-  function fv() {
-    ec.save();
-    ec.beginPath();
-    const fx = ec.createLinearGradient(0, 0, 0, ec.canvas.height);
-    const fy = dm;
-    const fz = newShade(fy, 20);
-    fx.addColorStop(0, fy);
-    fx.addColorStop(1, fz);
-    ec.strokeStyle = fx;
-    ec.lineWidth = 15;
-    ec.arc(ee, ee, ee - 7.5, 0, eg);
-    ec.stroke();
-    let ga = 0;
-    for (let gb = 0; gb < dr.length; gb++) {
-      ga -= dx[gb];
-      const gc = ee + (ee - 7.5) * Math.cos(ga + dx[gb] / 2);
-      const gd = ee + (ee - 7.5) * Math.sin(ga + dx[gb] / 2);
-      const ge = dn.replace("#", "");
-      const gf = parseInt(ge.substring(0, 2), 16);
-      const gg = parseInt(ge.substring(2, 4), 16);
-      const gh = parseInt(ge.substring(4, 6), 16);
-      const gj = ec.createRadialGradient(gc, gd, 0, gc, gd, 10);
-      gj.addColorStop(0, "rgba(" + gf + ", " + gg + ", " + gh + ", 1)");
-      gj.addColorStop(0.5, "rgba(" + gf + ", " + gg + ", " + gh + ", 0.5)");
-      gj.addColorStop(1, "rgba(" + gf + ", " + gg + ", " + gh + ", 0)");
-      ec.beginPath();
-      ec.arc(gc, gd, 10, 0, eg);
-      ec.fillStyle = gj;
-      ec.fill();
+  function f9() {
+    const v111 = 15;
+    const v112 = v111 / 2;
+    v83.save();
+    v83.beginPath();
+    const v113 = v83.createLinearGradient(0, 0, 0, v83.canvas.height);
+    const vV68 = v68;
+    const vNewShade = newShade(vV68, 20);
+    v113.addColorStop(0, vV68);
+    v113.addColorStop(1, vNewShade);
+    v83.strokeStyle = v113;
+    v83.lineWidth = v111;
+    v83.arc(v85, v85, v85 - v112, 0, v87);
+    v83.stroke();
+    let v114 = 0;
+    for (let v115 = 0; v115 < v73.length; v115++) {
+      v114 -= v77[v115];
+      const v116 = v85 + (v85 - v112) * Math.cos(v114 + v77[v115] / 2);
+      const v117 = v85 + (v85 - v112) * Math.sin(v114 + v77[v115] / 2);
+      const v118 = v69.replace("#", "");
+      const vParseInt = parseInt(v118.substring(0, 2), 16);
+      const vParseInt2 = parseInt(v118.substring(2, 4), 16);
+      const vParseInt3 = parseInt(v118.substring(4, 6), 16);
+      const v119 = v83.createRadialGradient(v116, v117, 0, v116, v117, 10);
+      v119.addColorStop(
+        0,
+        "rgba(" + vParseInt + ", " + vParseInt2 + ", " + vParseInt3 + ", 1)"
+      );
+      v119.addColorStop(
+        0.5,
+        "rgba(" + vParseInt + ", " + vParseInt2 + ", " + vParseInt3 + ", 0.5)"
+      );
+      v119.addColorStop(
+        1,
+        "rgba(" + vParseInt + ", " + vParseInt2 + ", " + vParseInt3 + ", 0)"
+      );
+      v83.beginPath();
+      v83.arc(v116, v117, 10, 0, v87);
+      v83.fillStyle = v119;
+      v83.fill();
     }
-    ec.restore();
+    v83.restore();
   }
-
-  function gk() {
-    const gl = dr[em()];
-    ec.canvas.style.transform = "rotate(" + (ek - ef / 2) + "rad)";
-    if (dj == "image") {
-      dz.style.backgroundColor = "#ADB2B0";
-      dz.style.color = "#fff";
+  function f10() {
+    const v120 = v73[vF4()];
+    v83.canvas.style.transform = "rotate(" + (v91 - v86 / 2) + "rad)";
+    if (v60 == "image") {
+      v79.style.backgroundColor = "#ADB2B0";
+      v79.style.color = "#fff";
     } else {
-      dz.style.backgroundColor = gl.color;
-      dz.style.color = "#fff";
-      if (isWhite(gl.color)) {
-        dz.style.color = "#000";
+      v79.style.backgroundColor = v120.color;
+      v79.style.color = "#fff";
+      if (isWhite(v120.color)) {
+        v79.style.color = "#000";
       }
     }
-    if (de !== "") {
-      dz.style.backgroundImage = "url(" + de + ")";
+    if (v55 !== "") {
+      v79.style.backgroundImage = "url(" + v55 + ")";
     }
   }
-
-  function gm() {
-    if (!ej) {
+  function f11() {
+    if (!v90) {
       return;
     }
-    ej *= dh;
-    if (ej < 0.002) {
-      ej = 0;
-      const gn = dr[em()];
+    v90 *= v58;
+    if (v90 < 0.002) {
+      v90 = 0;
+      const v121 = v73[vF4()];
       if (el("wheel_result")) {
-        var go = "";
-        if (gn.hasOwnProperty("image")) {
-          go = '<div><img src="' + gn.image + '" > ' + gn.text + "</div>";
+        var v122 = "";
+        if (v121.hasOwnProperty("image")) {
+          v122 = '<div><img src="' + v121.image + '" > ' + v121.text + "</div>";
         } else {
-          go = "<div>" + gn.text + "</div>";
+          v122 = "<div>" + v121.text + "</div>";
         }
-        el("wheel_result").innerHTML = go + el("wheel_result").innerHTML;
-        var gp = getSectorItem(el("wheel_result").innerHTML);
-        el("result_count").textContent = gp.length;
+        el("wheel_result").innerHTML = v122 + el("wheel_result").innerHTML;
+        var vGetSectorItem = getSectorItem(el("wheel_result").innerHTML);
+        el("result_count").textContent = vGetSectorItem.length;
       }
-      if (cz == "yes") {
-        var gq = gn.color;
-        if (isWhite(gq)) {
-          gq = "#000000";
+      if (v51 == "yes") {
+        var v123 = v121.color;
+        if (isWhite(v123)) {
+          v123 = "#000000";
         }
-        var gr =
+        var v124 =
           '<span class="d-flex"><span class="me-1" style="width: 30px;heigh:30px;vertical-align: middle;" data-feather="clipboard"></span> ';
-        if (gn.hasOwnProperty("message")) {
-          if (gn.message !== "") {
-            gr += gn.message;
+        if (v121.hasOwnProperty("message")) {
+          if (v121.message !== "") {
+            v124 += v121.message;
           } else {
-            gr += da;
+            v124 += v52;
           }
         } else {
-          gr += da;
+          v124 += v52;
         }
-        gr += "</span>";
-        var gs = "";
-        var gu = gn.hasOwnProperty("image");
-        if (gu) {
-          gs +=
-            '<div class="position-absolute top-0 end-0 text-end"><button class="btn btn-sm fs-6 text-muted" onClick="rotateImage(\'rsImage\', -90)" title="Xoay ảnh">Xoay \u21BA</button><div class="form-check text-muted fs-6 me-2"><input class="form-check-input ms-0" type="checkbox" id="btn-show-bg" title="Bật tắt màu nền cho ảnh" checked onClick="if(this.checked==true) el(\'rsImage\').style.backgroundColor=\'' +
-            gn.color +
+        v124 += "</span>";
+        var v125 = "";
+        var v126 = v121.hasOwnProperty("image");
+        if (v126) {
+          v125 +=
+            '<div class="position-absolute top-0 end-0 text-end"><button class="btn btn-sm fs-6 text-muted" onClick="rotateImage(\'rsImage\', -90)" title="Xoay ảnh">Xoay ↺</button><div class="form-check text-muted fs-6 me-2"><input class="form-check-input ms-0" type="checkbox" id="btn-show-bg" title="Bật tắt màu nền cho ảnh" checked onClick="if(this.checked==true) el(\'rsImage\').style.backgroundColor=\'' +
+            v121.color +
             '\';else el(\'rsImage\').style.backgroundColor=\'\';" ></div></div><div class="text-center mb-3"><img id="rsImage" src="' +
-            gn.image +
+            v121.image +
             '" class="rounded-1" style="max-width:100%;transition: transform 0.5s ease;background-color:' +
-            gn.color +
+            v121.color +
             ';" ></div>';
         }
-        if (gn.text !== "") {
-          if (!gu) {
-            gs +=
+        if (v121.text !== "") {
+          if (!v126) {
+            v125 +=
               '<div class="fs-1 text-center mb-3" style="color:' +
-              gq +
+              v123 +
               '"><span style="width: 50px;height:50px;" data-feather="smile"></span></div>';
           }
-          gs +=
+          v125 +=
             '<div class="text-center fs-1" style="color:' +
-            gq +
+            v123 +
             '; word-break: break-all;">' +
-            gn.text +
+            v121.text +
             "</div>";
         }
-        var gv = "";
-        if (db == "yes") {
-          gv +=
+        var v127 = "";
+        if (v53 == "yes") {
+          v127 +=
             '<button type="button" onclick="removeWheelItem(' +
-            gn.id +
+            v121.id +
             "," +
-            df +
+            v56 +
             ')" class="btn btn-danger" data-bs-dismiss="modal">Xóa ô này</button>';
         }
-        gv +=
+        v127 +=
           '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng lại</button>';
-        el("modal-title").innerHTML = gr;
-        el("modal-body").innerHTML = gs;
-        el("modal-footer").innerHTML = gv;
+        el("modal-title").innerHTML = v124;
+        el("modal-body").innerHTML = v125;
+        el("modal-footer").innerHTML = v127;
         el("modal-footer").classList.add("justify-content-center");
         feather.replace();
-        var gw = new bootstrap.Modal(el("myModal"), {
+        var v128 = new bootstrap.Modal(el("myModal"), {
           backdrop: true,
         });
-        gw.show();
+        v128.show();
       }
-      var gx = "";
-      if (cx === "random") {
-        var gy = Object.keys(end_sound_option);
-        gy = shuffle(gy);
-        gx = gy[0];
-      } else {
-        if (cx === "read") {
-          triggerAudio("", "stop");
-          if (gn.text !== "") {
-            textToSpeech(da + ": " + gn.text, "vi-VN");
-          }
-        } else {
-          if (cx !== 0 && cx !== "random" && cx !== "read") {
-            gx = cx;
-          }
+      var v129 = "";
+      if (v49 === "random") {
+        var v130 = Object.keys(end_sound_option);
+        v130 = shuffle(v130);
+        v129 = v130[0];
+      } else if (v49 === "read") {
+        triggerAudio("", "stop");
+        if (v121.text !== "") {
+          textToSpeech(v52 + ": " + v121.text, "vi-VN");
+        }
+      } else if (v49 !== 0 && v49 !== "random" && v49 !== "read") {
+        v129 = v49;
+      }
+      if (v121.hasOwnProperty("sound")) {
+        if (v121.sound !== "") {
+          v129 = v121.sound;
         }
       }
-      if (gn.hasOwnProperty("sound")) {
-        if (gn.sound !== "") {
-          gx = gn.sound;
-        }
+      if (v129) {
+        triggerAudio(v129, "play");
       }
-      if (gx) {
-        triggerAudio(gx, "play");
-      }
-      if (cy == "yes") {
+      if (v50 == "yes") {
         confetti.start(1200, 50, 150);
       }
       toggleDisabledAll(false);
     }
-    ek += ej;
-    ek %= eg;
-    gk();
+    v91 += v90;
+    v91 %= v87;
+    f10();
   }
-
-  function gz() {
-    gm();
-    requestAnimationFrame(gz);
+  function f12() {
+    f11();
+    requestAnimationFrame(f12);
   }
-  dz.addEventListener("click", () => {
-    clearInterval(ha);
-    if (ea) {
-      ea.classList.add("d-none");
+  v79.addEventListener("click", () => {
+    clearInterval(vSetInterval);
+    if (v80) {
+      v80.classList.add("d-none");
     }
-    var hb = "";
-    if (cw == "random") {
-      var hc = Object.keys(start_sound_option);
-      hc = shuffle(hc);
-      hb = hc[0];
-    } else {
-      if (cw != 0 && cw != "random") {
-        hb = cw;
-      }
+    var v131 = "";
+    if (v48 == "random") {
+      var v132 = Object.keys(start_sound_option);
+      v132 = shuffle(v132);
+      v131 = v132[0];
+    } else if (v48 != 0 && v48 != "random") {
+      v131 = v48;
     }
-    if (hb != "") {
-      triggerAudio(hb, "play");
+    if (v131 != "") {
+      triggerAudio(v131, "play");
     }
     toggleDisabledAll(true);
-    if (!ej) {
-      ej = Math.random() * 0.09999999999999998 + 0.25;
+    if (!v90) {
+      v90 = vF3(0.25, 0.35);
     }
   });
-  const hd = await ew(dr);
-  if (dj == "image" && dk) {
-    const he = new Image();
-    he.src = dk;
-    he.onload = () => {
-      ec.drawImage(he, 0, 0, ec.canvas.width, ec.canvas.height);
-      let hf = 0;
-      for (let hg = 0; hg < dr.length; hg++) {
-        fh(dr[hg], hf, dx[hg], hd[hg]);
-        hf -= dx[hg];
+  const v133 = await f6(v73);
+  if (v60 == "image" && v61) {
+    const v134 = new Image();
+    v134.src = v61;
+    v134.onload = () => {
+      v83.drawImage(v134, 0, 0, v83.canvas.width, v83.canvas.height);
+      let v135 = 0;
+      for (let v136 = 0; v136 < v73.length; v136++) {
+        f8(v73[v136], v135, v77[v136], v133[v136]);
+        v135 -= v77[v136];
       }
     };
   } else {
-    let hj = 0;
-    for (let hk = 0; hk < dr.length; hk++) {
-      fh(dr[hk], hj, dx[hk], hd[hk]);
-      hj -= dx[hk];
+    let v137 = 0;
+    for (let v138 = 0; v138 < v73.length; v138++) {
+      f8(v73[v138], v137, v77[v138], v133[v138]);
+      v137 -= v77[v138];
     }
   }
-  if (dl == "yes") {
-    fv();
+  if (v67 == "yes") {
+    f9();
   }
-  gk();
-  gz();
-  let ha = setInterval(() => {
-    ek += 0.004;
-    gk();
+  f10();
+  f12();
+  let vSetInterval = setInterval(() => {
+    v91 += 0.004;
+    f10();
   }, 30);
-  ea.addEventListener("click", function () {
-    dz.click();
+  v80.addEventListener("click", function () {
+    v79.click();
   });
 }
-
-function fillWheelContent(hl) {
-  var hm = 0;
+function fillWheelContent(p43) {
+  var v139 = 0;
   if (el("is_advance").checked) {
-    hm = 1;
+    v139 = 1;
   }
-  var hn = getCurrentStyleColor();
-  if (hl.length) {
-    var hp = [];
-    for (var hq = hl.length - 1; hq >= 0; hq--) {
-      hp.push({
-        text: hl[hq],
-        id: hq,
-        color: hn[hq % hn.length],
+  var vGetCurrentStyleColor = getCurrentStyleColor();
+  if (p43.length) {
+    var v140 = [];
+    for (var v141 = p43.length - 1; v141 >= 0; v141--) {
+      v140.push({
+        text: p43[v141],
+        id: v141,
+        color: vGetCurrentStyleColor[v141 % vGetCurrentStyleColor.length],
       });
     }
-    fillEntries(hp, hm);
+    fillEntries(v140, v139);
     loadWheel();
   }
 }
-
-function sortWheel(hs) {
-  var ht = getWheelSettingInArray();
-  if (ht) {
-    var hu = ht.entries;
-    if (hu.length) {
-      switch (hs) {
+function sortWheel(p44) {
+  var vGetWheelSettingInArray2 = getWheelSettingInArray();
+  if (vGetWheelSettingInArray2) {
+    var v142 = vGetWheelSettingInArray2.entries;
+    if (v142.length) {
+      switch (p44) {
         case "random":
-          hu.sort(() => Math.random() - 0.5);
+          v142.sort(() => Math.random() - 0.5);
           break;
         case "az":
-          hu.sort(function (hv, hw) {
-            if (hv.text < hw.text) {
+          v142.sort(function (p45, p46) {
+            if (p45.text < p46.text) {
               return -1;
             }
-            if (hv.text > hw.text) {
+            if (p45.text > p46.text) {
               return 1;
             }
             return 0;
           });
           break;
         case "za":
-          hu.sort(function (hx, hy) {
-            if (hx.text > hy.text) {
+          v142.sort(function (p47, p48) {
+            if (p47.text > p48.text) {
               return -1;
             }
-            if (hx.text < hy.text) {
+            if (p47.text < p48.text) {
               return 1;
             }
             return 0;
           });
           break;
       }
-      for (var hz = hu.length - 1; hz >= 0; hz--) {
-        hu[hz].id = hz;
+      for (var v143 = v142.length - 1; v143 >= 0; v143--) {
+        v142[v143].id = v143;
       }
-      fillEntries(hu, ht.is_advance);
+      fillEntries(v142, vGetWheelSettingInArray2.is_advance);
       setTimeout(loadWheel(), 500);
     }
   }
 }
-
-function upDown(ia, ib) {
-  var ic = getWheelSettingInArray();
-  if (ic) {
-    var ie = ic.entries;
-    if (ie.length) {
-      if (ib == "up") {
-        var ig = ia;
-        var ih = ia - 1;
+function upDown(p49, p50) {
+  var vGetWheelSettingInArray3 = getWheelSettingInArray();
+  if (vGetWheelSettingInArray3) {
+    var v144 = vGetWheelSettingInArray3.entries;
+    if (v144.length) {
+      if (p50 == "up") {
+        var vP49 = p49;
+        var v145 = p49 - 1;
       } else {
-        var ig = ia;
-        var ih = ia + 1;
+        var vP49 = p49;
+        var v145 = p49 + 1;
       }
-      ie = swapArrayElement(ie, ig, ih);
-      for (var ii = ie.length - 1; ii >= 0; ii--) {
-        ie[ii].id = ii;
+      v144 = swapArrayElement(v144, vP49, v145);
+      for (var v146 = v144.length - 1; v146 >= 0; v146--) {
+        v144[v146].id = v146;
       }
-      fillEntries(ie, 1);
+      fillEntries(v144, 1);
       setTimeout(loadWheel(), 500);
     }
   }
 }
-
-function removeWheelItem(ij, ik) {
-  var il = getWheelSettingInArray();
-  if (il !== null) {
-    var im = il.entries;
-    im = im.filter((io) => io.id !== ij);
-    il.entries = im;
-    if (im.length) {
-      for (var ip = im.length - 1; ip >= 0; ip--) {
-        im[ip].id = ip;
+function removeWheelItem(p51, p52) {
+  var vGetWheelSettingInArray4 = getWheelSettingInArray();
+  if (vGetWheelSettingInArray4 !== null) {
+    var v147 = vGetWheelSettingInArray4.entries;
+    v147 = v147.filter((p53) => p53.id !== p51);
+    vGetWheelSettingInArray4.entries = v147;
+    if (v147.length) {
+      for (var v148 = v147.length - 1; v148 >= 0; v148--) {
+        v147[v148].id = v148;
       }
     }
-    setWheelSettingFromArray(il);
-    fillEntries(im, ik);
+    setWheelSettingFromArray(vGetWheelSettingInArray4);
+    fillEntries(v147, p52);
     setTimeout(function () {
       loadWheel();
     }, 500);
-    console.log("Đã xoá " + ij);
+    console.log("Đã xoá " + p51);
   }
 }
-
-function removeItemImage(iq) {
-  var ir = getWheelSettingInArray();
-  if (ir !== null) {
-    var it = ir.entries;
-    if (it.length) {
-      for (var iu = it.length - 1; iu >= 0; iu--) {
-        if (it[iu].id == iq) {
-          delete it[iu].image;
+function removeItemImage(p54) {
+  var vGetWheelSettingInArray5 = getWheelSettingInArray();
+  if (vGetWheelSettingInArray5 !== null) {
+    var v149 = vGetWheelSettingInArray5.entries;
+    if (v149.length) {
+      for (var v150 = v149.length - 1; v150 >= 0; v150--) {
+        if (v149[v150].id == p54) {
+          delete v149[v150].image;
         }
       }
     }
-    ir.entries = it;
-    setWheelSettingFromArray(ir);
-    fillEntries(it, 1);
+    vGetWheelSettingInArray5.entries = v149;
+    setWheelSettingFromArray(vGetWheelSettingInArray5);
+    fillEntries(v149, 1);
     setTimeout(loadWheel(), 500);
-    console.log("Đã xoá ảnh " + iq);
+    console.log("Đã xoá ảnh " + p54);
   }
 }
-
 function beforeCreateLinkForm() {
-  var iv = 0;
-  var iw = [];
-  var ix = el("linkData").textContent;
-  if (ix) {
-    iw = JSON.parse(ix);
-    if (iw) {
-      iv = iw.link_id;
+  var v151 = 0;
+  var v152 = [];
+  var v153 = el("linkData").textContent;
+  if (v153) {
+    v152 = JSON.parse(v153);
+    if (v152) {
+      v151 = v152.link_id;
     }
   }
-  if (iv > 0) {
+  if (v151 > 0) {
     createLinkForm();
   } else {
-    var iy =
+    var v154 =
       '<div class="mb-3"> <strong>Link chia sẻ</strong> là một liên kết tới vòng quay hiện tại bao gồm tên, màu sắc, âm thanh và các cài đặt hiện tại.</div>';
-    iy +=
+    v154 +=
       '<div class="mb-3"><strong>Ví dụ:</strong> <a href="' +
       ajax_object.home_url +
       '/c:35A4E901" target="_blank">' +
       ajax_object.home_url +
       "/c:35A4E901</a></div>";
-    iy +=
+    v154 +=
       '<div class="mb-3">Việc tạo liên kết này sẽ giúp bạn dễ dàng chia sẻ vòng quay của mình tới bất kì ai qua tin nhắn, email, nhúng lên website, đăng mạng xã hội, v.v.</div>';
-    el("modal-body").innerHTML = iy;
-    el("modal-title").innerHTML =
+    var v155 =
       '<span style="width: 30px;heigh:30px;vertical-align: middle;" data-feather="share-2"></span> Chia sẻ';
-    el("modal-footer").innerHTML =
+    var v156 =
       '<button class="btn btn-primary" data-bs-dismiss="modal" onclick="createLinkForm();" ><span data-feather="plus"></span> Tạo link chia sẻ ngay</button>';
+    el("modal-body").innerHTML = v154;
+    el("modal-title").innerHTML = v155;
+    el("modal-footer").innerHTML = v156;
     el("modal-dialog").classList.remove("modal-lg");
     feather.replace();
-    var iz = new bootstrap.Modal(el("myModal"), {
+    var v157 = new bootstrap.Modal(el("myModal"), {
       backdrop: true,
     });
-    iz.show();
+    v157.show();
   }
 }
-
 function loginForm() {
-  var ja = "";
-  ja +=
+  var v158 = "";
+  v158 +=
     '<p class="alert alert-warning">Để thực hiện tính năng này, bạn cần phải đăng nhập:</p>';
-  ja +=
+  v158 +=
     '<p class="text-center"><button type="button" onclick="location.href=\'' +
     ajax_object.home_url +
     "/wp-login.php?redirect_to=" +
@@ -903,164 +786,158 @@ function loginForm() {
     '<span data-feather="log-in" style="width:24px;heigh:24px;"></span> Đăng nhập';
   el("modal-footer").innerHTML =
     '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bỏ qua</button>';
-  el("modal-body").innerHTML = ja;
+  el("modal-body").innerHTML = v158;
   feather.replace();
-  var jb = new bootstrap.Modal(el("myModal"), {
+  var v159 = new bootstrap.Modal(el("myModal"), {
     backdrop: true,
   });
-  jb.show();
+  v159.show();
 }
-
 function profileForm() {
   if (!isLoggedIn()) {
     loginForm();
     return false;
   }
-  var jc = "";
-  jc +=
+  var v160 = "";
+  v160 +=
     '<div class="mb-3"><strong>Thông tin tài khoản (ID: <span id="userid"></span>)</strong></div>';
-  jc +=
+  v160 +=
     '<div class="input-group mb-3"><span class="input-group-text">Tên đăng nhập</span><input type="text" class="form-control" placeholder="Tên đăng nhập" id="username" value="loading..." readonly ><button class="btn btn-secondary" onclick="el(\'username\').removeAttribute(\'readonly\');"><span data-feather="edit"></span></button></div>';
-  jc +=
+  v160 +=
     '<div class="input-group mb-3"><span class="input-group-text">Tên hiển thị</span><input type="text" class="form-control" placeholder="Tên hiển thị" id="displayname" value="loading..." ></div>';
-  jc +=
+  v160 +=
     '<div class="input-group mb-3"><span class="input-group-text">Email</span><input type="text" class="form-control" placeholder="hoten@gmail.com" id="useremail" value="loading..." ></div>';
-  jc +=
+  v160 +=
     '<div class="input-group mb-3"><span class="input-group-text">Mật khẩu</span><input type="password" class="form-control" placeholder="Bỏ trống nếu không thay đổi" id="userpassword" ></div>';
-  jc +=
+  v160 +=
     '<div class="text-end"><button type="button" class="btn btn-primary" id="btn-update-profile" onclick="updateProfile();" disabled>Cập nhật</button></div>';
-  jc += '<div class="mb-3"><strong>Thông tin khác:</strong><hr></div>';
-  jc +=
+  v160 += '<div class="mb-3"><strong>Thông tin khác:</strong><hr></div>';
+  v160 +=
     '<div class="input-group mb-3"><span class="input-group-text">Tài khoản PRO</span><input type="text" class="form-control" id="tatQC" value="loading.." readonly ><button class="btn btn-secondary" onclick="location.href=\'/tat-quang-cao\';">Gia hạn</button></div>';
-  jc +=
+  v160 +=
     '<div class="input-group mb-3"><span class="input-group-text">Giới thiệu &nbsp;<span data-feather="user-plus" style="width:16px;height:16px;"></span></span><input type="text" class="form-control bg-white" onclick="this.select();" id="reflink" value="loading.." readonly ><button class="btn btn-outline-primary" id="btn-copy-reflink" onclick="copyToClipBoard(el(\'reflink\').value);alert(\'Đã copy\');" disabled>Sao chép</button></div><p>Bạn đã giới thiệu: <span class="badge bg-secondary" id="refcount">0</span> người</p> <p class="alert alert-warning small px-2">(Giới thiệu <strong>01 người</strong> = <strong>+20 ngày</strong> tài khoản PRO cho cả hai)</p>';
-  jc +=
+  v160 +=
     '<div class="input-group mb-3"><span class="input-group-text">Coupon</span><input type="text" maxlength="6" class="form-control" id="coupon" value="" placeholder="Nhập mã coupon" ><button class="btn btn-success" id="btnApplyCoupon" onClick="applyCoupon();" >Áp dụng</button> </div>';
   el("modal-title").innerHTML =
     '<span data-feather="user" style="width:24px;heigh:24px;"></span> Hồ sơ';
   el("modal-footer").innerHTML = "";
-  el("modal-body").innerHTML = jc;
-  var jd = new XMLHttpRequest();
-  jd.open("POST", ajax_object.ajax_url + "?action=profileForm");
-  jd.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  jd.onload = function () {
-    if (jd.status === 200) {
-      if (jd.responseText) {
-        var je = JSON.parse(jd.responseText);
-        if (je) {
-          el("username").value = je.username;
-          el("userid").textContent = je.userid;
-          el("displayname").value = je.displayname;
-          el("useremail").value = je.useremail;
-          el("tatQC").value = je.tatQC;
-          el("reflink").value = je.reflink.replace("&#038;", "&");
-          el("refcount").textContent = je.refcount;
+  el("modal-body").innerHTML = v160;
+  var v161 = new XMLHttpRequest();
+  v161.open("POST", ajax_object.ajax_url + "?action=profileForm");
+  v161.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  v161.onload = function () {
+    if (v161.status === 200) {
+      if (v161.responseText) {
+        var v162 = JSON.parse(v161.responseText);
+        if (v162) {
+          el("username").value = v162.username;
+          el("userid").textContent = v162.userid;
+          el("displayname").value = v162.displayname;
+          el("useremail").value = v162.useremail;
+          el("tatQC").value = v162.tatQC;
+          el("reflink").value = v162.reflink.replace("&#038;", "&");
+          el("refcount").textContent = v162.refcount;
           el("btn-update-profile").removeAttribute("disabled");
           el("btn-copy-reflink").removeAttribute("disabled");
         }
       }
-    } else {
-      if (jd.status !== 200) {
-        console.log("error:" + jd.status);
-      }
+    } else if (v161.status !== 200) {
+      console.log("error:" + v161.status);
     }
   };
-  jd.send("&ajaxsecurity=" + ajax_object.ajax_nonce);
+  v161.send("&ajaxsecurity=" + ajax_object.ajax_nonce);
   feather.replace();
-  var jf = new bootstrap.Modal(el("myModal"), {
+  var v163 = new bootstrap.Modal(el("myModal"), {
     backdrop: true,
   });
-  jf.show();
+  v163.show();
 }
-
 function updateProfile() {
   if (!isLoggedIn()) {
     return false;
   }
-  var jg = el("displayname").value.trim();
-  var jh = el("username").value.trim();
-  var ji = el("useremail").value.trim();
-  var jj = el("userpassword").value.trim();
-  if (/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(jg)) {
+  var v164 = el("displayname").value.trim();
+  var v165 = el("username").value.trim();
+  var v166 = el("useremail").value.trim();
+  var v167 = el("userpassword").value.trim();
+  const v168 = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  if (v168.test(v164)) {
     alert("Tên hiển thị không gồm các kí tự đặc biệt");
     el("displayname").focus();
     return false;
   }
-  if (jg.length < 3) {
+  if (v164.length < 3) {
     alert("Tên hiển thị phải có ít nhất 3 ký tự");
     el("displayname").focus();
     return false;
   }
-  if (!isEmail(ji)) {
+  if (!isEmail(v166)) {
     alert("Email không đúng định dạng");
     el("useremail").focus();
     return false;
   }
   el("btn-update-profile").textContent = "Cập nhật...";
   el("btn-update-profile").setAttribute("disabled", "disabled");
-  var jk = new XMLHttpRequest();
-  jk.open("POST", ajax_object.ajax_url + "?action=updateProfile");
-  jk.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  jk.onload = function () {
-    if (jk.status === 200) {
-      if (jk.responseText == "success") {
+  var v169 = new XMLHttpRequest();
+  v169.open("POST", ajax_object.ajax_url + "?action=updateProfile");
+  v169.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  v169.onload = function () {
+    if (v169.status === 200) {
+      if (v169.responseText == "success") {
         alert("Đã cập nhật thành công!");
         location.reload();
       } else {
-        alert(jk.responseText);
+        alert(v169.responseText);
       }
       el("btn-update-profile").textContent = "Cập nhật";
       el("btn-update-profile").removeAttribute("disabled");
-    } else {
-      if (jk.status !== 200) {
-        console.log("error:" + jk.status);
-      }
+    } else if (v169.status !== 200) {
+      console.log("error:" + v169.status);
     }
   };
-  jk.send(
+  v169.send(
     "&displayname=" +
-      jg +
+      v164 +
       "&username=" +
-      jh +
+      v165 +
       "&useremail=" +
-      ji +
+      v166 +
       "&userpassword=" +
-      jj +
+      v167 +
       "&ajaxsecurity=" +
       ajax_object.ajax_nonce
   );
 }
-
 function applyCoupon() {
-  var jl = el("coupon").value.trim();
-  if (jl) {
+  var v170 = el("coupon").value.trim();
+  if (v170) {
     el("btnApplyCoupon").textContent = "Kiểm tra...";
     el("btnApplyCoupon").disabled = true;
-    var jm = new XMLHttpRequest();
-    jm.open("POST", ajax_object.ajax_url);
-    jm.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    jm.onload = function () {
-      if (jm.status === 200) {
-        if (jm.responseText) {
-          var jn = jm.responseText.split("|");
-          if (jn[0] == "success") {
-            alert(jn[1]);
+    var v171 = new XMLHttpRequest();
+    v171.open("POST", ajax_object.ajax_url);
+    v171.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    v171.onload = function () {
+      if (v171.status === 200) {
+        if (v171.responseText) {
+          var v172 = v171.responseText.split("|");
+          if (v172[0] == "success") {
+            alert(v172[1]);
             closeAllModal();
             profileForm();
           } else {
-            alert(jn[1]);
+            alert(v172[1]);
             el("btnApplyCoupon").textContent = "Áp dụng";
             el("btnApplyCoupon").disabled = false;
           }
         }
       } else {
-        console.log("Lỗi:" + jm.status);
+        console.log("Lỗi:" + v171.status);
         el("btnApplyCoupon").disabled = false;
       }
     };
-    jm.send(
+    v171.send(
       "action=applyCoupon&code=" +
-        jl +
+        v170 +
         "&ajaxsecurity=" +
         ajax_object.ajax_nonce
     );
@@ -1069,213 +946,210 @@ function applyCoupon() {
     el("coupon").focus();
   }
 }
-
 function createLinkForm() {
-  var jo = "";
+  var v173 = "";
+  var v174 = ajax_object.home_url;
   if (isLoggedIn()) {
-    var jp = 0;
-    var jq = 0;
-    var jr = "yes";
-    var jt = 0;
-    var ju = "";
-    var jv = 0;
-    var jw = "";
-    var jx = 0;
-    var jy = 1;
-    var jz = 1;
-    var ka = "";
-    var kb = "";
-    var kc = "";
-    var kd = "";
-    var ke = "";
-    var kf = "checked";
-    var kg = "";
-    var kj = "";
-    var kk = "";
-    var kl = [];
-    var km = el("linkData").textContent;
-    if (km) {
-      kl = JSON.parse(km);
-      if (kl) {
-        jp = kl.visibility;
-        jq = kl.show_title;
-        jr = kl.show_tripod;
-        jt = kl.max_spin;
-        ju = kl.link_logo;
-        jv = kl.logo_white;
-        jw = kl.lead_email;
-        jx = kl.is_show_lead_form;
-        jy = kl.frm_phone;
-        jz = kl.frm_email;
-        ka = kl.css_bosung;
-        kb = kl.endtime;
+    var v175 = 1;
+    var v176 = 0;
+    var v177 = "yes";
+    var v178 = 0;
+    var v179 = "";
+    var v180 = 0;
+    var v181 = "";
+    var v182 = 0;
+    var v183 = 1;
+    var v184 = 1;
+    var v185 = "";
+    var v186 = "";
+    var v187 = "";
+    var v188 = "";
+    var v189 = "";
+    var v190 = "checked";
+    var v191 = "";
+    var v192 = "";
+    var v193 = "";
+    var v194 = [];
+    var v195 = el("linkData").textContent;
+    if (v195) {
+      v194 = JSON.parse(v195);
+      if (v194) {
+        v175 = v194.visibility;
+        v176 = v194.show_title;
+        v177 = v194.show_tripod;
+        v178 = v194.max_spin;
+        v179 = v194.link_logo;
+        v180 = v194.logo_white;
+        v181 = v194.lead_email;
+        v182 = v194.is_show_lead_form;
+        v183 = v194.frm_phone;
+        v184 = v194.frm_email;
+        v185 = v194.css_bosung;
+        v186 = v194.endtime;
       }
     }
-    if (jq == 1) {
-      kj = "checked";
+    if (v176 == 1) {
+      v192 = "checked";
     }
-    if (jr == "yes") {
-      kk = "checked";
+    if (v177 == "yes") {
+      v193 = "checked";
     }
-    if (jp == 0) {
-      ke = "checked";
-      kf = "";
-      kg = "";
-    } else {
-      if (jp == 1) {
-        ke = "";
-        kf = "checked";
-        kg = "";
-      } else {
-        if (jp == 2) {
-          ke = "";
-          kf = "";
-          kg = "checked";
-        }
-      }
+    if (v175 == 0) {
+      v189 = "checked";
+      v190 = "";
+      v191 = "";
+    } else if (v175 == 1) {
+      v189 = "";
+      v190 = "checked";
+      v191 = "";
+    } else if (v175 == 2) {
+      v189 = "";
+      v190 = "";
+      v191 = "checked";
     }
-    if (jx == 1) {
-      kc = "checked";
+    if (v182 == 1) {
+      v187 = "checked";
     }
-    if (jv == 1) {
-      kd = "checked";
+    if (v180 == 1) {
+      v188 = "checked";
     }
-    var kn = 0;
-    if (parseInt(jt) > 0) {
-      kn = parseInt(jt);
+    var v196 = 0;
+    if (parseInt(v178) > 0) {
+      v196 = parseInt(v178);
     }
     el("modal-title").innerHTML =
       '<span data-feather="share-2" style="width:24px;heigh:24px;"></span> Chia sẻ';
-    jo += '<div id="stage-1">';
-    jo +=
+    v173 += '<div id="stage-1">';
+    v173 +=
       '<div class="input-group"><span class="input-group-text">Tiêu đề:</span><input type="text" class="form-control" id="wheel-title" data-maxlength="60" data-display-id="remain-length" placeholder="Nhập tiêu đề vòng quay"></div><div id="remain-length" class="mb-3" style="font-size:12px;color:gray;margin-top:5px;margin-left:85px;"></div>';
-    jo +=
+    v173 +=
       '<div class="form-check mb-1"><input class="form-check-input" type="checkbox" id="show_title"' +
-      kj +
+      v192 +
       ' ><label class="form-check-label" for="show_title">Hiển thị tiêu đề khi xem liên kết</label></div>';
-    jo +=
+    v173 +=
       '<div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="show_tripod"' +
-      kk +
+      v193 +
       ' ><label class="form-check-label" for="show_tripod">Hiển thị giá đỡ <img src="' +
       ajax_object.theme_uri +
       '/assets/icons/tripod.png" alt="tripod" ></label></div>';
-    jo += '<div class="mb-3">Hiển thị:</div>';
-    jo +=
+    v173 += '<div class="mb-3">Hiển thị:</div>';
+    v173 +=
       '<div class="form-check"><input class="form-check-input" type="radio" name="visibility" id="visibility-1" value="0" ' +
-      ke +
+      v189 +
       ' ><label class="form-check-label" for="visibility-1">Bất kì ai có link đều có thể xem</label></div>';
-    jo +=
+    v173 +=
       '<div class="form-check"><input class="form-check-input" type="radio" name="visibility" id="visibility-2" value="1" ' +
-      kf +
+      v190 +
       '><label class="form-check-label" for="visibility-2">Hiển thị công khai tại <a href="' +
       ajax_object.home_url +
       '/gallery/" target="_blank" title="Bộ sưu tập do người dùng tạo">Bộ sưu tập</a></label></div>';
-    var kp = "disabled";
+    var v197 = "disabled";
     if (ajax_object.isAdmin == 1) {
-      kp = "";
+      v197 = "";
     }
-    jo +=
+    v173 +=
       '<div class="form-check mb-3"><input class="form-check-input" type="radio" name="visibility" id="visibility-3" value="2" ' +
-      kg +
+      v191 +
       " " +
-      kp +
+      v197 +
       '><label class="form-check-label" for="visibility-3">Công khai (Google có thể lập chỉ mục)</label></div>';
-    jo +=
-      '\n            <div class="input-group mb-2">\n              <span class="input-group-text">Hết hạn</span>\n              <input type="text" id="endtime" class="form-control bg-white" autocomplete="off" placeholder="dd/mm/yyyy hh:mm:ss" >\n              <button class="btn btn-secondary" title="Xoá" onclick="el(\'endtime\').value=\'\';">\u2717</span>\n            </div>\n            <div class="small text-muted mb-3">\u21AA ko quay được sau ngày này, bỏ trống nếu ko dùng</div>\n            ';
-    jo +=
+    v173 +=
+      '\n            <div class="input-group mb-2">\n              <span class="input-group-text">Hết hạn</span>\n              <input type="text" id="endtime" class="form-control bg-white" autocomplete="off" placeholder="dd/mm/yyyy hh:mm:ss" >\n              <button class="btn btn-secondary" title="Xoá" onclick="el(\'endtime\').value=\'\';">✗</span>\n            </div>\n            <div class="small text-muted mb-3">↪ ko quay được sau ngày này, bỏ trống nếu ko dùng</div>\n            ';
+    v173 +=
       '<div class="mb-3"><a class="text-decoration-none text-primary" data-bs-toggle="collapse" href="#collapseNC" role="button" aria-expanded="true" aria-controls="collapseNC">Nâng cao <span data-feather="chevron-down"></span> </a></div>';
-    jo += '<div class="collapse hide" id="collapseNC">';
-    jo +=
+    v173 += '<div class="collapse hide" id="collapseNC">';
+    v173 +=
       '<div class="d-flex mb-1">Người xem được quay tối đa&nbsp; <a href="javascript:void(0);" title="Người xem là người không tạo ra liên kết này hoặc người tạo ra liên kết nhưng không đăng nhập"><span data-feather="info" style="width:16px;height:16px;"></span></a>  <input type="number" size="5" min="0" value="' +
-      kn +
+      v196 +
       '" id="max_spin" class="form-controle mx-1" style="width:50px;" > <span>lần</span></div>';
-    jo += '<div class="mb-3 text-muted" small>* (0 = không giới hạn;)</div>';
-    jo +=
+    v173 += '<div class="mb-3 text-muted" small>* (0 = không giới hạn;)</div>';
+    v173 +=
       '<div class="input-group mb-1"><span class="input-group-text">Logo</span><input type="text" class="form-control" id="link_logo" placeholder="https://example.com/logo.png" value="' +
-      ju +
+      v179 +
       '"><span class="input-group-text"><label for="upload_logo" data-bs-toggle="tooltip" title="Max width: 200 (px)"><span data-feather="camera"></span></label></span><input type="file" id="upload_logo" data-maxsize="5" class="d-none" accept="image/*" onchange="uploadLinkLogo();" ></div><div class="mb-3 text-muted small">* Max width: 200px</div>';
-    jo +=
+    v173 +=
       '<div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" role="switch" value="' +
-      jv +
+      v180 +
       '" onclick="if(this.checked) this.value=1;else this.value=0; " ' +
-      kd +
-      ' id="logo_white"><label class="form-check-label" for="logo_white">Đổi màu logo \u21E2 màu trắng</label></div>';
-    jo +=
+      v188 +
+      ' id="logo_white"><label class="form-check-label" for="logo_white">Đổi màu logo ⇢ màu trắng</label></div>';
+    v173 +=
       '<div class="form-check mb-1"><input class="form-check-input" type="checkbox" value="' +
-      jx +
+      v182 +
       '" ' +
-      kc +
+      v187 +
       ' onclick="checkLeadForm();" id="is_show_lead_form"><label class="form-check-label" for="is_show_lead_form">Form thu thập thông tin K/H <sup class="text-danger">ᴾᴿᴼ</sup></label></div>';
-    jo +=
+    v173 +=
       '<div class="text-muted small mb-1">* Hiển thị form yêu cầu khách nhập thông tin để nhận thưởng. </div>';
-    var kq = "d-none";
-    if (kc == "checked") {
-      kq = "";
+    var v198 = "d-none";
+    if (v187 == "checked") {
+      v198 = "";
     }
-    var kr = "checked";
-    var ks = "checked";
-    if (jy != 1) {
-      kr = "";
+    var v199 = "checked";
+    var v200 = "checked";
+    if (v183 != 1) {
+      v199 = "";
     }
-    if (jz != 1) {
-      ks = "";
+    if (v184 != 1) {
+      v200 = "";
     }
-    jo +=
+    v173 +=
       '<div class="' +
-      kq +
-      '" id="frm_option">\u27A5 Gồm: <div class="form-check form-check-inline">\n                <input class="form-check-input" id="frm_name" type="checkbox" checked disabled>\n                <label class="form-check-label" for="frm_name">Họ tên</label>\n              </div>\n              <div class="form-check form-check-inline">\n                <input class="form-check-input frm-option" type="checkbox" id="frm_phone" ' +
-      kr +
+      v198 +
+      '" id="frm_option">➥ Gồm: <div class="form-check form-check-inline">\n                <input class="form-check-input" id="frm_name" type="checkbox" checked disabled>\n                <label class="form-check-label" for="frm_name">Họ tên</label>\n              </div>\n              <div class="form-check form-check-inline">\n                <input class="form-check-input frm-option" type="checkbox" id="frm_phone" ' +
+      v199 +
       '>\n                <label class="form-check-label" for="frm_phone">Điện thoại</label>\n              </div>\n              <div class="form-check form-check-inline">\n                <input class="form-check-input frm-option" type="checkbox" id="frm_email" ' +
-      ks +
+      v200 +
       '>\n                <label class="form-check-label" for="frm_email">Email</label>\n              </div>\n              </div>';
-    jo += '<div class="mt-3 mb-1">Nhận thông tin K/H qua</div>';
-    jo +=
+    v173 += '<div class="mt-3 mb-1">Nhận thông tin K/H qua</div>';
+    v173 +=
       '<div class="input-group mb-3" id="lead_email_container"><span class="input-group-text">Email nhận</span><input type="text" class="form-control" id="lead_email" disabled placeholder="yourname@gmail.com" value="' +
-      jw +
+      v181 +
       '"></div>';
-    jo +=
+    v173 +=
       '<div class="form-label mb-1">CSS bổ sung</div>\n                <div class="editor mb-3">\n                  <div class="numbers"><span></span></div>\n                  <textarea class="w-100" id="css_bosung" rows="2" placeholder="#div_bosung{}">' +
-      ka +
+      v185 +
       "</textarea>\n                </div>";
-    jo += "</div>";
-    jo +=
+    v173 += "</div>";
+    v173 +=
       '<div class="mb-3"><button class="btn btn-primary" id="btn-view-shared" data-bs-dismiss="modal" onclick="viewSharedLink();"><span data-feather="trello"></span> Xem các liên kết đã tạo</button></div>';
-    jo += "</div>";
-    jo +=
+    v173 += "</div>";
+    v173 +=
       '<div id="stage-2" class="d-none"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> Đang tạo link...</div>';
-    jo += '<div id="stage-3" class="d-none">';
-    jo +=
+    v173 += '<div id="stage-3" class="d-none">';
+    v173 +=
       '<div class="mb-3">Link đến vòng quay với tên và cài đặt hiện tại</div>';
-    jo +=
+    v173 +=
       '<div class="input-group mb-3"><input type="text" class="form-control" id="your-link" placeholder="Link của bạn" readonly><button class="btn btn-secondary" id="btn-preview" >Xem thử</button><button class="btn btn-success" id="btn-copy-link" onclick="copyLink();" >Sao chép</button></div>';
-    jo += '<div id="your-embed"></div>';
-    jo += "</div>";
-    el("modal-body").innerHTML = jo;
+    v173 += '<div id="your-embed"></div>';
+    v173 += "</div>";
+    el("modal-body").innerHTML = v173;
     el("modal-footer").innerHTML =
       '<button type="button" class="btn btn-primary" id="btn-create-link" onclick="createLink();" >Tiếp tục <span data-feather="chevrons-right"></span> </button>';
     if (el("vqmm-title")) {
       el("wheel-title").value = el("vqmm-title").textContent;
     }
     feather.replace();
-    var kt = new bootstrap.Modal(el("myModal"), {
+    var v201 = new bootstrap.Modal(el("myModal"), {
       backdrop: true,
     });
-    kt.show();
-    if (jx == 1) {
+    v201.show();
+    if (v182 == 1) {
       el("lead_email").removeAttribute("disabled");
     }
-    const ku = document.querySelector(".editor textarea");
-    const kv = document.querySelector(".editor .numbers");
-    ku.addEventListener("keyup", (kx) => {
-      const ky = kx.target.value.split("\n").length;
-      kv.innerHTML = Array(ky).fill("<span></span>").join("");
+    const v202 = document.querySelector(".editor textarea");
+    const v203 = document.querySelector(".editor .numbers");
+    v202.addEventListener("keyup", (p55) => {
+      const v204 = p55.target.value.split("\n").length;
+      v203.innerHTML = Array(v204).fill("<span></span>").join("");
     });
-    ku.addEventListener("keydown", (kz) => {
-      if (kz.key === "Tab") {
-        const la = ku.selectionStart;
-        const lb = ku.selectionEnd;
-        ku.value = ku.value.substring(0, la) + "\t" + ku.value.substring(lb);
-        kz.preventDefault();
+    v202.addEventListener("keydown", (p56) => {
+      if (p56.key === "Tab") {
+        const v205 = v202.selectionStart;
+        const v206 = v202.selectionEnd;
+        v202.value =
+          v202.value.substring(0, v205) + "\t" + v202.value.substring(v206);
+        p56.preventDefault();
       }
     });
     startLimitCharacters();
@@ -1284,7 +1158,7 @@ function createLinkForm() {
         enableTime: true,
         dateFormat: "d/m/Y H:i:S",
         time_24hr: true,
-        defaultDate: kb,
+        defaultDate: v186,
         allowInput: true,
         disableMobile: true,
       });
@@ -1293,28 +1167,28 @@ function createLinkForm() {
     loginForm();
   }
 }
-
 function createLink() {
-  var lc = el("wheel-title").value.trim();
-  var ld = el("endtime").value;
-  var le = el("css_bosung").value;
-  var lf = "";
-  if (lc == "") {
+  var v207 = el("base_url").value;
+  var v208 = el("wheel-title").value.trim();
+  var v209 = el("endtime").value;
+  var v210 = el("css_bosung").value;
+  var v211 = "";
+  if (v208 == "") {
     alert("Vui lòng nhập tiêu đề vòng quay");
     el("wheel-title").focus();
     return false;
   }
-  if (checkBadWords(lc)) {
+  if (checkBadWords(v208)) {
     alert("Hãy là người văn minh, dùng từ ngữ lịch sự");
     el("wheel-title").focus();
     return false;
   }
   if (ajax_object.isAdmin != 1) {
     if (
-      lc != "" &&
-      (loc_xoa_dau(lc).toLowerCase() == "vong quay may man" ||
-        loc_xoa_dau(lc).toLowerCase() == "chon ten ngau nhien" ||
-        loc_xoa_dau(lc).toLowerCase() == "vong quay random")
+      v208 != "" &&
+      (loc_xoa_dau(v208).toLowerCase() == "vong quay may man" ||
+        loc_xoa_dau(v208).toLowerCase() == "chon ten ngau nhien" ||
+        loc_xoa_dau(v208).toLowerCase() == "vong quay random")
     ) {
       alert(
         'Hãy chọn tiêu đề khác\n - "Vòng quay may mắn"\n - "Chọn tên ngẫu nhiên"\n - "Vòng quay random"\n'
@@ -1323,323 +1197,309 @@ function createLink() {
       return false;
     }
   }
-  if (checkAlphabet(lc, 3) == false) {
+  if (checkAlphabet(v208, 3) == false) {
     alert("Tiêu đề phải có ít nhất 3 chữ cái");
     el("wheel-title").focus();
     return false;
   }
-  if (el("vqmm-desc")) {
-    lf = el("vqmm-desc").textContent;
+  var v212 = /\b[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/;
+  if (v212.test(v208)) {
+    v208 = v208.replace(v212, "").trim();
   }
-  var lh = 0;
-  var lj = document.getElementsByName("visibility");
-  var lk = 0;
-  for (var ll = lj.length; lk < ll; lk++) {
-    if (lj[lk].checked) {
-      lh = lj[lk].value;
+  if (el("vqmm-desc")) {
+    v211 = el("vqmm-desc").textContent;
+  }
+  var v213 = 0;
+  var v214 = document.getElementsByName("visibility");
+  for (var v215 = 0, v216 = v214.length; v215 < v216; v215++) {
+    if (v214[v215].checked) {
+      v213 = v214[v215].value;
       break;
     }
   }
-  var lm = 0;
+  var v217 = 0;
   if (el("show_title").checked) {
-    lm = 1;
+    v217 = 1;
   }
-  var ln = "no";
+  var v218 = "no";
   if (el("show_tripod").checked) {
-    ln = "yes";
+    v218 = "yes";
   }
-  if (le != "") {
-    if (!validateCSS(le)) {
+  if (v210 != "") {
+    if (!validateCSS(v210)) {
       alert("CSS không hợp lệ, hãy kiểm tra lại hoặc xoá đi.");
       el("css_bosung").focus();
-      le = "";
+      v210 = "";
       return false;
     }
   }
-  var lo = 0;
-  var lp = el("max_spin").value;
-  var lq = 0;
-  var lr = el("link_logo").value;
-  var ls = el("logo_white").value;
-  var lv = el("is_show_lead_form").value;
-  var lw = 0;
-  var lx = 0;
-  var ly = el("lead_email").value;
-  var lz = [];
-  var ma = el("linkData").textContent;
-  if (ma) {
-    lz = JSON.parse(ma);
-    lq = lz.link_id;
+  var v219 = 0;
+  var v220 = el("max_spin").value;
+  var v221 = 0;
+  var v222 = el("link_logo").value;
+  var v223 = el("logo_white").value;
+  var v224 = el("is_show_lead_form").value;
+  var v225 = 0;
+  var v226 = 0;
+  var v227 = el("lead_email").value;
+  var v228 = [];
+  var v229 = el("linkData").textContent;
+  if (v229) {
+    v228 = JSON.parse(v229);
+    v221 = v228.link_id;
   }
   if (el("is_advance").checked) {
-    lo = 1;
+    v219 = 1;
   }
-  if (lv == 1) {
-    if (lp == 0) {
+  if (v224 == 1) {
+    if (v220 == 0) {
       alert("Thu thập thông tin K/H thì (số lần quay tối đa phải > 0)");
       el("max_spin").focus();
       return false;
     }
-    if (!isEmail(ly)) {
+    if (!isEmail(v227)) {
       alert("Thu thập thông tin K/H thì phải nhập Email nhận");
       el("lead_email").focus();
       return false;
     }
   }
   if (el("frm_phone").checked == true) {
-    lw = 1;
+    v225 = 1;
   }
   if (el("frm_email").checked == true) {
-    lx = 1;
+    v226 = 1;
   }
   el("stage-1").classList.add("d-none");
   el("stage-2").classList.remove("d-none");
   el("modal-footer").innerHTML =
     '<button class="btn btn-primary" id="btn-view-shared" data-bs-dismiss="modal" onclick="viewSharedLink();"><span data-feather="trello"></span> Xem liên kết đã tạo</button>';
   feather.replace();
-  var mc = getWheelSettingInArray();
-  if (mc) {
-    mc.is_advance = lo;
-    mc.max_spin = lp;
-    mc.link_logo = lr;
-    mc.logo_white = ls;
-    mc.is_show_lead_form = lv;
-    mc.frm_phone = lw;
-    mc.frm_email = lx;
-    mc.lead_email = ly;
-    mc.title = lc;
-    mc.show_tripod = ln;
-    mc.endtime = ld;
-    if (le != "") {
-      mc.css_bosung = le;
+  var vGetWheelSettingInArray6 = getWheelSettingInArray();
+  if (vGetWheelSettingInArray6) {
+    var vVGetWheelSettingInArray6 = vGetWheelSettingInArray6;
+    vVGetWheelSettingInArray6.is_advance = v219;
+    vVGetWheelSettingInArray6.max_spin = v220;
+    vVGetWheelSettingInArray6.link_logo = v222;
+    vVGetWheelSettingInArray6.logo_white = v223;
+    vVGetWheelSettingInArray6.is_show_lead_form = v224;
+    vVGetWheelSettingInArray6.frm_phone = v225;
+    vVGetWheelSettingInArray6.frm_email = v226;
+    vVGetWheelSettingInArray6.lead_email = v227;
+    vVGetWheelSettingInArray6.title = v208;
+    vVGetWheelSettingInArray6.show_tripod = v218;
+    vVGetWheelSettingInArray6.endtime = v209;
+    if (v210 != "") {
+      vVGetWheelSettingInArray6.css_bosung = v210;
     }
-    var mf = {
-      title: lc,
-      show_title: lm,
-      visibility: lh,
-      settings: mc,
-      link_id: lq,
+    var v230 = {
+      title: v208,
+      show_title: v217,
+      visibility: v213,
+      settings: vVGetWheelSettingInArray6,
+      link_id: v221,
     };
-    var mg = new XMLHttpRequest();
-    mg.open("POST", ajax_object.ajax_url + "?action=createLink");
-    mg.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    mg.onload = function () {
-      if (mg.status === 200) {
-        var mh = mg.responseText.split("|");
-        el("your-link").value = mh[0];
+    var v231 = new XMLHttpRequest();
+    v231.open("POST", ajax_object.ajax_url + "?action=createLink");
+    v231.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    v231.onload = function () {
+      if (v231.status === 200) {
+        var v232 = v231.responseText.split("|");
+        el("your-link").value = v232[0];
         el("btn-preview").addEventListener("click", function () {
-          window.open(mh[0], "_blank").focus();
+          window.open(v232[0], "_blank").focus();
         });
-        var mj =
+        var v233 =
           '<ul class="nav nav-tabs" id="shareFormTab" role="tablist"> <li class="nav-item" role="presentation"> <button class="nav-link active" id="embed-tab" data-bs-toggle="tab" data-bs-target="#embed-tab-pane" type="button" role="tab" aria-controls="embed-tab-pane" aria-selected="true">Mã nhúng</button> </li> <li class="nav-item" role="presentation"> <button class="nav-link" id="popup-tab" data-bs-toggle="tab" data-bs-target="#popup-tab-pane" type="button" role="tab" aria-controls="popup-tab-pane" aria-selected="false"><span class="text-success">Nhúng Popup</span><sup class="text-danger">*</sup></button> </li></ul>';
-        mj += '<div class="tab-content" id="myTabContent">';
-        mj +=
+        v233 += '<div class="tab-content" id="myTabContent">';
+        v233 +=
           '<div class="tab-pane py-4 fade show active" id="embed-tab-pane" role="tabpanel" aria-labelledby="embed-tab" tabindex="0">';
-        mj +=
+        v233 +=
           '<div class="mb-1 fw-bold">Mã nhúng <sup><a class="text-danger small" href="' +
           ajax_object.home_url +
-          '/huong-dan-nhung-vong-quay-may-man-len-website/" target="_blank" title="Xem hướng dẫn">hướng dẫn\u2197</a></sup></div>';
-        mj +=
+          '/huong-dan-nhung-vong-quay-may-man-len-website/" target="_blank" title="Xem hướng dẫn">hướng dẫn↗</a></sup></div>';
+        v233 +=
           '<div class="text-muted small mb-2">* Bước 1: Copy và dán vào nơi muốn hiển thị vòng quay may mắn này.</div>';
-        mj +=
+        v233 +=
           '<textarea class="form-control mb-3" onclick="this.select();" rows="2" readonly ><div class="embedvqmm" data-id="' +
-          mh[2] +
+          v232[2] +
           '"></div></textarea>';
-        mj +=
+        v233 +=
           '<div class="text-muted small mb-2">* Bước 2: Dán mã JS này trước thẻ đóng &lt;/body&gt; </div>';
-        mj +=
+        v233 +=
           '<textarea class="form-control" onclick="this.select();" rows="2" readonly ><script src="' +
           ajax_object.home_url +
           '/embed.min.js"></script></textarea>';
-        mj += "</div>";
-        mj +=
+        v233 += "</div>";
+        v233 +=
           '<div class="tab-pane py-4 fade" id="popup-tab-pane" role="tabpanel" aria-labelledby="popup-tab" tabindex="0">';
-        mj +=
+        v233 +=
           '<div class="mb-1 fw-bold">Mã nhúng Popup<sup> <a class="text-danger small" href="' +
           ajax_object.home_url +
-          '/popup.html" target="_blank" title="Xem ví dụ">Xem ví dụ \u2197</a></sup></div>';
-        mj +=
+          '/popup.html" target="_blank" title="Xem ví dụ">Xem ví dụ ↗</a></sup></div>';
+        v233 +=
           '<div class="text-muted small mb-2">* Copy và dán mã này vào trước thẻ đóng &lt;/body&gt;.</div>';
-        mj +=
+        v233 +=
           '<textarea class="form-control mb-3" onclick="this.select();" rows="10" readonly >';
-        mj += "<script>\n\t";
-        mj += "const code = '" + mh[2] + "';\n\t";
-        mj += "const formHeading   = 'Quay để nhận thưởng';\n\t";
-        mj += "const formDesc      = 'Điền đúng thông tin để nhận quà';\n\t";
-        mj += "const formButton    = 'Thử vận may';\n\t";
-        mj += "const iconPosition  = 'right';\n\t";
-        mj += "const hideMail      = false;\n\t";
-        mj += "const lifetime      = 60;\n\t";
-        mj += "const popupWhenExit = true;\n\t";
-        mj += "function sendByMe(args){\n\t\t";
-        mj += "//Hãy viết hàm gửi Email\n\t\t";
-        mj +=
+        v233 += "<script>\n\t";
+        v233 += "const code = '" + v232[2] + "';\n\t";
+        v233 += "const formHeading   = 'Quay để nhận thưởng';\n\t";
+        v233 += "const formDesc      = 'Điền đúng thông tin để nhận quà';\n\t";
+        v233 += "const formButton    = 'Thử vận may';\n\t";
+        v233 += "const iconPosition  = 'right';\n\t";
+        v233 += "const hideMail      = false;\n\t";
+        v233 += "const lifetime      = 60;\n\t";
+        v233 += "const popupWhenExit = true;\n\t";
+        v233 += "function sendByMe(args){\n\t\t";
+        v233 += "//Hãy viết hàm gửi Email\n\t\t";
+        v233 +=
           "console.log(args);//return object {code,name,phone,email,toEmail,result} \n\t";
-        mj += "}\n";
-        mj += "</script>\n";
-        mj +=
+        v233 += "}\n";
+        v233 += "</script>\n";
+        v233 +=
           '<script src="https://vongquaymayman.co/popup.min.js"></script>\n';
-        mj += "</textarea>";
-        mj += "</div>";
-        mj += "</div>";
-        el("your-embed").innerHTML = mj;
+        v233 += "</textarea>";
+        v233 += "</div>";
+        v233 += "</div>";
+        el("your-embed").innerHTML = v233;
         el("stage-3").classList.remove("d-none");
         el("stage-2").classList.add("d-none");
-        fillTitleDesc(lc, lf);
+        fillTitleDesc(v208, v211);
         el("edit-mode-txt").innerHTML =
           '<span class="badge bg-danger">Bạn đang ở chế độ chỉnh sửa</span> <sup><a href="javascript:void(0);" title="Thoát chế độ chỉnh sửa" onclick="location.reload();">&times;</a></sup>';
-        var mk =
-          '{"link_id":' +
-          mh[1] +
-          ',\n                                  "show_title":"' +
-          lm +
-          '",\n                                  "show_tripod":"' +
-          ln +
-          '",\n                                  "visibility":"' +
-          lh +
-          '",\n                                  "max_spin":' +
-          lp +
-          ',\n                                  "link_logo":"' +
-          lr +
-          '",\n                                  "logo_white":"' +
-          ls +
-          '",\n                                  "lead_email":"' +
-          ly +
-          '",\n                                  "is_show_lead_form":"' +
-          lv +
-          '",\n                                  "frm_phone":"' +
-          lw +
-          '",\n                                  "frm_email":"' +
-          lx +
-          '",\n                                  "endtime":"' +
-          ld +
-          '",\n                                  "css_bosung":"' +
-          le +
-          '"\n                                }';
-        el("linkData").textContent = mk;
-      } else {
-        if (mg.status !== 200) {
-          console.log("error:" + mg.status);
-        }
+        var v234 = {
+          link_id: v232[1],
+          show_title: v217,
+          show_tripod: v218,
+          visibility: v213,
+          max_spin: v220,
+          link_logo: v222,
+          logo_white: v223,
+          lead_email: v227,
+          is_show_lead_form: v224,
+          frm_phone: v225,
+          frm_email: v226,
+          endtime: v209,
+          css_bosung: v210,
+        };
+        el("linkData").textContent = JSON.stringify(v234);
+      } else if (v231.status !== 200) {
+        console.log("error:" + v231.status);
       }
     };
-    mg.send(JSON.stringify(mf));
+    v231.send(JSON.stringify(v230));
   }
 }
-
 function copyLink() {
   el("btn-copy-link").textContent = "Đang chép...";
-  var ml = el("your-link").value;
-  if (ml) {
+  var v235 = el("your-link").value;
+  if (v235) {
     el("your-link").focus();
     el("your-link").select();
-    copyToClipBoard(ml);
+    copyToClipBoard(v235);
     setTimeout(function () {
       el("btn-copy-link").textContent = "Sao chép";
     }, 500);
   }
 }
-
-function removeSharedLink(mn, mo) {
-  if (confirm("Bạn chắc chắn muốn xóa:" + mo)) {
-    var mp = new XMLHttpRequest();
-    mp.open("POST", ajax_object.ajax_url);
-    mp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    mp.onload = function () {
-      if (mp.status === 200) {
-        if (mp.responseText == "success") {
-          el("row-" + mn).remove();
+function removeSharedLink(p57, p58) {
+  if (confirm("Bạn chắc chắn muốn xóa:" + p58)) {
+    var v236 = new XMLHttpRequest();
+    v236.open("POST", ajax_object.ajax_url);
+    v236.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    v236.onload = function () {
+      if (v236.status === 200) {
+        if (v236.responseText == "success") {
+          el("row-" + p57).remove();
         } else {
-          alert(mp.responseText);
+          alert(v236.responseText);
         }
       } else {
-        console.log("Lỗi:" + mp.status);
+        console.log("Lỗi:" + v236.status);
       }
     };
-    mp.send(
+    v236.send(
       "action=removeSharedLink&id=" +
-        mn +
+        p57 +
         "&ajaxsecurity=" +
         ajax_object.ajax_nonce
     );
   }
 }
-
-function editSharedLink(mq) {
-  var mr = new XMLHttpRequest();
-  mr.open("POST", ajax_object.ajax_url);
-  mr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  mr.onload = function () {
-    if (mr.status === 200) {
-      if (mr.responseText !== "error") {
-        var mv = JSON.parse(mr.responseText);
-        var mw = JSON.parse(mv.settings);
-        var mz = mv.title;
-        var na = "";
-        var nb = mv.show_title;
-        var nc = "no";
-        var nd = mv.id;
-        var ne = mv.visibility;
-        var nf = 0;
-        var ni = "";
-        var nj = "";
-        var nk = 0;
-        var nl = 0;
-        var nm = 0;
-        var nn = 0;
-        var np = "";
-        var nq = "";
-        var nr = "color";
-        var ns = "";
-        var nt = 0;
-        if (mw.hasOwnProperty("max_spin")) {
-          nf = mw.max_spin;
+function editSharedLink(p59) {
+  var v237 = new XMLHttpRequest();
+  v237.open("POST", ajax_object.ajax_url);
+  v237.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  v237.onload = function () {
+    if (v237.status === 200) {
+      if (v237.responseText !== "error") {
+        var v238 = JSON.parse(v237.responseText);
+        var v239 = JSON.parse(v238.settings);
+        var v240 = v238.title;
+        var v241 = "";
+        var v242 = v238.show_title;
+        var v243 = "no";
+        var v244 = v238.id;
+        var v245 = v238.visibility;
+        var v246 = 0;
+        var v247 = "";
+        var v248 = "";
+        var v249 = 0;
+        var v250 = 0;
+        var v251 = 0;
+        var v252 = 0;
+        var v253 = "";
+        var v254 = "";
+        var v255 = "color";
+        var v256 = "";
+        var v257 = 0;
+        if (v239.hasOwnProperty("max_spin")) {
+          v246 = v239.max_spin;
         }
-        if (mw.hasOwnProperty("show_tripod")) {
-          nc = mw.show_tripod;
+        if (v239.hasOwnProperty("show_tripod")) {
+          v243 = v239.show_tripod;
         }
-        if (mw.hasOwnProperty("link_logo")) {
-          ni = mw.link_logo;
+        if (v239.hasOwnProperty("link_logo")) {
+          v247 = v239.link_logo;
         }
-        if (mw.hasOwnProperty("logo_white")) {
-          nj = mw.logo_white;
+        if (v239.hasOwnProperty("logo_white")) {
+          v248 = v239.logo_white;
         }
-        if (mw.hasOwnProperty("is_show_lead_form")) {
-          nk = mw.is_show_lead_form;
+        if (v239.hasOwnProperty("is_show_lead_form")) {
+          v249 = v239.is_show_lead_form;
         }
-        if (mw.hasOwnProperty("lead_email")) {
-          nl = mw.lead_email;
+        if (v239.hasOwnProperty("lead_email")) {
+          v250 = v239.lead_email;
         }
-        if (mw.hasOwnProperty("frm_phone")) {
-          nm = mw.frm_phone;
+        if (v239.hasOwnProperty("frm_phone")) {
+          v251 = v239.frm_phone;
         }
-        if (mw.hasOwnProperty("frm_email")) {
-          nn = mw.frm_email;
+        if (v239.hasOwnProperty("frm_email")) {
+          v252 = v239.frm_email;
         }
-        if (mw.hasOwnProperty("css_bosung")) {
-          np = mw.css_bosung;
+        if (v239.hasOwnProperty("css_bosung")) {
+          v253 = v239.css_bosung;
         }
-        if (mw.hasOwnProperty("endtime")) {
-          nq = mw.endtime;
+        if (v239.hasOwnProperty("endtime")) {
+          v254 = v239.endtime;
         }
-        if (mw.hasOwnProperty("desc")) {
-          na = mw.desc;
+        if (v239.hasOwnProperty("desc")) {
+          v241 = v239.desc;
         }
-        if (mw.hasOwnProperty("is_advance")) {
-          nt = mw.is_advance;
+        if (v239.hasOwnProperty("is_advance")) {
+          v257 = v239.is_advance;
         }
-        if (nt == 0) {
+        if (v257 == 0) {
           el("is_advance").checked = false;
         } else {
           el("is_advance").checked = true;
         }
-        if (mw.hasOwnProperty("type")) {
-          nr = mw.type;
-          setWheelType(nr);
-          if (mw.hasOwnProperty("cover_img")) {
-            ns = mw.cover_img;
-            el("cover_img_display").src = ns;
-            el("cover_img").value = ns;
+        if (v239.hasOwnProperty("type")) {
+          v255 = v239.type;
+          setWheelType(v255);
+          if (v239.hasOwnProperty("cover_img")) {
+            v256 = v239.cover_img;
+            el("cover_img_display").src = v256;
+            el("cover_img").value = v256;
           }
         } else {
           setWheelType("color");
@@ -1648,127 +1508,114 @@ function editSharedLink(mq) {
           el("cover_img").value =
             ajax_object.theme_uri + "/assets/images/cover-wheel.jpg";
         }
-        fillTitleDesc(mz, na);
-        var nu =
-          '{"link_id":' +
-          nd +
-          ',\n                            "show_title":"' +
-          nb +
-          '",\n                            "show_tripod":"' +
-          nc +
-          '",\n                            "visibility":"' +
-          ne +
-          '",\n                            "max_spin":' +
-          nf +
-          ',\n                            "link_logo":"' +
-          ni +
-          '",\n                            "logo_white":"' +
-          nj +
-          '",\n                            "lead_email":"' +
-          nl +
-          '",\n                            "is_show_lead_form":"' +
-          nk +
-          '",\n                            "frm_phone":"' +
-          nm +
-          '",\n                            "frm_email":"' +
-          nn +
-          '",\n                            "endtime":"' +
-          nq +
-          '",\n                            "css_bosung":"' +
-          np +
-          '"\n                          }';
-        el("linkData").textContent = nu;
+        fillTitleDesc(v240, v241);
+        var v258 = {
+          link_id: v244,
+          show_title: v242,
+          show_tripod: v243,
+          visibility: v245,
+          max_spin: v246,
+          link_logo: v247,
+          logo_white: v248,
+          lead_email: v250,
+          is_show_lead_form: v249,
+          frm_phone: v251,
+          frm_email: v252,
+          endtime: v254,
+          css_bosung: v253,
+        };
+        el("linkData").textContent = JSON.stringify(v258);
         el("edit-mode-txt").innerHTML =
           '<span class="badge bg-danger">Bạn đang ở chế độ chỉnh sửa</span> <sup><a href="javascript:void(0);" title="Thoát chế độ chỉnh sửa" onclick="location.reload();">&times;</a></sup>';
-        if (mw.hasOwnProperty("custom_bg_color")) {
-          root.style.setProperty("--custom_bg_color", mw.custom_bg_color);
-          el("custom-bg-color").value = mw.custom_bg_color;
+        if (v239.hasOwnProperty("custom_bg_color")) {
+          root.style.setProperty("--custom_bg_color", v239.custom_bg_color);
+          el("custom-bg-color").value = v239.custom_bg_color;
         } else {
           root.style.setProperty("--custom_bg_color", "#ffffff");
           el("custom-bg-color").value = "#ffffff";
         }
-        if (mw.hasOwnProperty("custom_color")) {
-          root.style.setProperty("--custom_color", mw.custom_color);
-          el("custom-color").value = mw.custom_color;
+        if (v239.hasOwnProperty("custom_color")) {
+          root.style.setProperty("--custom_color", v239.custom_color);
+          el("custom-color").value = v239.custom_color;
         } else {
           root.style.setProperty("--custom_color", "#000000");
           el("custom-color").value = "#000000";
         }
-        if (mw.hasOwnProperty("custom_bg_img")) {
-          setBackgroundImage(mw.custom_bg_img, "update");
+        if (v239.hasOwnProperty("custom_bg_img")) {
+          setBackgroundImage(v239.custom_bg_img, "update");
         } else {
           document.body.style.backgroundImage = "";
           el("custom-bg-img").value = "";
           el("custom-bg-img-tablet").value = "";
           el("custom-bg-img-mobile").value = "";
         }
-        var nv = [];
-        if (mw.hasOwnProperty("list")) {
-          var nw = mw.list.split("||");
-          var nx = null;
-          var ny = "";
-          if (nw.length) {
-            for (var nz = 0; nz < nw.length; nz++) {
-              if (nw[nz].includes("<img")) {
-                var oa = document.createElement("div");
-                oa.innerHTML = nw[nz];
-                nx = oa.querySelector("img");
-                ny = nw[nz].replace(/<img[^>]*>/g, "");
-                ny = stripHtml(ny);
-                ny = ny.trim();
-                nv.push({
-                  text: ny,
-                  id: nz,
-                  image: nx.src,
+        var v259 = [];
+        if (v239.hasOwnProperty("list")) {
+          var v260 = v239.list.split("||");
+          var v261 = null;
+          var v262 = "";
+          if (v260.length) {
+            for (var v263 = 0; v263 < v260.length; v263++) {
+              if (v260[v263].includes("<img")) {
+                var v264 = document.createElement("div");
+                v264.innerHTML = v260[v263];
+                v261 = v264.querySelector("img");
+                v262 = v260[v263].replace(/<img[^>]*>/g, "");
+                v262 = stripHtml(v262);
+                v262 = v262.trim();
+                v259.push({
+                  text: v262,
+                  id: v263,
+                  image: v261.src,
                 });
               }
-              nv.push({
-                text: nw[nz],
-                id: nz,
+              v259.push({
+                text: v260[v263],
+                id: v263,
               });
             }
           }
         }
-        if (mw.hasOwnProperty("entries")) {
-          nv = mw.entries;
+        if (v239.hasOwnProperty("entries")) {
+          v259 = v239.entries;
         }
-        if (mw.hasOwnProperty("startSound")) {
-          el("start_sound").value = mw.startSound;
+        if (v239.hasOwnProperty("startSound")) {
+          el("start_sound").value = v239.startSound;
         }
-        if (mw.hasOwnProperty("start_sound")) {
-          el("start_sound").value = mw.start_sound;
+        if (v239.hasOwnProperty("start_sound")) {
+          el("start_sound").value = v239.start_sound;
         }
-        if (mw.hasOwnProperty("end_sound")) {
-          el("end_sound").value = mw.end_sound;
+        if (v239.hasOwnProperty("end_sound")) {
+          el("end_sound").value = v239.end_sound;
         }
-        if (mw.hasOwnProperty("endSound")) {
-          el("end_sound").value = mw.endSound;
+        if (v239.hasOwnProperty("endSound")) {
+          el("end_sound").value = v239.endSound;
         }
-        el("duration").value = mw.duration;
-        if (mw.hasOwnProperty("btn_spin_label")) {
-          el("btn-spin-label").value = mw.btn_spin_label;
+        el("duration").value = v239.duration;
+        if (v239.hasOwnProperty("btn_spin_label")) {
+          el("btn-spin-label").value = v239.btn_spin_label;
         }
-        if (mw.hasOwnProperty("btn_spin_img")) {
-          el("btn-spin-img").value = mw.btn_spin_img;
+        if (v239.hasOwnProperty("btn_spin_img")) {
+          el("btn-spin-img").value = v239.btn_spin_img;
         }
-        if (mw.show_confetti == "yes") {
+        if (v239.show_confetti == "yes") {
           el("show_confetti").checked = true;
         } else {
           el("show_confetti").checked = false;
         }
-        if (mw.show_popup == "yes") {
+        if (v239.show_popup == "yes") {
           el("show_popup").checked = true;
         } else {
           el("show_popup").checked = false;
         }
-        el("popup_label").value = mw.popup_label;
-        if (mw.show_remove_button == "yes") {
+        el("popup_label").value = v239.popup_label;
+        if (v239.show_remove_button == "yes") {
           el("show_remove_button").checked = true;
         } else {
           el("show_remove_button").checked = false;
         }
-        if (mw.hasOwnProperty("show_border")) {
-          if (mw.show_border == "yes") {
+        if (v239.hasOwnProperty("show_border")) {
+          if (v239.show_border == "yes") {
             el("show_border").checked = true;
             el("custom_border_color").classList.remove("d-none");
           } else {
@@ -1779,25 +1626,25 @@ function editSharedLink(mq) {
           el("show_border").checked = false;
           el("custom_border_color").classList.add("d-none");
         }
-        var ob = document.getElementsByName("chkcolor");
-        if (mw.hasOwnProperty("theme_style_color")) {
-          colors = mw.theme_style_color;
+        var v265 = document.getElementsByName("chkcolor");
+        if (v239.hasOwnProperty("theme_style_color")) {
+          colors = v239.theme_style_color;
         }
-        if (mw.hasOwnProperty("colors")) {
-          colors = mw.colors;
+        if (v239.hasOwnProperty("colors")) {
+          colors = v239.colors;
         }
         if (colors) {
-          for (var oc of ob) {
-            oc.checked = false;
-            el("color-" + oc.value).value = "#ADB2B0";
+          for (var v266 of v265) {
+            v266.checked = false;
+            el("color-" + v266.value).value = "#ADB2B0";
           }
-          for (const od of colors) {
-            el("color-" + od.key).value = od.value;
-            el("chkcolor-" + od.key).checked = true;
+          for (const v267 of colors) {
+            el("color-" + v267.key).value = v267.value;
+            el("chkcolor-" + v267.key).checked = true;
           }
         }
-        if (mw.hasOwnProperty("is_stroke")) {
-          if (mw.is_stroke == "yes") {
+        if (v239.hasOwnProperty("is_stroke")) {
+          if (v239.is_stroke == "yes") {
             el("is_stroke").checked = true;
           } else {
             el("is_stroke").checked = false;
@@ -1805,132 +1652,132 @@ function editSharedLink(mq) {
         } else {
           el("is_stroke").checked = false;
         }
-        fillEntries(nv, nt);
+        fillEntries(v259, v257);
         wheelSettings();
         el("view-shared-msg").innerHTML =
           '<div class="alert alert-danger alert-dismissible fade show" id="alertClose" role="alert"><strong>Tiếp tục sửa (' +
-          mz +
-          ") ?</strong><br>- Hãy chỉnh lại <strong>Vòng quay</strong> theo ý muốn rồi vào <strong>Tài khoản</strong> \u21E2 <strong>Tạo link chia sẻ</strong> \u21E2 <strong>Cập nhật</strong>.<br>- Đừng Refresh trang trong quá trình chỉnh sửa.</div>";
+          v240 +
+          ") ?</strong><br>- Hãy chỉnh lại <strong>Vòng quay</strong> theo ý muốn rồi vào <strong>Tài khoản</strong> ⇢ <strong>Tạo link chia sẻ</strong> ⇢ <strong>Cập nhật</strong>.<br>- Đừng Refresh trang trong quá trình chỉnh sửa.</div>";
       } else {
         alert("Có lỗi chưa rõ nguyên nhân!");
       }
     } else {
-      console.log("Lỗi:" + mr.status);
+      console.log("Lỗi:" + v237.status);
     }
   };
-  mr.send(
-    "action=editSharedLink&id=" + mq + "&ajaxsecurity=" + ajax_object.ajax_nonce
+  v237.send(
+    "action=editSharedLink&id=" +
+      p59 +
+      "&ajaxsecurity=" +
+      ajax_object.ajax_nonce
   );
 }
-
 function viewSharedLink() {
   if (!isLoggedIn()) {
     loginForm();
     return false;
   }
-  var oe = "";
+  var v268 = "";
   el("modal-title").innerHTML =
     '<span data-feather="share-2" style="width:24px;heigh24px;"></span> Liên kết của bạn';
-  oe +=
+  v268 +=
     '<div id="view-shared-loader"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> Đang tải...</div>';
-  var og = new XMLHttpRequest();
-  og.open("POST", ajax_object.ajax_url);
-  og.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  og.onload = function () {
-    if (og.status === 200) {
-      el("modal-body").innerHTML = og.responseText;
+  var v269 = new XMLHttpRequest();
+  v269.open("POST", ajax_object.ajax_url);
+  v269.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  v269.onload = function () {
+    if (v269.status === 200) {
+      el("modal-body").innerHTML = v269.responseText;
       feather.replace();
-      var oh = document.querySelectorAll(".btn-copy-link-item");
-      if (oh.length) {
-        for (var oi = 0; oi < oh.length; oi++) {
-          oh[oi].addEventListener("click", function () {
+      var v270 = document.querySelectorAll(".btn-copy-link-item");
+      if (v270.length) {
+        for (var v271 = 0; v271 < v270.length; v271++) {
+          v270[v271].addEventListener("click", function () {
             copyToClipBoard(this.dataset.content);
             alert("Đã copy link (" + this.dataset.title + ")");
           });
         }
       }
-      var oj = document.querySelectorAll(".btn-copy-embed-item");
-      if (oj.length) {
-        for (var oi = 0; oi < oj.length; oi++) {
-          oj[oi].addEventListener("click", function () {
-            var ol =
+      var v272 = document.querySelectorAll(".btn-copy-embed-item");
+      if (v272.length) {
+        for (var v271 = 0; v271 < v272.length; v271++) {
+          v272[v271].addEventListener("click", function () {
+            var v273 =
               '<div class="embedvqmm" data-id="' + this.dataset.id + '"></div>';
-            ol +=
+            v273 +=
               '<script src="' +
               ajax_object.home_url +
               '/embed.min.js"></script>';
-            copyToClipBoard(ol);
+            copyToClipBoard(v273);
             alert("Đã copy mã nhúng (" + this.dataset.title + ")");
           });
         }
       }
-      var om = document.querySelectorAll(".btn-edit-link");
-      if (om.length) {
-        for (var oi = 0; oi < om.length; oi++) {
-          om[oi].addEventListener("click", function () {
+      var v274 = document.querySelectorAll(".btn-edit-link");
+      if (v274.length) {
+        for (var v271 = 0; v271 < v274.length; v271++) {
+          v274[v271].addEventListener("click", function () {
             editSharedLink(this.dataset.content);
           });
         }
       }
-      var on = document.querySelectorAll(".btn-remove-link");
-      if (on.length) {
-        for (var oi = 0; oi < on.length; oi++) {
-          on[oi].addEventListener("click", function () {
+      var v275 = document.querySelectorAll(".btn-remove-link");
+      if (v275.length) {
+        for (var v271 = 0; v271 < v275.length; v271++) {
+          v275[v271].addEventListener("click", function () {
             removeSharedLink(this.dataset.content, this.dataset.title);
           });
         }
       }
-      var oo = document.querySelector("#btn-create-link-now");
-      if (oo) {
-        oo.addEventListener("click", function () {
+      var v276 = document.querySelector("#btn-create-link-now");
+      if (v276) {
+        v276.addEventListener("click", function () {
           createLinkForm();
         });
       }
     } else {
-      console.log("Lỗi:" + og.status);
+      console.log("Lỗi:" + v269.status);
     }
   };
-  og.send("action=viewSharedLink");
-  el("modal-body").innerHTML = oe;
+  v269.send("action=viewSharedLink");
+  el("modal-body").innerHTML = v268;
   el("modal-footer").innerHTML =
     '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>';
   el("modal-dialog").classList.add("modal-lg");
   feather.replace();
-  var op = new bootstrap.Modal(el("myModal"), {
+  var v277 = new bootstrap.Modal(el("myModal"), {
     backdrop: true,
   });
-  op.show();
+  v277.show();
 }
-
 function uploadLinkLogo() {
   upload("upload_logo", "link_logo");
 }
-
 function checkLeadForm() {
   if (el("is_show_lead_form").checked == true) {
     el("lead_email").removeAttribute("disabled");
     el("frm_option").classList.remove("d-none");
-    var oq = document.querySelectorAll('input[type="checkbox"].frm-option');
-    for (var or = 0; or < oq.length; or++) {
-      oq[or].addEventListener("click", function () {
+    var v278 = document.querySelectorAll('input[type="checkbox"].frm-option');
+    for (var v279 = 0; v279 < v278.length; v279++) {
+      v278[v279].addEventListener("click", function () {
         if (countBoxCheckedByClass("frm-option") == 1) {
-          for (var os = 0; os < oq.length; os++) {
-            if (oq[os].checked == true) {
-              oq[os].disabled = true;
+          for (var v280 = 0; v280 < v278.length; v280++) {
+            if (v278[v280].checked == true) {
+              v278[v280].disabled = true;
             }
           }
         } else {
-          for (var os = 0; os < oq.length; os++) {
-            oq[os].disabled = false;
+          for (var v280 = 0; v280 < v278.length; v280++) {
+            v278[v280].disabled = false;
           }
         }
       });
     }
-    var ot = new XMLHttpRequest();
-    ot.open("POST", ajax_object.ajax_url + "?action=getUserInfo");
-    ot.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    ot.onload = function () {
-      user_info = JSON.parse(ot.responseText);
+    var v281 = new XMLHttpRequest();
+    v281.open("POST", ajax_object.ajax_url + "?action=getUserInfo");
+    v281.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    v281.onload = function () {
+      user_info = JSON.parse(v281.responseText);
       if (user_info.isExpired == true) {
         el("lead_email_container").innerHTML =
           '<input type="hidden" id="lead_email" value="" ><p class="alert alert-danger">Tài khoản PRO của bạn đã hết hạn. Hãy <a href="' +
@@ -1943,7 +1790,7 @@ function checkLeadForm() {
         }
       }
     };
-    ot.send("&ajaxsecurity=" + ajax_object.ajax_nonce);
+    v281.send("&ajaxsecurity=" + ajax_object.ajax_nonce);
   } else {
     el("is_show_lead_form").value = 0;
     el("lead_email_container").innerHTML =
@@ -1951,168 +1798,170 @@ function checkLeadForm() {
     el("frm_option").classList.add("d-none");
   }
 }
-
 function openSettingsForm() {
-  var ou = new bootstrap.Modal(el("modalSettings"), {
+  var v282 = new bootstrap.Modal(el("modalSettings"), {
     backdrop: true,
   });
-  ou.show();
+  v282.show();
 }
-
 function wheelSettings() {
-  var ov = el("start_sound").value;
-  var ow = el("end_sound").value;
-  var ox = el("duration").value;
-  var oy = "no";
-  var oz = "no";
-  var pa = "no";
-  var pb = el("popup_label").value;
-  var pc = el("extra_name").value;
-  var pd = el("custom-bg-color").value;
-  var pe = el("custom-color").value;
-  var pf = [];
-  var pg = el("btn-spin-label").value;
-  var pj = el("btn-spin-img").value;
-  var pk = "no";
-  var pl = "no";
-  var pm = "#FF4D00";
-  var pn = "#F6FA00";
-  var po = "";
-  var pp = "";
-  var pq = el("type").value;
-  var pr = el("cover_img").value;
-  var ps = el("custom-bg-img").value;
-  var pt = el("custom-bg-img-tablet").value;
-  var pu = el("custom-bg-img-mobile").value;
-  pf = [ps, pt, pu];
+  var v283 = el("start_sound").value;
+  var v284 = el("end_sound").value;
+  var v285 = el("duration").value;
+  var v286 = "no";
+  var v287 = "no";
+  var v288 = "no";
+  var v289 = el("popup_label").value;
+  var v290 = el("extra_name").value;
+  var v291 = el("custom-bg-color").value;
+  var v292 = el("custom-color").value;
+  var v293 = [];
+  var v294 = el("btn-spin-label").value;
+  var v295 = el("btn-spin-img").value;
+  var v296 = "no";
+  var v297 = "no";
+  var v298 = "#FF4D00";
+  var v299 = "#F6FA00";
+  var v300 = "";
+  var v301 = "";
+  var v302 = el("type").value;
+  var v303 = el("cover_img").value;
+  var v304 = el("custom-bg-img").value;
+  var v305 = el("custom-bg-img-tablet").value;
+  var v306 = el("custom-bg-img-mobile").value;
+  v293 = [v304, v305, v306];
   if (el("show_confetti").checked) {
-    oy = "yes";
+    v286 = "yes";
   }
   if (el("show_popup").checked) {
-    oz = "yes";
+    v287 = "yes";
   }
   if (el("show_remove_button").checked) {
-    pa = "yes";
+    v288 = "yes";
   }
   if (el("is_stroke").checked) {
-    pk = "yes";
+    v296 = "yes";
   }
   if (el("show_border").checked) {
-    pl = "yes";
-    pm = el("border_color").value;
-    pn = el("diamond_color").value;
+    v297 = "yes";
+    v298 = el("border_color").value;
+    v299 = el("diamond_color").value;
   }
   if (el("vqmm-title")) {
-    po = el("vqmm-title").textContent;
+    v300 = el("vqmm-title").textContent;
   }
   if (el("vqmm-desc")) {
-    pp = el("vqmm-desc").textContent;
+    v301 = el("vqmm-desc").textContent;
   }
-  var pv = [];
-  var pw = document.getElementsByName("chkcolor");
-  if (pw.length) {
-    for (var pz of pw) {
-      if (pz.checked) {
-        pv.push({
-          key: pz.value,
-          value: el("color-" + pz.value).value,
+  var v307 = [];
+  var v308 = document.getElementsByName("chkcolor");
+  if (v308.length) {
+    for (var v309 of v308) {
+      if (v309.checked) {
+        v307.push({
+          key: v309.value,
+          value: el("color-" + v309.value).value,
         });
       }
     }
   }
-  if (pv.length === 0) {
-    pv.push({
+  if (v307.length === 0) {
+    v307.push({
       key: 1,
       value: "#ADB2B0",
     });
   }
-  var qa = 0;
+  var v310 = 0;
   if (el("is_advance").checked) {
-    qa = 1;
+    v310 = 1;
   }
-  var qb = [];
-  var qc = "";
-  var qd = null;
-  if (qa == 0) {
-    var qe = getSectorItem(el("sector_list").innerHTML);
-    if (qe.length) {
-      for (var qf = 0; qf < qe.length; qf++) {
-        if (qe[qf].includes("<img")) {
-          var qg = document.createElement("div");
-          qg.innerHTML = qe[qf];
-          qd = qg.querySelector("img");
-          qc = qe[qf].replace(/<img[^>]*>/g, "");
-          qc = stripHtml(qc);
-          qc = qc.trim();
-          qb.push({
-            text: qc,
-            id: qf,
-            image: qd.src,
+  var v311 = [];
+  var v312 = "";
+  var v313 = null;
+  if (v310 == 0) {
+    var vGetSectorItem2 = getSectorItem(el("sector_list").innerHTML);
+    if (vGetSectorItem2.length) {
+      for (var v314 = 0; v314 < vGetSectorItem2.length; v314++) {
+        if (vGetSectorItem2[v314].includes("<img")) {
+          var v315 = document.createElement("div");
+          v315.innerHTML = vGetSectorItem2[v314];
+          v313 = v315.querySelector("img");
+          v312 = vGetSectorItem2[v314].replace(/<img[^>]*>/g, "");
+          v312 = stripHtml(v312);
+          v312 = v312.trim();
+          v311.push({
+            text: v312,
+            id: v314,
+            image: v313.src,
           });
         } else {
-          qb.push({
-            text: qe[qf],
-            id: qf,
+          v311.push({
+            text: vGetSectorItem2[v314],
+            id: v314,
           });
         }
       }
     }
   } else {
-    var qh = 0;
-    var qi = null;
-    var qj = document.querySelectorAll(".row-item");
-    if (qj.length) {
-      for (var qf = 0; qf < qj.length; qf++) {
-        qh = qf;
-        qi = {
-          text: el("item-text-" + qh).value,
-          id: qh,
-          color: el("item-color-" + qh).value,
-          weight: parseInt(el("item-weight-" + qh).value),
+    var v316 = 0;
+    var v317 = 0;
+    var v318 = null;
+    var v319 = document.querySelectorAll(".row-item");
+    if (v319.length) {
+      var v320 = [];
+      var v321 = [];
+      var v322 = 0;
+      for (var v314 = 0; v314 < v319.length; v314++) {
+        v317 = v314;
+        v318 = {
+          text: el("item-text-" + v317).value,
+          id: v317,
+          color: el("item-color-" + v317).value,
+          weight: parseInt(el("item-weight-" + v317).value),
         };
-        if (el("item-img-" + qh).innerHTML != "") {
-          qi.image = document.querySelector("#item-img-" + qh + ">img").src;
+        if (el("item-img-" + v317).innerHTML != "") {
+          v318.image = document.querySelector("#item-img-" + v317 + ">img").src;
         }
-        if (el("item-sound-" + qh)) {
-          qi.sound = el("item-sound-" + qh).value;
+        if (el("item-sound-" + v317)) {
+          v318.sound = el("item-sound-" + v317).value;
         }
-        if (el("item-message-" + qh)) {
-          qi.message = removeAllUrl(el("item-message-" + qh).value);
+        if (el("item-message-" + v317)) {
+          v318.message = removeAllUrl(el("item-message-" + v317).value);
         }
-        qb.push(qi);
+        v311.push(v318);
       }
     }
   }
-  var qk = {
-    title: po,
-    desc: pp,
-    start_sound: ov,
-    end_sound: ow,
-    duration: ox,
-    show_confetti: oy,
-    show_popup: oz,
-    show_remove_button: pa,
-    is_stroke: pk,
-    show_border: pl,
-    border_color: pm,
-    diamond_color: pn,
-    popup_label: pb,
-    custom_bg_color: pd,
-    custom_color: pe,
-    custom_bg_img: pf,
-    btn_spin_label: pg,
-    btn_spin_img: pj,
-    colors: pv,
-    entries: qb,
-    is_advance: qa,
-    type: pq,
-    cover_img: pr,
+  var v323 = {
+    title: v300,
+    desc: v301,
+    start_sound: v283,
+    end_sound: v284,
+    duration: v285,
+    show_confetti: v286,
+    show_popup: v287,
+    show_remove_button: v288,
+    is_stroke: v296,
+    show_border: v297,
+    border_color: v298,
+    diamond_color: v299,
+    popup_label: v289,
+    custom_bg_color: v291,
+    custom_color: v292,
+    custom_bg_img: v293,
+    btn_spin_label: v294,
+    btn_spin_img: v295,
+    colors: v307,
+    entries: v311,
+    is_advance: v310,
+    type: v302,
+    cover_img: v303,
   };
-  localStorage.setItem("wheelSetting" + pc, JSON.stringify(qk));
-  root.style.setProperty("--custom_bg_color", pd);
-  root.style.setProperty("--custom_color", pe);
-  if (pf) {
-    setBackgroundImage(pf, "view");
+  localStorage.setItem("wheelSetting" + v290, JSON.stringify(v323));
+  root.style.setProperty("--custom_bg_color", v291);
+  root.style.setProperty("--custom_color", v292);
+  if (v293) {
+    setBackgroundImage(v293, "view");
   } else {
     document.body.style.backgroundImage = "";
   }
@@ -2122,173 +1971,198 @@ function wheelSettings() {
     loadWheel();
   }, 500);
 }
-
 function loadUploaded() {
-  var ql =
+  var v324 =
     '<div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="filter_media" id="all" value="all" onClick="filter_media(\'all\');" checked><label class="form-check-label" for="all">Tất cả</label></div>';
-  ql +=
+  v324 +=
     '<div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="filter_media" id="media_button" value="btn" onClick="filter_media(\'btn\');"><label class="form-check-label" for="media_button">Nút quay</label></div>';
-  ql +=
+  v324 +=
     '<div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="filter_media" id="media_background" value="bgr" onClick="filter_media(\'bgr\');"><label class="form-check-label" for="media_background">Nền</label></div>';
-  ql +=
-    '<hr><div class="mt-3" style="max-height:350px;overflow-y:auto;overflow-x:hidden;"><table class="table table-striped" id="media" ><thead><tr><th>STT</th><th>Link</th><th>Đặt làm</th><th>Hành động</th></tr></thead><tbody id="mediaBody">';
-  var qm = 0;
+  v324 +=
+    '<div class="input-group my-3"><span class="input-group-text"><span data-feather="search"></span></span><input type="text" class="form-control" id="media_kw" onkeyup="searhMedia();" placeholder="Từ khoá" ></div>';
+  v324 +=
+    '<hr><div class="mt-3" style="max-height:350px;overflow-y:auto;overflow-x:hidden;"><table class="table table-striped" id="media" ><thead><tr><th>STT</th><th>Tên</th><th>Link</th><th>Đặt làm</th><th>Action</th></tr></thead><tbody id="mediaBody">';
+  var v325 = 0;
   if (localStorage.getItem("uploadedList")) {
-    var qn = JSON.parse(localStorage.getItem("uploadedList"));
-    for (qm = 0; qm < qn.length; qm++) {
-      ql +=
+    var v326 = JSON.parse(localStorage.getItem("uploadedList"));
+    var v327 = "";
+    var v328 = "";
+    for (v325 = 0; v325 < v326.length; v325++) {
+      v328 = v326[v325];
+      v327 = v328.split("/").pop();
+      fileName = v327.slice(0, -4);
+      v324 +=
         '<tr id="tr_' +
-        qm +
-        '"><td>' +
-        (qm + 1) +
+        v325 +
+        '"><td><span class="badge bg-secondary">' +
+        (v325 + 1) +
+        '</span></td><td class="small">' +
+        fileName +
         '</td><td><a href="' +
-        qn[qm] +
+        v326[v325] +
         '" title="Ảnh sẽ được mở trong tab mới" target="_blank"><img src="' +
-        qn[qm] +
+        v326[v325] +
         '" width="50" heigh="50" class="border border-1 rounded-1" ></a></td><td data-type="mixes"><button class="btn btn-sm btn-secondary" onclick="el(\'custom-bg-img\').value=\'' +
-        qn[qm] +
+        v326[v325] +
         "';el('btn_wheel_setting').click();\">Nền</button> <button class=\"btn btn-sm btn-secondary\" onclick=\"el('btn-spin-img').value='" +
-        qn[qm] +
+        v326[v325] +
         "';el('btn-spin-label').value='';el('btn_wheel_setting').click();\">Nút Quay</button></td><td><button class=\"btn btn-sm btn-outline-secondary\" onclick=\"removeUploaded('" +
-        qn[qm] +
+        v326[v325] +
         "');el('tr_" +
-        qm +
+        v325 +
         "').remove();\">&times;</button></td></tr>";
     }
   }
+  var v329 = [];
   fetch("/buttons.txt?cachebuster=" + new Date().getTime())
-    .then((qo) => qo.text())
-    .then((qp) => {
-      const qq = qp.split("\n").map((qr) => qr.trim());
-      var qs = "";
-      for (var qt = 0; qt < qq.length; qt++) {
-        qs +=
-          "<tr><td>" +
-          (qm + qt + 1) +
+    .then((p60) => p60.text())
+    .then((p61) => {
+      const v330 = p61.split("\n").map((p62) => p62.trim());
+      var v331 = "";
+      for (var v332 = 0; v332 < v330.length; v332++) {
+        v331 +=
+          '<tr><td><span class="badge bg-secondary">' +
+          (v325 + v332 + 1) +
+          '</span></td><td class="small">' +
+          v330[v332].slice(0, -4) +
           '</td><td><a href="' +
           ajax_object.theme_uri +
           "/assets/buttons/" +
-          qq[qt] +
+          v330[v332] +
           '" title="Ảnh sẽ được mở trong tab mới" target="_blank"><img src="' +
           ajax_object.theme_uri +
           "/assets/buttons/" +
-          qq[qt] +
+          v330[v332] +
           '" width="50" heigh="50" class="border border-1 rounded-1" ></a></td><td data-type="btn"><button class="btn btn-sm btn-secondary" onclick="el(\'btn-spin-img\').value=\'' +
           ajax_object.theme_uri +
           "/assets/buttons/" +
-          qq[qt] +
-          "';el('btn-spin-label').value='';el('btn_wheel_setting').click();\">Nút Quay</button></td><td>\u2217</td></tr>";
+          v330[v332] +
+          "';el('btn-spin-label').value='';el('btn_wheel_setting').click();\">Nút Quay</button></td><td>∗</td></tr>";
       }
-      el("mediaBody").insertAdjacentHTML("beforeend", qs);
+      el("mediaBody").insertAdjacentHTML("beforeend", v331);
+      var v333 = [];
       fetch("/backgrounds.txt?cachebuster=" + new Date().getTime())
-        .then((qv) => qv.text())
-        .then((qw) => {
-          const qx = qw.split("\n").map((qy) => qy.trim());
-          var qz = "";
-          for (var rb = 0; rb < qx.length; rb++) {
-            qz +=
-              "<tr><td>" +
-              (qm + rb + 1) +
+        .then((p63) => p63.text())
+        .then((p64) => {
+          const v334 = p64.split("\n").map((p65) => p65.trim());
+          var v335 = "";
+          for (var v336 = 0; v336 < v334.length; v336++) {
+            v335 +=
+              '<tr><td><span class="badge bg-secondary">' +
+              (v325 + v336 + 1) +
+              '</span></td><td class="small">' +
+              v334[v336].slice(0, -4) +
               '</td><td><a href="' +
               ajax_object.theme_uri +
               "/assets/background/" +
-              qx[rb] +
+              v334[v336] +
               '" title="Ảnh sẽ được mở trong tab mới" target="_blank"><img src="' +
               ajax_object.theme_uri +
               "/assets/background/" +
-              qx[rb] +
+              v334[v336] +
               '" width="50" heigh="50" class="border border-1 rounded-1" ></a></td><td data-type="bgr"><button class="btn btn-sm btn-secondary" onclick="el(\'custom-bg-img\').value=\'' +
               ajax_object.theme_uri +
               "/assets/background/" +
-              qx[rb] +
-              "';el('btn_wheel_setting').click();\">Nền</button></td><td>\u2217</td></tr>";
+              v334[v336] +
+              "';el('btn_wheel_setting').click();\">Nền</button></td><td>∗</td></tr>";
           }
-          el("mediaBody").insertAdjacentHTML("beforeend", qz);
+          el("mediaBody").insertAdjacentHTML("beforeend", v335);
         })
-        .catch((rc) => {
-          console.error("Lỗi đọc file backgrounds.txt:", rc);
+        .catch((p66) => {
+          console.error("Lỗi đọc file backgrounds.txt:", p66);
         });
     })
-    .catch((rd) => {
-      console.error("Lỗi đọc file buttons.txt:", rd);
+    .catch((p67) => {
+      console.error("Lỗi đọc file buttons.txt:", p67);
     });
-  ql += "</tbody></table></div>";
-  el("uploaded-list").innerHTML = ql;
+  v324 += "</tbody></table></div>";
+  el("uploaded-list").innerHTML = v324;
   feather.replace();
 }
-
-function removeUploaded(re) {
-  if (re) {
+function removeUploaded(p68) {
+  if (p68) {
     if (localStorage.getItem("uploadedList")) {
-      var rf = JSON.parse(localStorage.getItem("uploadedList"));
-      if (rf.length) {
-        var rg = rf.indexOf(re);
-        if (rg !== -1) {
-          rf.splice(rg, 1);
-          localStorage.setItem("uploadedList", JSON.stringify(rf));
+      var v337 = JSON.parse(localStorage.getItem("uploadedList"));
+      if (v337.length) {
+        var v338 = v337.indexOf(p68);
+        if (v338 !== -1) {
+          v337.splice(v338, 1);
+          localStorage.setItem("uploadedList", JSON.stringify(v337));
         }
       }
     }
   }
 }
-
-function filter_media(rh) {
-  var ri;
-  var rj;
-  var rk;
-  var rl;
-  var rm;
-  ri = el("media");
-  rj = ri.getElementsByTagName("tr");
-  for (rl = 0; rl < rj.length; rl++) {
-    rk = rj[rl].getElementsByTagName("td")[2];
-    if (rk) {
-      rm = rk.dataset.type;
-      if (rh == "all") {
-        rj[rl].style.display = "";
-      } else {
-        if (rm == rh) {
-          rj[rl].style.display = "";
+function filter_media(p69) {
+  var v339;
+  var v340;
+  var v341;
+  var v342;
+  var v343;
+  var v344;
+  var v345;
+  var v346;
+  v339 = el("media");
+  v340 = v339.getElementsByTagName("tr");
+  v346 = el("media_kw").value.toUpperCase();
+  for (v344 = 1; v344 < v340.length; v344++) {
+    v342 = v340[v344].getElementsByTagName("td")[1];
+    v341 = v340[v344].getElementsByTagName("td")[3];
+    v343 = v342.textContent || v342.innerText;
+    if (v341) {
+      v345 = v341.dataset.type;
+      if (p69 == "all") {
+        if (v343.toUpperCase().indexOf(v346) > -1) {
+          v340[v344].style.display = "";
         } else {
-          rj[rl].style.display = "none";
+          v340[v344].style.display = "none";
         }
+      } else if (v345 == p69) {
+        if (v343.toUpperCase().indexOf(v346) > -1) {
+          v340[v344].style.display = "";
+        } else {
+          v340[v344].style.display = "none";
+        }
+      } else {
+        v340[v344].style.display = "none";
       }
     }
   }
 }
-
+function searhMedia() {
+  let v347 = document.querySelector('input[name="filter_media"]:checked');
+  if (v347) {
+    filter_media(v347.value);
+  }
+}
 function openTemplateForm() {
-  var rn = new bootstrap.Modal(el("modalTemplate"), {
+  var v348 = new bootstrap.Modal(el("modalTemplate"), {
     backdrop: true,
   });
-  rn.show();
+  v348.show();
 }
-
 function countEntries() {
-  var ro = getWheelSettingInArray();
-  if (ro) {
-    var rp = ro.entries;
-    el("entries_count").textContent = rp.length;
+  var vGetWheelSettingInArray7 = getWheelSettingInArray();
+  if (vGetWheelSettingInArray7) {
+    var v349 = vGetWheelSettingInArray7.entries;
+    el("entries_count").textContent = v349.length;
   }
 }
-
 function clearResult() {
   el("wheel_result").innerHTML = "";
   el("result_count").textContent = 0;
 }
-
 function sortResult() {
-  var rq = getSectorItem(el("sector_list").innerHTML);
-  if (rq && rq.length) {
-    rq.sort();
-    var rr = "";
-    for (var rs = rq.length - 1; rs >= 0; rs--) {
-      rr += "<div>" + rq[rs] + "</div>";
+  var vGetSectorItem3 = getSectorItem(el("sector_list").innerHTML);
+  if (vGetSectorItem3 && vGetSectorItem3.length) {
+    vGetSectorItem3.sort();
+    var v350 = "";
+    for (var v351 = vGetSectorItem3.length - 1; v351 >= 0; v351--) {
+      v350 += "<div>" + vGetSectorItem3[v351] + "</div>";
     }
-    el("wheel_result").innerHTML = rr;
+    el("wheel_result").innerHTML = v350;
   }
 }
-
 function fullscreen() {
   if (document.querySelector(".toggle-link").classList.contains("is-showen")) {
     document.querySelector(".toggle-link>a").click();
@@ -2306,13 +2180,11 @@ function fullscreen() {
   document.querySelector(".fullscreen-link").classList.add("d-none");
   document.querySelector(".exit-fullscreen-link").classList.remove("d-none");
 }
-
 function exitFullscreen() {
   triggerExitFullscreen();
   setTimeout(closeFullscreen, 1000);
 }
 document.addEventListener("fullscreenchange", closeFullscreen, false);
-
 function closeFullscreen() {
   if (
     !document.fullscreenElement &&
@@ -2348,80 +2220,77 @@ if (el("show_border")) {
     }
   });
 }
-
 function resetWheel() {
   localStorage.removeItem("wheelSetting" + extra_name);
   location.reload();
 }
-
-function resizeImage(ru) {
-  return new Promise((rv, rw) => {
-    const rx = new Image();
-    const ry = new FileReader();
-    ry.onload = function (rz) {
-      rx.src = rz.target.result;
+function resizeImage(p70) {
+  return new Promise((p71, p72) => {
+    const v352 = new Image();
+    const v353 = new FileReader();
+    v353.onload = function (p73) {
+      v352.src = p73.target.result;
     };
-    rx.onload = function () {
-      const sa = document.createElement("canvas");
-      const sb = sa.getContext("2d");
-      let sc = rx.width;
-      let sd = rx.height;
-      if (sc > sd) {
-        if (sc > 200) {
-          sd = Math.round((sd *= 200 / sc));
-          sc = 200;
+    v352.onload = function () {
+      const v354 = document.createElement("canvas");
+      const v355 = v354.getContext("2d");
+      const v356 = 200;
+      let v357 = v352.width;
+      let v358 = v352.height;
+      if (v357 > v358) {
+        if (v357 > v356) {
+          v358 = Math.round((v358 *= v356 / v357));
+          v357 = v356;
         }
-      } else {
-        if (sd > 200) {
-          sc = Math.round((sc *= 200 / sd));
-          sd = 200;
-        }
+      } else if (v358 > v356) {
+        v357 = Math.round((v357 *= v356 / v358));
+        v358 = v356;
       }
-      sa.width = sc;
-      sa.height = sd;
-      sb.drawImage(rx, 0, 0, sc, sd);
-      const se = sa.toDataURL("image/png");
-      rv(se);
+      v354.width = v357;
+      v354.height = v358;
+      v355.drawImage(v352, 0, 0, v357, v358);
+      const v359 = v354.toDataURL("image/png");
+      p71(v359);
     };
-    rx.onerror = rw;
-    ry.readAsDataURL(ru);
+    v352.onerror = p72;
+    v353.readAsDataURL(p70);
   });
 }
 if (el("inputImage")) {
-  el("inputImage").addEventListener("change", function (sf) {
-    const sg = sf.target.files;
-    const sh = [];
-    const si = [];
-    if (!sg.length) {
+  el("inputImage").addEventListener("change", function (p74) {
+    const v360 = p74.target.files;
+    const v361 = [];
+    const v362 = [];
+    if (!v360.length) {
       return;
     }
-    var sj = 0;
+    var v363 = 0;
     if (el("is_advance").checked) {
-      sj = 1;
+      v363 = 1;
     }
-    var sk = el("extra_name").value;
-    var sl = localStorage.getItem("wheelSetting" + sk);
-    var sn = null;
-    if (sl) {
-      var so = JSON.parse(sl);
-      sn = so.entries;
+    var v364 = el("extra_name").value;
+    var v365 = localStorage.getItem("wheelSetting" + v364);
+    var v366 = null;
+    if (v365) {
+      var v367 = JSON.parse(v365);
+      v366 = v367.entries;
     }
-    var sp = sn.length;
-    if (sj == 1) {
-      var sq = getCurrentStyleColor();
-      var sr = parseInt(sq.length);
-      for (let st = 0; st < sg.length; st++) {
-        si.push(
-          resizeImage(sg[st]).then((su) => {
-            sh.push(su);
-            sn.push({
+    var v368 = v366.length;
+    if (v363 == 1) {
+      var vGetCurrentStyleColor2 = getCurrentStyleColor();
+      var vParseInt4 = parseInt(vGetCurrentStyleColor2.length);
+      for (let v369 = 0; v369 < v360.length; v369++) {
+        v362.push(
+          resizeImage(v360[v369]).then((p75) => {
+            v361.push(p75);
+            v366.push({
               text: "",
-              id: sp,
-              color: sq[sp % sr],
-              image: su,
+              id: v368,
+              color: vGetCurrentStyleColor2[v368 % vParseInt4],
+              image: p75,
             });
-            sp++;
-            fillEntries(sn, sj);
+            v368++;
+            fillEntries(v366, v363);
             setTimeout(function () {
               loadWheel();
             }, 500);
@@ -2429,17 +2298,17 @@ if (el("inputImage")) {
         );
       }
     } else {
-      for (let sv = 0; sv < sg.length; sv++) {
-        si.push(
-          resizeImage(sg[sv]).then((sw) => {
-            sh.push(sw);
-            sn.push({
+      for (let v370 = 0; v370 < v360.length; v370++) {
+        v362.push(
+          resizeImage(v360[v370]).then((p76) => {
+            v361.push(p76);
+            v366.push({
               text: "",
-              id: sp,
-              image: sw,
+              id: v368,
+              image: p76,
             });
-            sp++;
-            fillEntries(sn, sj);
+            v368++;
+            fillEntries(v366, v363);
             setTimeout(function () {
               loadWheel();
             }, 500);
@@ -2449,265 +2318,262 @@ if (el("inputImage")) {
     }
   });
 }
-
-function handleImageUpload(sx) {
-  const sy = el("item-upload-" + sx).files[0];
-  if (sy) {
-    resizeImage(sy)
-      .then((sz) => {
-        var ta = getWheelSettingInArray();
-        var tb = null;
-        if (ta) {
-          tb = ta.entries;
+function handleImageUpload(p77) {
+  const v371 = el("item-upload-" + p77).files[0];
+  if (v371) {
+    resizeImage(v371)
+      .then((p78) => {
+        var vGetWheelSettingInArray8 = getWheelSettingInArray();
+        var v372 = null;
+        if (vGetWheelSettingInArray8) {
+          v372 = vGetWheelSettingInArray8.entries;
         }
-        if (tb.length) {
-          for (var tc = 0; tc < tb.length; tc++) {
-            if (tb[tc].id == sx) {
-              tb[tc].image = sz;
+        if (v372.length) {
+          for (var v373 = 0; v373 < v372.length; v373++) {
+            if (v372[v373].id == p77) {
+              v372[v373].image = p78;
             }
           }
         }
-        fillEntries(tb, 1);
+        fillEntries(v372, 1);
         setTimeout(function () {
           loadWheel();
         }, 500);
       })
-      .catch((te) => {
-        console.error("Error resizing image:", te);
+      .catch((p79) => {
+        console.error("Error resizing image:", p79);
       });
   }
 }
-
-function configItem(tf) {
-  var tg = getWheelSettingInArray();
-  var tj = el("item-text-" + tf).value;
-  var tk = el("item-sound-" + tf).value;
-  var tl = removeAllUrl(el("item-message-" + tf).value);
-  var tm = parseInt(el("item-weight-" + tf).value);
-  var tn = el("item-color-" + tf).value;
-  var tp = document.querySelector("#item-img-" + tf + ">img");
-  var tq = tg.entries;
-  var ts = tq.reduce((tt, tu) => tt + tu.weight, 0);
-  var tv = tq.map((tw) => Math.round((tw.weight / ts) * 100));
-  var tx = tv[tf];
-  var ty = "";
-  ty += '<div class="d-flex justify-content-between mb-3">';
-  ty += "<div>";
-  if (tf > 0) {
-    ty +=
+function configItem(p80) {
+  var vGetWheelSettingInArray9 = getWheelSettingInArray();
+  var v374 = el("item-text-" + p80).value;
+  var v375 = el("item-sound-" + p80).value;
+  var vRemoveAllUrl = removeAllUrl(el("item-message-" + p80).value);
+  var vParseInt5 = parseInt(el("item-weight-" + p80).value);
+  var v376 = el("item-color-" + p80).value;
+  var v377 = document.querySelector("#item-img-" + p80 + ">img");
+  var v378 = vGetWheelSettingInArray9.entries;
+  var v379 = v378.reduce((p81, p82) => p81 + p82.weight, 0);
+  var v380 = v378.map((p83) => Math.round((p83.weight / v379) * 100));
+  var v381 = v380[p80];
+  var v382 =
+    '<span data-feather="sliders" style="width:24px;heigh:24px;"></span> Nâng cao';
+  var v383 = "";
+  v383 += '<div class="d-flex justify-content-between mb-3">';
+  v383 += "<div>";
+  if (p80 > 0) {
+    v383 +=
       '<button class="btn btn-sm btn-secondary" data-bs-dismiss="modal" title="Mục trước" onClick="configItem(' +
-      (tf - 1) +
+      (p80 - 1) +
       ')"><span data-feather="chevron-left"></span></button> ';
   } else {
-    ty +=
+    v383 +=
       '<button class="btn btn-sm btn-secondary" disabled><span data-feather="chevron-left"></span></button> ';
   }
-  ty += '<span class="mx-2">Mục ' + (tf + 1) + "/" + tq.length + "</span>";
-  if (tf < tq.length - 1) {
-    ty +=
+  v383 += '<span class="mx-2">Mục ' + (p80 + 1) + "/" + v378.length + "</span>";
+  if (p80 < v378.length - 1) {
+    v383 +=
       '<button class="btn btn-sm btn-secondary" title="Mục tiếp theo" data-bs-dismiss="modal" onClick="configItem(' +
-      (tf + 1) +
+      (p80 + 1) +
       ')"><span data-feather="chevron-right"></span></button>';
   } else {
-    ty +=
+    v383 +=
       '<button class="btn btn-sm btn-secondary" disabled><span data-feather="chevron-right"></span></button>';
   }
-  ty += "</div>";
-  ty +=
+  v383 += "</div>";
+  v383 +=
     '<div><button class="btn btn-sm btn-secondary" title="Thêm mục mới" data-bs-dismiss="modal" onClick="addRow(); configItem(' +
-    tq.length +
+    v378.length +
     ');"><span data-feather="plus"></span></button></div>';
-  ty += "</div>";
-  ty += '<hr class="border border-secondary border-1"></div>';
-  ty += '<div class="row mb-3">';
-  ty +=
+  v383 += "</div>";
+  v383 += '<hr class="border border-secondary border-1"></div>';
+  v383 += '<div class="row mb-3">';
+  v383 +=
     '<div class="col-4"><label for="cfg-text-' +
-    tf +
+    p80 +
     '" class="form-label">Tên mục</label></div>';
-  ty +=
+  v383 +=
     '<div class="col-8"><input type="text" class="form-control bg-light" placeholder="Tên mục" value="' +
-    tj +
+    v374 +
     '" id="cfg-text-' +
-    tf +
+    p80 +
     '"></div>';
-  ty += "</div>";
-  ty += '<div class="row mb-3">';
-  ty +=
+  v383 += "</div>";
+  v383 += '<div class="row mb-3">';
+  v383 +=
     '<div class="col-4"><label for="cfg-color-' +
-    tf +
+    p80 +
     '" class="form-label">Màu</label></div>';
-  ty += '<div class="col-8">';
-  ty += '<div class="d-flex justify-content-between">';
-  ty +=
+  v383 += '<div class="col-8">';
+  v383 += '<div class="d-flex justify-content-between">';
+  v383 +=
     '<div class="p-2"><input type="color" value="' +
-    tn +
+    v376 +
     '" id="cfg-color-' +
-    tf +
+    p80 +
     '"></div>';
-  if (tp) {
-    ty += '<div class="position-relative" id="cfg-img-wrap-' + tf + '">';
-    ty +=
+  if (v377) {
+    v383 += '<div class="position-relative" id="cfg-img-wrap-' + p80 + '">';
+    v383 +=
       '<span class="cfg-img" id="cfg-img-' +
-      tf +
+      p80 +
       '"><img src="' +
-      tp.src +
+      v377.src +
       '" width="150" ></span>';
-    ty +=
+    v383 +=
       '<span class="position-absolute top-0 end-0 cfg-img-remove" onclick="configRemoveImg(' +
-      tf +
+      p80 +
       ');">&times;</span>';
-    ty += "</div>";
-    ty +=
+    v383 += "</div>";
+    v383 +=
       '<div class="p-2 d-none" id="cfg-upload-wrap-' +
-      tf +
+      p80 +
       '"><label class="btn btn-secondary" for="cfg-upload-' +
-      tf +
+      p80 +
       '"><span data-feather="image"></span></label> <input type="file" class="cfg-upload d-none" id="cfg-upload-' +
-      tf +
+      p80 +
       '" onchange="configImageUpload(' +
-      tf +
+      p80 +
       ');" accept="image/png, image/gif, image/jpeg" ></div>';
-    ty += "</div>";
+    v383 += "</div>";
   } else {
-    ty += '<div class="position-relative d-none" id="cfg-img-wrap-' + tf + '">';
-    ty += '<span class="cfg-img" id="cfg-img-' + tf + '"></span>';
-    ty +=
+    v383 +=
+      '<div class="position-relative d-none" id="cfg-img-wrap-' + p80 + '">';
+    v383 += '<span class="cfg-img" id="cfg-img-' + p80 + '"></span>';
+    v383 +=
       '<span class="position-absolute top-0 end-0 cfg-img-remove" onclick="configRemoveImg(' +
-      tf +
+      p80 +
       ');">&times;</span>';
-    ty += "</div>";
-    ty +=
+    v383 += "</div>";
+    v383 +=
       '<div class="p-2" id="cfg-upload-wrap-' +
-      tf +
+      p80 +
       '"><label class="btn btn-secondary" for="cfg-upload-' +
-      tf +
+      p80 +
       '"><span data-feather="image"></span></label> <input type="file" class="cfg-upload d-none" id="cfg-upload-' +
-      tf +
+      p80 +
       '" onchange="configImageUpload(' +
-      tf +
+      p80 +
       ');" accept="image/png, image/gif, image/jpeg" ></div>';
-    ty += "</div>";
+    v383 += "</div>";
   }
-  ty += "</div>";
-  ty += "</div>";
-  ty += "</div>";
-  ty += '<div class="row row-3 mb-3">';
-  ty += '<div class="col-4">Âm thanh</div>';
-  ty += '<div class="col-8">';
-  ty += '<div class="input-group">';
-  ty += '<select class="form-select" id="cfg-sound-' + tf + '">';
-  ty += '<option value="">Kế thừa từ cài đặt chung</option>';
-  var tz = "";
-  Object.keys(end_sound_option).forEach((ua) => {
-    if (ua === tk) {
-      tz = "selected";
+  v383 += "</div>";
+  v383 += "</div>";
+  v383 += "</div>";
+  v383 += '<div class="row row-3 mb-3">';
+  v383 += '<div class="col-4">Âm thanh</div>';
+  v383 += '<div class="col-8">';
+  v383 += '<div class="input-group">';
+  v383 += '<select class="form-select" id="cfg-sound-' + p80 + '">';
+  v383 += '<option value="">Kế thừa từ cài đặt chung</option>';
+  var v384 = "";
+  Object.keys(end_sound_option).forEach((p84) => {
+    if (p84 === v375) {
+      v384 = "selected";
     }
-    ty +=
+    v383 +=
       '<option value="' +
-      ua +
+      p84 +
       '" ' +
-      tz +
+      v384 +
       " >" +
-      end_sound_option[ua] +
+      end_sound_option[p84] +
       "</option>";
-    tz = "";
+    v384 = "";
   });
-  ty += "</select>";
-  ty +=
+  v383 += "</select>";
+  v383 +=
     '<button class="btn btn-outline-secondary" id="cfg-sound-play" onClick="triggerAudio(el(\'cfg-sound-' +
-    tf +
+    p80 +
     "').value,'play');\"><span data-feather=\"play\"></span></button>";
-  ty +=
+  v383 +=
     '<button class="btn btn-outline-secondary" id="cfg-sound-stop" onClick="triggerAudio(el(\'cfg-sound-' +
-    tf +
+    p80 +
     "').value,'stop');\"><span data-feather=\"square\"></span></button>";
-  ty += "</div>";
-  ty += "</div>";
-  ty += "</div>";
-  ty += '<div class="row row-4 mb-3">';
-  ty += '<div class="col-4">Tiêu đề Popup</div>';
-  ty += '<div class="col-8">';
-  ty +=
+  v383 += "</div>";
+  v383 += "</div>";
+  v383 += "</div>";
+  v383 += '<div class="row row-4 mb-3">';
+  v383 += '<div class="col-4">Tiêu đề Popup</div>';
+  v383 += '<div class="col-8">';
+  v383 +=
     '<input type="text" class="form-control bg-light" id="cfg-message-' +
-    tf +
+    p80 +
     '" placeholder="' +
     el("popup_label").value +
     '" value="' +
-    tl +
+    vRemoveAllUrl +
     '" >';
-  ty += "</div>";
-  ty += "</div>";
-  ty += '<div class="row row-4 mb-3">';
-  ty += '<div class="col-4">Trọng số</div>';
-  ty += '<div class="col-8">';
-  ty +=
+  v383 += "</div>";
+  v383 += "</div>";
+  v383 += '<div class="row row-4 mb-3">';
+  v383 += '<div class="col-4">Trọng số</div>';
+  v383 += '<div class="col-8">';
+  v383 +=
     '<div class="input-group"><input type="text" class="form-control bg-light numberonly" onkeyup="configWeight(' +
-    tf +
+    p80 +
     ",'');\" onblur=\"if(this.value=='') this.value='" +
-    tm +
+    vParseInt5 +
     "';configWeight(" +
-    tf +
+    p80 +
     ",'');\" id=\"cfg-weight-" +
-    tf +
+    p80 +
     '" value="' +
-    tm +
+    vParseInt5 +
     '" ><button class="btn btn-sm bg-light" onClick="configWeight(' +
-    tf +
+    p80 +
     ',\'minus\');" style="border: 1px solid #ced4da;color:#212529;"><span data-feather="minus"></span></button><button class="btn btn-sm bg-light" onClick="configWeight(' +
-    tf +
+    p80 +
     ',\'plus\');" style="border: 1px solid #ced4da;color:#212529;"><span data-feather="plus"></span></button> <span class="input-group-text"><span id="cfg-percent-' +
-    tf +
+    p80 +
     '">' +
-    tx +
+    v381 +
     "</span>%</span></div>";
-  ty += "</div>";
-  ty += "</div>";
-  var ub =
+  v383 += "</div>";
+  v383 += "</div>";
+  var v385 =
     '<a class="text-decoration-none" data-bs-dismiss="modal">Bỏ qua</a> <button class="btn btn-primary" id="btn-cfg-update-' +
-    tf +
+    p80 +
     '" onclick="configItemUpdate(' +
-    tf +
+    p80 +
     ');">Cập nhật</button>';
-  el("modal-title").innerHTML =
-    '<span data-feather="sliders" style="width:24px;heigh:24px;"></span> Nâng cao';
-  el("modal-body").innerHTML = ty;
-  el("modal-footer").innerHTML = ub;
+  el("modal-title").innerHTML = v382;
+  el("modal-body").innerHTML = v383;
+  el("modal-footer").innerHTML = v385;
   feather.replace();
-  var uc = new bootstrap.Modal(el("myModal"), {
+  var v386 = new bootstrap.Modal(el("myModal"), {
     backdrop: true,
   });
-  uc.show();
+  v386.show();
   numberOnly();
 }
-
-function configWeight(ud, ue) {
-  if (el("cfg-weight-" + ud).value.trim() !== "") {
-    var uf = getWheelSettingInArray();
-    var ug = parseInt(el("cfg-weight-" + ud).value.trim());
-    if (ug <= 0) {
-      ug = 1;
-      el("cfg-weight-" + ud).value = 1;
+function configWeight(p85, p86) {
+  if (el("cfg-weight-" + p85).value.trim() !== "") {
+    var vGetWheelSettingInArray10 = getWheelSettingInArray();
+    var vParseInt6 = parseInt(el("cfg-weight-" + p85).value.trim());
+    if (vParseInt6 <= 0) {
+      vParseInt6 = 1;
+      el("cfg-weight-" + p85).value = 1;
     }
-    if (uf) {
-      var uh = uf.entries;
-      if (uh.length) {
-        var ui = uh.reduce((uj, uk) => uj + uk.weight, 0);
-        var um = uh.map((un) => Math.round((un.weight / ui) * 100));
-        var uo = um[ud];
-        var uq = ui - uh[ud].weight;
-        for (var ur = 0; ur < uh.length; ur++) {
-          if (uh[ur].id == ud) {
-            if (ue == "plus") {
-              el("cfg-weight-" + ud).value = ug + 1;
-            } else {
-              if (ue == "minus" && ug > 1) {
-                el("cfg-weight-" + ud).value = ug - 1;
-              }
+    if (vGetWheelSettingInArray10) {
+      var v387 = vGetWheelSettingInArray10.entries;
+      if (v387.length) {
+        var v388 = v387.reduce((p87, p88) => p87 + p88.weight, 0);
+        var v389 = v387.map((p89) => Math.round((p89.weight / v388) * 100));
+        var v390 = v389[p85];
+        var v391 = v388 - v387[p85].weight;
+        for (var v392 = 0; v392 < v387.length; v392++) {
+          if (v387[v392].id == p85) {
+            if (p86 == "plus") {
+              el("cfg-weight-" + p85).value = vParseInt6 + 1;
+            } else if (p86 == "minus" && vParseInt6 > 1) {
+              el("cfg-weight-" + p85).value = vParseInt6 - 1;
             }
-            ug = parseInt(el("cfg-weight-" + ud).value);
-            uq += ug;
-            uo = Math.round((ug / uq) * 100);
-            el("cfg-percent-" + ud).textContent = uo;
+            vParseInt6 = parseInt(el("cfg-weight-" + p85).value);
+            v391 += vParseInt6;
+            v390 = Math.round((vParseInt6 / v391) * 100);
+            el("cfg-percent-" + p85).textContent = v390;
             break;
           }
         }
@@ -2715,131 +2581,124 @@ function configWeight(ud, ue) {
     }
   }
 }
-
-function configImageUpload(us) {
-  const ut = el("cfg-upload-" + us).files[0];
-  if (ut) {
-    resizeImage(ut)
-      .then((uu) => {
-        el("cfg-img-" + us).innerHTML = '<img src="' + uu + '" width="150" >';
-        el("cfg-img-wrap-" + us).classList.remove("d-none");
-        el("cfg-upload-wrap-" + us).classList.add("d-none");
+function configImageUpload(p90) {
+  const v393 = el("cfg-upload-" + p90).files[0];
+  if (v393) {
+    resizeImage(v393)
+      .then((p91) => {
+        el("cfg-img-" + p90).innerHTML = '<img src="' + p91 + '" width="150" >';
+        el("cfg-img-wrap-" + p90).classList.remove("d-none");
+        el("cfg-upload-wrap-" + p90).classList.add("d-none");
       })
-      .catch((uv) => {
-        console.error("Error resizing image:", uv);
+      .catch((p92) => {
+        console.error("Error resizing image:", p92);
       });
   }
 }
-
-function configRemoveImg(uw) {
-  el("cfg-img-" + uw).innerHTML = "";
-  el("cfg-img-wrap-" + uw).classList.add("d-none");
-  el("cfg-upload-wrap-" + uw).classList.remove("d-none");
+function configRemoveImg(p93) {
+  el("cfg-img-" + p93).innerHTML = "";
+  el("cfg-img-wrap-" + p93).classList.add("d-none");
+  el("cfg-upload-wrap-" + p93).classList.remove("d-none");
 }
-
-function configItemUpdate(ux) {
-  var uy = el("cfg-text-" + ux).value;
-  var uz = el("cfg-color-" + ux).value;
-  var va = document.querySelector("#cfg-img-" + ux + ">img");
-  var vb = el("cfg-sound-" + ux).value;
-  var vc = parseInt(el("cfg-weight-" + ux).value);
-  var vd = removeAllUrl(el("cfg-message-" + ux).value);
-  el("btn-cfg-update-" + ux).textContent = "Cập nhật...";
-  var ve = getWheelSettingInArray();
-  var vf = null;
-  if (ve) {
-    vf = ve.entries;
+function configItemUpdate(p94) {
+  var v394 = el("cfg-text-" + p94).value;
+  var v395 = el("cfg-color-" + p94).value;
+  var v396 = document.querySelector("#cfg-img-" + p94 + ">img");
+  var v397 = el("cfg-sound-" + p94).value;
+  var vParseInt7 = parseInt(el("cfg-weight-" + p94).value);
+  var vRemoveAllUrl2 = removeAllUrl(el("cfg-message-" + p94).value);
+  el("btn-cfg-update-" + p94).textContent = "Cập nhật...";
+  var vGetWheelSettingInArray11 = getWheelSettingInArray();
+  var v398 = null;
+  if (vGetWheelSettingInArray11) {
+    v398 = vGetWheelSettingInArray11.entries;
   }
-  if (vc <= 0) {
-    vc = 1;
+  if (vParseInt7 <= 0) {
+    vParseInt7 = 1;
   }
-  if (vf.length) {
-    for (var vg = 0; vg < vf.length; vg++) {
-      if (vf[vg].id == ux) {
-        vf[vg].text = uy;
-        vf[vg].color = uz;
-        vf[vg].weight = vc;
-        if (va) {
-          vf[vg].image = va.src;
+  if (v398.length) {
+    for (var v399 = 0; v399 < v398.length; v399++) {
+      if (v398[v399].id == p94) {
+        v398[v399].text = v394;
+        v398[v399].color = v395;
+        v398[v399].weight = vParseInt7;
+        if (v396) {
+          v398[v399].image = v396.src;
         } else {
-          delete vf[vg].image;
+          delete v398[v399].image;
         }
-        if (vb) {
-          vf[vg].sound = vb;
+        if (v397) {
+          v398[v399].sound = v397;
         } else {
-          delete vf[vg].sound;
+          delete v398[v399].sound;
         }
-        if (vd) {
-          vf[vg].message = vd;
+        if (vRemoveAllUrl2) {
+          v398[v399].message = vRemoveAllUrl2;
         } else {
-          delete vf[vg].message;
+          delete v398[v399].message;
         }
         break;
       }
     }
   }
-  fillEntries(vf, 1);
+  fillEntries(v398, 1);
   setTimeout(function () {
     loadWheel();
-    el("btn-cfg-update-" + ux).textContent = "Cập nhật";
+    el("btn-cfg-update-" + p94).textContent = "Cập nhật";
   }, 500);
 }
-
 function fill100() {
-  var vh = [];
-  var vj = 0;
+  var v400 = [];
+  var v401 = 0;
   if (el("is_advance").checked) {
-    vj = 1;
+    v401 = 1;
   }
-  if (vj == 0) {
-    for (var vk = 0; vk < 100; vk++) {
-      vh.push({
-        text: (vk + 1).toString(),
-        id: vk,
+  if (v401 == 0) {
+    for (var v402 = 0; v402 < 100; v402++) {
+      v400.push({
+        text: (v402 + 1).toString(),
+        id: v402,
       });
     }
   } else {
-    var vl = getCurrentStyleColor();
-    for (var vk = 0; vk < 100; vk++) {
-      vh.push({
-        text: (vk + 1).toString(),
-        id: vk,
-        color: vl[vk % vl.length],
+    var vGetCurrentStyleColor3 = getCurrentStyleColor();
+    for (var v402 = 0; v402 < 100; v402++) {
+      v400.push({
+        text: (v402 + 1).toString(),
+        id: v402,
+        color: vGetCurrentStyleColor3[v402 % vGetCurrentStyleColor3.length],
       });
     }
   }
-  fillEntries(vh, vj);
+  fillEntries(v400, v401);
   loadWheel();
 }
-
 function showInfo() {
-  var vm = document.getElementsByClassName("toggle-show-hide");
-  for (var vo = 0; vo < vm.length; vo++) {
-    vm[vo].classList.remove("d-none");
+  var v403 = document.getElementsByClassName("toggle-show-hide");
+  for (var v404 = 0; v404 < v403.length; v404++) {
+    v403[v404].classList.remove("d-none");
   }
-  const vp = document.querySelectorAll("[data-dest]");
-  if (vp.length) {
-    vp.forEach((vq) => {
-      vq.classList.remove("d-none");
+  const v405 = document.querySelectorAll("[data-dest]");
+  if (v405.length) {
+    v405.forEach((p95) => {
+      p95.classList.remove("d-none");
     });
   }
   el("wheel-center").classList.remove("w-100");
 }
-
 function hideInfo() {
-  var vr = document.getElementsByClassName("toggle-show-hide");
-  for (var vs = 0; vs < vr.length; vs++) {
-    vr[vs].classList.add("d-none");
+  var v406 = document.getElementsByClassName("toggle-show-hide");
+  for (var v407 = 0; v407 < v406.length; v407++) {
+    v406[v407].classList.add("d-none");
   }
-  const vt = document.querySelectorAll("[data-dest]");
-  if (vt.length) {
-    vt.forEach((vu) => {
-      vu.classList.add("d-none");
+  const v408 = document.querySelectorAll("[data-dest]");
+  if (v408.length) {
+    v408.forEach((p96) => {
+      p96.classList.add("d-none");
     });
   }
   el("wheel-center").classList.add("w-100");
 }
-
 function hideTwentyTwentyThreeMenu() {
   if (
     document.querySelector(".wp-block-navigation__responsive-container-close")
@@ -2850,258 +2709,254 @@ function hideTwentyTwentyThreeMenu() {
     console.log("Đã ẩn menu");
   }
 }
-
-function addTextToWheel(vv) {
-  var vw = el(vv).textContent;
-  var vx = vw.split(",");
-  var vy = "";
-  var vz = "";
-  for (var wa = 0; wa < vx.length; wa++) {
-    vz = vx[wa].trim();
-    vy += "<div>" + vz + "</div>";
+function addTextToWheel(p97) {
+  var v409 = el(p97).textContent;
+  var v410 = v409.split(",");
+  var v411 = "";
+  var v412 = "";
+  for (var v413 = 0; v413 < v410.length; v413++) {
+    v412 = v410[v413].trim();
+    v411 += "<div>" + v412 + "</div>";
   }
-  el("sector_list").innerHTML = vy;
+  el("sector_list").innerHTML = v411;
   el("sector_list").dispatchEvent(new KeyboardEvent("keyup"));
   el("sector_list").scrollIntoView();
 }
-
 function showTitleDescForm() {
-  var wb = "";
-  var wc = "";
-  var wd = el("extra_name").value;
-  var we = localStorage.getItem("wheelSetting" + wd);
+  var v414 = "";
+  var v415 = "";
+  var v416 = el("extra_name").value;
+  var v417 = localStorage.getItem("wheelSetting" + v416);
   if (el("vqmm-title") || el("vqmm-desc")) {
     if (el("vqmm-title")) {
-      wb = el("vqmm-title").textContent;
+      v414 = el("vqmm-title").textContent;
     }
     if (el("vqmm-desc")) {
-      wc = el("vqmm-desc").textContent;
+      v415 = el("vqmm-desc").textContent;
     }
-  } else {
-    if (we !== null) {
-      var wf = JSON.parse(we);
-      wb = wf.title;
-      wc = wf.desc;
-    }
+  } else if (v417 !== null) {
+    var v418 = JSON.parse(v417);
+    v414 = v418.title;
+    v415 = v418.desc;
   }
   el("modal-title").innerHTML =
     '<span style="width: 30px;heigh:30px;vertical-align: middle;" data-feather="edit"></span> Sửa tiêu đề và mô tả';
   el("modal-body").innerHTML =
     '<div class="mb-3"><label for="editTitle" class="form-label">Tiêu đề</label><input type="text" class="form-control" value="' +
-    wb +
+    v414 +
     '" data-maxlength="60" id="editTitle" placeholder="Tiêu đề vòng quay"></div><div class="mb-3"><label for="editDesc" class="form-label">Mô tả</label><textarea class="form-control" id="editDesc" placeholder="Mô tả vòng quay"  data-maxlength="160" rows="3">' +
-    wc +
+    v415 +
     "</textarea></div>";
   el("modal-footer").innerHTML =
     '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button><button type="button" id="saveTitleDesc" onclick="saveTitleDesc()" class="btn btn-primary" data-bs-dismiss="modal">Lưu lại</button>';
   feather.replace();
-  var wg = new bootstrap.Modal(el("myModal"), {
+  var v419 = new bootstrap.Modal(el("myModal"), {
     backdrop: true,
   });
-  wg.show();
+  v419.show();
   startLimitCharacters();
 }
-
 function saveTitleDesc() {
-  var wh = el("editTitle").value;
-  var wi = el("editDesc").value;
-  var wj = el("extra_name").value;
-  var wk = localStorage.getItem("wheelSetting" + wj);
-  if (wk) {
-    var wl = JSON.parse(wk);
-    wl.title = wh;
-    wl.desc = wi;
-    localStorage.setItem("wheelSetting" + wj, JSON.stringify(wl));
+  var v420 = el("editTitle").value;
+  var v421 = el("editDesc").value;
+  var v422 = el("extra_name").value;
+  var v423 = localStorage.getItem("wheelSetting" + v422);
+  if (v423) {
+    var v424 = JSON.parse(v423);
+    v424.title = v420;
+    v424.desc = v421;
+    localStorage.setItem("wheelSetting" + v422, JSON.stringify(v424));
   }
-  fillTitleDesc(wh, wi);
+  fillTitleDesc(v420, v421);
 }
-
-function fillTitleDesc(wm, wn) {
-  var wo =
+function fillTitleDesc(p98, p99) {
+  var v425 =
     '<div class="wp-block-heading has-x-large-font-size toggle-show-hide" id="vqmm-title">' +
-    wm +
+    p98 +
     "</div>";
-  wo += '<p class="toggle-show-hide" id="vqmm-desc">' + wn + "</p>";
-  el("vqmm-content").innerHTML = wo;
+  v425 += '<p class="toggle-show-hide" id="vqmm-desc">' + p99 + "</p>";
+  el("vqmm-content").innerHTML = v425;
 }
-
-function fillEntries(wq, wr) {
-  if (wr == 0) {
-    var ws = "";
-    var wt = "";
-    if (wq.length) {
-      for (var wu = 0; wu < wq.length; wu++) {
-        if (wq[wu].hasOwnProperty("image")) {
-          wt = ' <img src="' + wq[wu].image + '" >';
+function fillEntries(p100, p101) {
+  if (p101 == 0) {
+    var v426 = "";
+    var v427 = "";
+    if (p100.length) {
+      for (var v428 = 0; v428 < p100.length; v428++) {
+        if (p100[v428].hasOwnProperty("image")) {
+          v427 = ' <img src="' + p100[v428].image + '" >';
         }
-        ws += "<div>" + wq[wu].text + wt + "</div>";
-        wt = "";
+        v426 += "<div>" + p100[v428].text + v427 + "</div>";
+        v427 = "";
       }
     }
-    el("sector_list").innerHTML = ws;
+    el("sector_list").innerHTML = v426;
   } else {
-    var ws = '<div class="scrollarea" id="scrollarea">';
-    var wv = 0;
-    var ww = "";
-    var wx = "";
-    var wy = "";
-    var wz = "";
-    var xa = 0;
-    if (wq.length) {
-      var xb = wq.reduce((xc, xd) => xc + xd.weight, 0);
-      var xe = wq.map((xf) => Math.round((xf.weight / xb) * 100));
-      for (var wu = 0; wu < wq.length; wu++) {
-        wv = wu;
-        wq[wu].id = wu;
-        wz = "";
-        if (!wq[wu].hasOwnProperty("weight")) {
-          wq[wu].weight = 1;
+    var v426 = '<div class="scrollarea" id="scrollarea">';
+    var v429 = 0;
+    var v430 = "";
+    var v431 = "";
+    var v432 = "";
+    var v433 = "";
+    var v434 = 0;
+    if (p100.length) {
+      var v435 = p100.reduce((p102, p103) => p102 + p103.weight, 0);
+      var v436 = p100.map((p104) => Math.round((p104.weight / v435) * 100));
+      for (var v428 = 0; v428 < p100.length; v428++) {
+        v429 = v428;
+        p100[v428].id = v428;
+        v433 = "";
+        if (!p100[v428].hasOwnProperty("weight")) {
+          p100[v428].weight = 1;
         }
-        if (wq[wu].hasOwnProperty("sound")) {
-          wx = wq[wu].sound;
+        if (p100[v428].hasOwnProperty("sound")) {
+          v431 = p100[v428].sound;
         }
-        if (wq[wu].hasOwnProperty("message")) {
-          ww = wq[wu].message;
+        if (p100[v428].hasOwnProperty("message")) {
+          v430 = p100[v428].message;
         }
-        if (wq[wu].hasOwnProperty("image")) {
-          wy = wq[wu].image;
+        if (p100[v428].hasOwnProperty("image")) {
+          v432 = p100[v428].image;
         }
-        if (wv == wq[0].id) {
-          wz += "row-first";
+        if (v429 == p100[0].id) {
+          v433 += "row-first";
         }
-        xa = xe[wu];
-        if (wv == wq[wq.length - 1].id) {
-          wz += " row-last";
+        v434 = v436[v428];
+        if (v429 == p100[p100.length - 1].id) {
+          v433 += " row-last";
         }
-        ws +=
+        v426 +=
           '<div class="row row-item ' +
-          wz +
+          v433 +
           '" id="row-item-' +
-          wv +
+          v429 +
           '" data-id="' +
-          wv +
+          v429 +
           '">';
-        ws +=
+        v426 +=
           '<div class="col-1 d-flex flex-column justify-content-center movearea"><a href="javascript:void(0);" class="text-decoration-none text-secondary item-up" onclick="upDown(' +
-          wv +
-          ',\'up\');">\u2191</a><a href="javascript:void(0);" class="text-decoration-none text-secondary item-down" onclick="upDown(' +
-          wv +
-          ",'down');\">\u2193</a></div>";
-        ws += '<div class="col-9 rowarea">';
-        ws +=
+          v429 +
+          ',\'up\');">↑</a><a href="javascript:void(0);" class="text-decoration-none text-secondary item-down" onclick="upDown(' +
+          v429 +
+          ",'down');\">↓</a></div>";
+        v426 += '<div class="col-9 rowarea">';
+        v426 +=
           '<div class="mb-1 input-group"><span class="input-group-text">#' +
-          (wu + 1) +
+          (v428 + 1) +
           '</span><input type="text" class="form-control bg-light item-text" id="item-text-' +
-          wv +
+          v429 +
           '" value="' +
-          wq[wu].text +
+          p100[v428].text +
           '" placeholder="Tên mục"></div>';
-        ws += '<div class="d-flex align-items-center mb-3">';
-        ws +=
+        v426 += '<div class="d-flex align-items-center mb-3">';
+        v426 +=
           '<input type="color" class="me-1 item-color" id="item-color-' +
-          wv +
+          v429 +
           '"  value="' +
-          wq[wu].color +
+          p100[v428].color +
           '">';
-        if (wy) {
-          ws +=
+        if (v432) {
+          v426 +=
             '<div class="item-img position-relative me-1" id="item-img-' +
-            wv +
+            v429 +
             '"><img src="' +
-            wy +
+            v432 +
             '" width="30"> <span class="d-inline-block position-absolute top-0 end-0 item-img-remove" onclick="removeItemImage(' +
-            wv +
+            v429 +
             ');">&times;</span> </div>';
-          ws +=
+          v426 +=
             '<label class="me-1 d-none" for="item-upload-' +
-            wv +
+            v429 +
             '"><span data-feather="image"></span></label>';
         } else {
-          ws +=
+          v426 +=
             '<div class="item-img position-relative me-1 d-none" id="item-img-' +
-            wv +
+            v429 +
             '"></div>';
-          ws +=
+          v426 +=
             '<label class="me-1" for="item-upload-' +
-            wv +
+            v429 +
             '"><span data-feather="image"></span></label>';
         }
-        ws +=
+        v426 +=
           '<input type="file" class="item-upload d-none" id="item-upload-' +
-          wv +
+          v429 +
           '" data-id="' +
-          wv +
+          v429 +
           '" onchange="handleImageUpload(' +
-          wv +
+          v429 +
           ');" accept="image/png, image/gif, image/jpeg" >';
-        ws +=
+        v426 +=
           '<div class="input-group"><span class="input-group-text" style="padding:.375rem;"><img src="' +
           ajax_object.theme_uri +
           '/assets/icons/balance.png" width="16" alt="balance" ></span><input type="text" class="form-control numberonlyx bg-light item-weight" id="item-weight-' +
-          wv +
+          v429 +
           '" oninput="changeWeight(' +
-          wv +
+          v429 +
           ",'');\" onblur=\"if(this.value=='') this.value='" +
-          wq[wu].weight +
+          p100[v428].weight +
           '\';" value="' +
-          wq[wu].weight +
+          p100[v428].weight +
           '"><span class="input-group-text" style="padding:.375rem;cursor:pointer;" onClick="changeWeight(' +
-          wv +
-          ',\'minus\');">\u2212</span><span class="input-group-text" style="padding:.375rem;cursor:pointer;" onclick="changeWeight(' +
-          wv +
+          v429 +
+          ',\'minus\');">−</span><span class="input-group-text" style="padding:.375rem;cursor:pointer;" onclick="changeWeight(' +
+          v429 +
           ',\'plus\');" style="border: 1px solid #ced4da;color:#212529;">+</span><span class="input-group-text" style="padding:.375rem;"><span id="item-size-' +
-          wv +
+          v429 +
           '">' +
-          xa +
+          v434 +
           "</span>%</span></div>";
-        ws +=
-          '<input type="hidden" id="item-sound-' + wv + '" value="' + wx + '">';
-        ws +=
-          '<input type="hidden" id="item-message-' +
-          wv +
+        v426 +=
+          '<input type="hidden" id="item-sound-' +
+          v429 +
           '" value="' +
-          ww +
+          v431 +
           '">';
-        ws += "</div>";
-        ws += "</div>";
-        ws +=
+        v426 +=
+          '<input type="hidden" id="item-message-' +
+          v429 +
+          '" value="' +
+          v430 +
+          '">';
+        v426 += "</div>";
+        v426 += "</div>";
+        v426 +=
           '<div class="col-2 d-flex align-items-center justify-content-center p-2 actionarea">';
-        ws +=
+        v426 +=
           '<button class="btn btn-sm btn-primary p-1 me-1 item-config" id="item-config-' +
-          wv +
+          v429 +
           '" onclick="configItem(' +
-          wv +
+          v429 +
           ');"><span data-feather="sliders"></span></button>';
-        ws +=
+        v426 +=
           '<a href="javascript:void(0);" class="text-decoration-none text-secondary item-remove" id="item-remove-' +
-          wv +
+          v429 +
           '" data-id="' +
-          wv +
+          v429 +
           '" onclick="removeWheelItem(' +
-          wv +
+          v429 +
           "," +
-          wr +
+          p101 +
           ');"><span data-feather="x"></span></a>';
-        ws += "</div>";
-        ws += "</div>";
-        wy = wx = ww = "";
+        v426 += "</div>";
+        v426 += "</div>";
+        v432 = v431 = v430 = "";
       }
     }
-    ws += "</div>";
-    ws += '<button class="btn btn-primary" id="add-entry">Thêm mục</button>';
-    el("advance-editor").innerHTML = ws;
+    v426 += "</div>";
+    v426 += '<button class="btn btn-primary" id="add-entry">Thêm mục</button>';
+    el("advance-editor").innerHTML = v426;
   }
-  callbackAfterFillEntries(wq, wr);
-  var xg = getWheelSettingInArray();
-  if (xg) {
-    xg.entries = wq;
-    xg.is_advance = wr;
-    setWheelSettingFromArray(xg);
+  callbackAfterFillEntries(p100, p101);
+  var vGetWheelSettingInArray12 = getWheelSettingInArray();
+  if (vGetWheelSettingInArray12) {
+    vGetWheelSettingInArray12.entries = p100;
+    vGetWheelSettingInArray12.is_advance = p101;
+    setWheelSettingFromArray(vGetWheelSettingInArray12);
   }
 }
-
-function callbackAfterFillEntries(xh, xi) {
-  if (xi == 0) {
+function callbackAfterFillEntries(p105, p106) {
+  if (p106 == 0) {
     el("sector_list").classList.remove("d-none");
     el("advance-editor").innerHTML = "";
     el("advance-editor").classList.add("d-none");
@@ -3116,100 +2971,92 @@ function callbackAfterFillEntries(xh, xi) {
       el("scrollarea").style.maxHeight =
         el("wheel-center").offsetHeight - 200 + "px";
     }
-    var xj = document.querySelectorAll(".item-color");
-    if (xj.length) {
-      for (var xk = xj.length - 1; xk >= 0; xk--) {
-        xj[xk].addEventListener("change", function () {
+    var v437 = document.querySelectorAll(".item-color");
+    if (v437.length) {
+      for (var v438 = v437.length - 1; v438 >= 0; v438--) {
+        v437[v438].addEventListener("change", function () {
           wheelSettings();
         });
       }
     }
-    var xm = document.querySelectorAll(".item-text");
-    if (xm.length) {
-      for (var xk = xm.length - 1; xk >= 0; xk--) {
-        xm[xk].addEventListener("keyup", function () {
+    var v439 = document.querySelectorAll(".item-text");
+    if (v439.length) {
+      for (var v438 = v439.length - 1; v438 >= 0; v438--) {
+        v439[v438].addEventListener("keyup", function () {
           setTimeout(wheelSettings(), 500);
         });
       }
     }
     numberOnly();
   }
-  el("entries_count").textContent = xh.length;
+  el("entries_count").textContent = p105.length;
   feather.replace();
 }
-
-function changeWeight(xn, xp) {
-  if (el("item-weight-" + xn).value.trim() !== "") {
-    var xq = getWheelSettingInArray();
-    var xr = el("item-weight-" + xn).value.trim();
-    if (isNaN(xr) || xr <= 0) {
-      xr = 1;
-      el("item-weight-" + xn).value = 1;
+function changeWeight(p107, p108) {
+  if (el("item-weight-" + p107).value.trim() !== "") {
+    var vGetWheelSettingInArray13 = getWheelSettingInArray();
+    var v440 = el("item-weight-" + p107).value.trim();
+    if (isNaN(v440) || v440 <= 0) {
+      v440 = 1;
+      el("item-weight-" + p107).value = 1;
     } else {
-      xr = parseInt(xr);
+      v440 = parseInt(v440);
     }
-    if (xq) {
-      var xs = xq.entries;
-      if (xs.length) {
-        for (var xt = 0; xt < xs.length; xt++) {
-          if (xs[xt].id == xn) {
-            if (xp == "plus") {
-              el("item-weight-" + xn).value = xr + 1;
-            } else {
-              if (xp == "minus" && xr > 1) {
-                el("item-weight-" + xn).value = xr - 1;
-              }
+    if (vGetWheelSettingInArray13) {
+      var v441 = vGetWheelSettingInArray13.entries;
+      if (v441.length) {
+        for (var v442 = 0; v442 < v441.length; v442++) {
+          if (v441[v442].id == p107) {
+            if (p108 == "plus") {
+              el("item-weight-" + p107).value = v440 + 1;
+            } else if (p108 == "minus" && v440 > 1) {
+              el("item-weight-" + p107).value = v440 - 1;
             }
-            xs[xt].weight = parseInt(el("item-weight-" + xn).value);
-            xq.entries = xs;
-            setWheelSettingFromArray(xq);
+            v441[v442].weight = parseInt(el("item-weight-" + p107).value);
+            vGetWheelSettingInArray13.entries = v441;
+            setWheelSettingFromArray(vGetWheelSettingInArray13);
             break;
           }
         }
       }
     }
-    fillEntries(xs, 1);
-    var xu = el("item-weight-" + xn).value;
-    el("item-weight-" + xn).setSelectionRange(xu.length, xu.length);
-    el("item-weight-" + xn).focus();
+    fillEntries(v441, 1);
+    var v443 = el("item-weight-" + p107).value;
+    el("item-weight-" + p107).setSelectionRange(v443.length, v443.length);
+    el("item-weight-" + p107).focus();
     setTimeout(loadWheel(), 500);
   }
 }
-
 function fixVerticalAlign() {
   if (el("wheel-wrapper")) {
-    var xv = el("row-wheel").offsetHeight;
-    if (xv < window.innerHeight) {
+    var v444 = el("row-wheel").offsetHeight;
+    if (v444 < window.innerHeight) {
       el("wheel-wrapper").classList.remove("py-2");
-      var xw = "calc((100vh - 65px - " + xv + "px)/2)";
-      el("wheel-wrapper").style.paddingTop = xw;
-      el("wheel-wrapper").style.paddingBottom = xw;
+      var v445 = "calc((100vh - 65px - " + v444 + "px)/2)";
+      el("wheel-wrapper").style.paddingTop = v445;
+      el("wheel-wrapper").style.paddingBottom = v445;
     } else {
       el("wheel-wrapper").classList.add("py-2");
     }
   }
 }
-
 function logout() {
   if (!isLoggedIn()) {
     loginForm();
     return false;
   }
-  var xx = new XMLHttpRequest();
-  xx.open("POST", ajax_object.ajax_url + "?action=ajaxLogout");
-  xx.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xx.onload = function () {
-    if (xx.status === 200) {
+  var v446 = new XMLHttpRequest();
+  v446.open("POST", ajax_object.ajax_url + "?action=ajaxLogout");
+  v446.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  v446.onload = function () {
+    if (v446.status === 200) {
       window.location = ajax_object.home_url;
-    } else {
-      if (xx.status !== 200) {
-        console.log("error:" + xx.status);
-      }
+    } else if (v446.status !== 200) {
+      console.log("error:" + v446.status);
     }
   };
-  xx.send("&ajaxsecurity=" + ajax_object.ajax_nonce);
+  v446.send("&ajaxsecurity=" + ajax_object.ajax_nonce);
 }
-
 function deleteMyAccount() {
   if (!isLoggedIn()) {
     loginForm();
@@ -3220,124 +3067,120 @@ function deleteMyAccount() {
       "- Bạn chắc chắn muốn xóa tài khoản của mình?\n- Hành động này là không thể khôi phục.\n- Nếu chắc chắn, hãy ấn OK."
     )
   ) {
-    let xy = prompt("Hãy gõ chữ DELETE vào ô dưới để xóa", "");
-    if (xy == "DELETE") {
-      var xz = new XMLHttpRequest();
-      xz.open("POST", ajax_object.ajax_url + "?action=deleteMyAccount");
-      xz.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      xz.onload = function () {
-        if (xz.status === 200) {
-          if (xz.responseText == "success") {
+    let vPrompt = prompt("Hãy gõ chữ DELETE vào ô dưới để xóa", "");
+    if (vPrompt == "DELETE") {
+      var v447 = new XMLHttpRequest();
+      v447.open("POST", ajax_object.ajax_url + "?action=deleteMyAccount");
+      v447.setRequestHeader(
+        "Content-Type",
+        "application/x-www-form-urlencoded"
+      );
+      v447.onload = function () {
+        if (v447.status === 200) {
+          if (v447.responseText == "success") {
             window.location = ajax_object.home_url;
           } else {
-            alert(xz.responseText);
+            alert(v447.responseText);
           }
-        } else {
-          if (xz.status !== 200) {
-            console.log("error:" + xz.status);
-          }
+        } else if (v447.status !== 200) {
+          console.log("error:" + v447.status);
         }
       };
-      xz.send("&ajaxsecurity=" + ajax_object.ajax_nonce);
-    } else {
-      if (xy != null && xy != "DELETE") {
-        alert("Bạn phải gõ chính xác mới xóa được.");
-      }
+      v447.send("&ajaxsecurity=" + ajax_object.ajax_nonce);
+    } else if (vPrompt != null && vPrompt != "DELETE") {
+      alert("Bạn phải gõ chính xác mới xóa được.");
     }
   }
 }
-
-function confirmAdvance(ya) {
-  var yb = 0;
+function confirmAdvance(p109) {
+  var v448 = 0;
   html = "";
-  if (ya == 1) {
+  if (p109 == 1) {
     el("is_advance").checked = true;
-    yb = 1;
-    var yc = getSectorItem(el("sector_list").innerHTML);
-    var yd = getCurrentStyleColor();
-    var ye = parseInt(yd.length);
-    var yf = 0;
-    var yg = [];
-    var yh;
-    var yi = null;
-    var yj = "";
-    for (var yk = 0; yk < yc.length; yk++) {
-      yf = yk % ye;
-      if (!yc[yk].includes("<img")) {
-        yg.push({
-          text: yc[yk],
-          id: yk,
-          color: yd[yf],
+    v448 = 1;
+    var vGetSectorItem4 = getSectorItem(el("sector_list").innerHTML);
+    var vGetCurrentStyleColor4 = getCurrentStyleColor();
+    var vParseInt8 = parseInt(vGetCurrentStyleColor4.length);
+    var v449 = 0;
+    var v450 = [];
+    var v451;
+    var v452 = null;
+    var v453 = "";
+    for (var v454 = 0; v454 < vGetSectorItem4.length; v454++) {
+      v449 = v454 % vParseInt8;
+      if (!vGetSectorItem4[v454].includes("<img")) {
+        v450.push({
+          text: vGetSectorItem4[v454],
+          id: v454,
+          color: vGetCurrentStyleColor4[v449],
           weight: 1,
         });
       } else {
-        yh = document.createElement("div");
-        yh.innerHTML = yc[yk];
-        yi = yh.querySelector("img");
-        yj = yc[yk].replace(/<img[^>]*>/g, "");
-        yj = stripHtml(yj);
-        yj = yj.trim();
-        yg.push({
-          text: yj,
-          id: yk,
-          color: yd[yf],
-          image: yi.src,
+        v451 = document.createElement("div");
+        v451.innerHTML = vGetSectorItem4[v454];
+        v452 = v451.querySelector("img");
+        v453 = vGetSectorItem4[v454].replace(/<img[^>]*>/g, "");
+        v453 = stripHtml(v453);
+        v453 = v453.trim();
+        v450.push({
+          text: v453,
+          id: v454,
+          color: vGetCurrentStyleColor4[v449],
+          image: v452.src,
           weight: 1,
         });
       }
     }
     console.log("Đã chuyển sang chế độ nâng cao");
-    fillEntries(yg, yb);
+    fillEntries(v450, v448);
   } else {
     el("is_advance").checked = false;
-    yb = 0;
-    var yl = getWheelSettingInArray();
-    if (yl) {
-      yl.is_advance = yb;
-      var ym = yl.entries;
-      var yg = [];
-      for (var yk = 0; yk < ym.length; yk++) {
-        if (ym[yk].image) {
-          yg.push({
-            text: ym[yk].text,
-            id: yk,
-            image: ym[yk].image,
+    v448 = 0;
+    var vGetWheelSettingInArray14 = getWheelSettingInArray();
+    if (vGetWheelSettingInArray14) {
+      vGetWheelSettingInArray14.is_advance = v448;
+      var v455 = vGetWheelSettingInArray14.entries;
+      var v450 = [];
+      for (var v454 = 0; v454 < v455.length; v454++) {
+        if (v455[v454].image) {
+          v450.push({
+            text: v455[v454].text,
+            id: v454,
+            image: v455[v454].image,
           });
         } else {
-          yg.push({
-            text: ym[yk].text,
-            id: yk,
+          v450.push({
+            text: v455[v454].text,
+            id: v454,
           });
         }
       }
       console.log("Đã chuyển về bình thường");
-      fillEntries(yg, yb);
+      fillEntries(v450, v448);
       setTimeout(function () {
         loadWheel();
       }, 500);
     }
   }
 }
-
 function addRow() {
-  var yn = getWheelSettingInArray();
-  if (yn) {
-    var yo = yn.entries;
-    var yp = getCurrentStyleColor();
-    var yq = yo.length % yp.length;
-    yo.push({
+  var vGetWheelSettingInArray15 = getWheelSettingInArray();
+  if (vGetWheelSettingInArray15) {
+    var v456 = vGetWheelSettingInArray15.entries;
+    var vGetCurrentStyleColor5 = getCurrentStyleColor();
+    var v457 = v456.length % vGetCurrentStyleColor5.length;
+    v456.push({
       text: "",
-      id: yo.length,
-      color: yp[yq],
+      id: v456.length,
+      color: vGetCurrentStyleColor5[v457],
       weight: 1,
     });
-    fillEntries(yo, 1);
+    fillEntries(v456, 1);
     loadWheel();
   }
 }
-
-function setWheelType(yr = "color") {
-  if (yr == "image") {
+function setWheelType(p110 = "color") {
+  if (p110 == "image") {
     el("type").value = "image";
     el("switch_cover_img").checked = true;
     el("form_cover_img").classList.remove("d-none");
@@ -3392,16 +3235,16 @@ el("upload_cover_img").addEventListener("change", function () {
 });
 document
   .querySelector(".share-link>a")
-  .addEventListener("click", function (ys) {
-    ys.preventDefault();
+  .addEventListener("click", function (p111) {
+    p111.preventDefault();
     beforeCreateLinkForm();
     hideTwentyTwentyThreeMenu();
   });
 if (document.querySelector(".open-link>a")) {
   document
     .querySelector(".open-link>a")
-    .addEventListener("click", function (yt) {
-      yt.preventDefault();
+    .addEventListener("click", function (p112) {
+      p112.preventDefault();
       viewSharedLink();
       hideTwentyTwentyThreeMenu();
     });
@@ -3411,15 +3254,15 @@ el("btn-embed-wheel").addEventListener("click", function () {
 });
 document
   .querySelector(".template-link>a")
-  .addEventListener("click", function (yu) {
-    yu.preventDefault();
+  .addEventListener("click", function (p113) {
+    p113.preventDefault();
     openTemplateForm();
     hideTwentyTwentyThreeMenu();
   });
 document
   .querySelector(".toggle-link>a")
-  .addEventListener("click", function (yv) {
-    yv.preventDefault();
+  .addEventListener("click", function (p114) {
+    p114.preventDefault();
     if (this.parentNode.classList.contains("is-hidden")) {
       this.parentNode.classList.remove("is-hidden");
       this.parentNode.classList.add("is-showen");
@@ -3443,8 +3286,8 @@ el("toggleInfo").addEventListener("click", function () {
 });
 document
   .querySelector(".settings-link>a")
-  .addEventListener("click", function (yw) {
-    yw.preventDefault();
+  .addEventListener("click", function (p115) {
+    p115.preventDefault();
     openSettingsForm();
     hideTwentyTwentyThreeMenu();
   });
@@ -3453,21 +3296,21 @@ el("btn-settings-wheel").addEventListener("click", function () {
 });
 document
   .querySelector(".fullscreen-link>a")
-  .addEventListener("click", function (yx) {
-    yx.preventDefault();
+  .addEventListener("click", function (p116) {
+    p116.preventDefault();
     fullscreen();
   });
 document
   .querySelector(".exit-fullscreen-link>a")
-  .addEventListener("click", function (yy) {
-    yy.preventDefault();
+  .addEventListener("click", function (p117) {
+    p117.preventDefault();
     exitFullscreen();
   });
 if (document.querySelector(".language-link>a")) {
   document
     .querySelector(".language-link>a")
-    .addEventListener("click", function (yz) {
-      yz.preventDefault();
+    .addEventListener("click", function (p118) {
+      p118.preventDefault();
       hideTwentyTwentyThreeMenu();
       showLanguageForm();
     });
@@ -3475,93 +3318,92 @@ if (document.querySelector(".language-link>a")) {
 if (document.querySelector(".footer-language-link>a")) {
   document
     .querySelector(".footer-language-link>a")
-    .addEventListener("click", function (zb) {
-      zb.preventDefault();
+    .addEventListener("click", function (p119) {
+      p119.preventDefault();
       showLanguageForm();
     });
 }
 if (document.querySelector(".download-link>a")) {
   document
     .querySelector(".download-link>a")
-    .addEventListener("click", function (zc) {
-      zc.preventDefault();
+    .addEventListener("click", function (p120) {
+      p120.preventDefault();
       el("btn-download").click();
     });
 }
 if (document.querySelector("#btn-generate-code")) {
-  el("btn-generate-code").addEventListener("click", function (zd) {
-    zd.preventDefault();
+  el("btn-generate-code").addEventListener("click", function (p121) {
+    p121.preventDefault();
     generateCodeForm();
   });
 }
-
 function showLanguageForm() {
-  var ze = "";
-  ze += '<div class="h5 mb-3">Gợi ý</div>';
-  ze += '<div class="row g-3 mb-3">';
-  ze +=
+  var v458 =
+    '<span style="width: 30px;heigh:30px;vertical-align: middle;" data-feather="globe"></span> Ngôn ngữ';
+  var v459 = "";
+  var v460 =
+    '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>';
+  v459 += '<div class="h5 mb-3">Gợi ý</div>';
+  v459 += '<div class="row g-3 mb-3">';
+  v459 +=
     '<div class="col-6 col-md-4"><button class="btn btn-outline-secondary w-100" onclick="changeLanguage(\'en\');">Tiếng Anh</button></div>';
-  ze +=
+  v459 +=
     '<div class="col-6 col-md-4"><button class="btn btn-outline-secondary w-100" onclick="changeLanguage(\'vi\');">Tiếng Việt</button></div>';
-  ze += "</div>";
-  ze +=
+  v459 += "</div>";
+  v459 +=
     '<div class="h5 mt-5 mb-3">Tất cả ngôn ngữ (' +
     languages.length +
     ")</div>";
-  ze +=
+  v459 +=
     '<div class="mb-3"><input type="text" class="form-control" id="search-lang" onkeyup="searchLang();" placeholder="Tìm kiếm"></div>';
-  ze +=
+  v459 +=
     '<div class="all-languages" style="max-height:350px;overflow-x:hidden;overflow-y:auto;">';
-  ze += '<div class="row g-1 g-md-3 mb-3">';
-  for (var zf = 0; zf < languages.length; zf++) {
-    ze +=
+  v459 += '<div class="row g-1 g-md-3 mb-3">';
+  for (var v461 = 0; v461 < languages.length; v461++) {
+    v459 +=
       '<div class="col-6 col-md-4 trlang" data-code="' +
-      languages[zf].code +
+      languages[v461].code +
       '" data-name="' +
-      languages[zf].name +
+      languages[v461].name +
       '" ><button class="btn btn-outline-secondary w-100" onclick="changeLanguage(\'' +
-      languages[zf].code +
+      languages[v461].code +
       "');\">" +
-      languages[zf].name +
+      languages[v461].name +
       "</button></div>";
   }
-  ze += "</div>";
-  ze += "</div>";
-  el("modal-title").innerHTML =
-    '<span style="width: 30px;heigh:30px;vertical-align: middle;" data-feather="globe"></span> Ngôn ngữ';
-  el("modal-body").innerHTML = ze;
-  el("modal-footer").innerHTML =
-    '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>';
+  v459 += "</div>";
+  v459 += "</div>";
+  el("modal-title").innerHTML = v458;
+  el("modal-body").innerHTML = v459;
+  el("modal-footer").innerHTML = v460;
   el("modal-footer").classList.remove("justify-content-center");
   feather.replace();
-  var zg = new bootstrap.Modal(el("myModal"), {
+  var v462 = new bootstrap.Modal(el("myModal"), {
     backdrop: true,
   });
-  zg.show();
+  v462.show();
 }
-
-function changeLanguage(zh) {
-  if (zh !== "vi") {
-    window.open("https://spinwheel.one/" + zh, "_blank").focus();
+function changeLanguage(p122) {
+  if (p122 !== "vi") {
+    window.open("https://spinwheel.one/" + p122, "_blank").focus();
   } else {
     location.href = ajax_object.home_url;
   }
 }
-
 function searchLang() {
-  var zi = (name = "");
-  var zj = el("search-lang").value.toLowerCase();
-  var zk = document.querySelectorAll(".trlang");
-  for (i = 0; i < zk.length; i++) {
-    zi = zk[i].dataset.code;
-    name = zk[i].dataset.name;
+  var v463 = (name = "");
+  var v464 = el("search-lang").value.toLowerCase();
+  var v465 = document.querySelectorAll(".trlang");
+  for (i = 0; i < v465.length; i++) {
+    v463 = v465[i].dataset.code;
+    name = v465[i].dataset.name;
     if (
-      zi.toLowerCase().indexOf(zj) > -1 ||
-      name.toLowerCase().indexOf(zj) > -1
+      v463.toLowerCase().indexOf(v464) > -1 ||
+      name.toLowerCase().indexOf(v464) > -1
     ) {
-      zk[i].classList.remove("d-none");
+      v465[i].classList.remove("d-none");
     } else {
-      zk[i].classList.add("d-none");
+      v465[i].classList.add("d-none");
     }
   }
 }
@@ -3637,14 +3479,14 @@ if (addtowheels.length) {
   var id = "";
   var temp = [];
   for (var i = 0; i < addtowheels.length; i++) {
-    addtowheels[i].addEventListener("click", function (zl) {
-      zl.preventDefault();
+    addtowheels[i].addEventListener("click", function (p123) {
+      p123.preventDefault();
       href = this.href;
       if (href != "") {
         temp = href.split("#");
         if (temp != null) {
           id = temp[1];
-          if ("" !== id && el(id)) {
+          if (id !== "" && el(id)) {
             addTextToWheel(id);
           }
         }
@@ -3720,15 +3562,15 @@ if (dropdown_item.length) {
       bg_img = this.dataset.bg_img;
       el("btn-mydropdown").textContent = this.dataset.title;
       if (chkcolor.length) {
-        for (var zm of chkcolor) {
-          zm.checked = false;
-          el("color-" + zm.value).value = "#ADB2B0";
+        for (var v466 of chkcolor) {
+          v466.checked = false;
+          el("color-" + v466.value).value = "#ADB2B0";
         }
       }
       if (thisColor.length) {
-        for (var zn = 0; zn < thisColor.length; zn++) {
-          el("color-" + (zn + 1)).value = thisColor[zn];
-          el("chkcolor-" + (zn + 1)).checked = true;
+        for (var v467 = 0; v467 < thisColor.length; v467++) {
+          el("color-" + (v467 + 1)).value = thisColor[v467];
+          el("chkcolor-" + (v467 + 1)).checked = true;
         }
       }
       el("border_color").value = thisBorder[0];
@@ -3794,29 +3636,29 @@ el("btn-select-spin-img").addEventListener("click", function () {
   );
   el("btn-spin-label").value = "";
 });
-
 function openSearchFormImageFromUnsplash(
-  zo,
-  zp,
-  zq,
-  zr = ["bokeh", "Abstract", "Cityscape", "Playground", "Educational"],
-  zs = ""
+  p124,
+  p125,
+  p126,
+  p127 = ["bokeh", "Abstract", "Cityscape", "Playground", "Educational"],
+  p128 = ""
 ) {
-  var zt =
+  var v468 = '<span data-feather="image"></span> Chọn ảnh nền từ unsplash.com';
+  var v469 =
     '<a class="text-decoration-none" data-bs-dismiss="modal" id="btn-close-modal-img">Bỏ qua</a> <button type="button" class="btn btn-primary" onClick="insertSelectedImgTo(\'' +
-    zq +
+    p126 +
     "');el('" +
-    zq +
+    p126 +
     "').dispatchEvent(new Event('change'));\">Đồng ý</button>";
-  var zu = "";
-  zr = shuffle(zr);
-  zu +=
+  var v470 = "";
+  p127 = shuffle(p127);
+  v470 +=
     '<div class="input-group mb-3"><input type="text" class="form-control" id="search-input" value="' +
-    zr[0] +
+    p127[0] +
     '" placeholder="Nhập từ khoá bằng tiếng Anh"><button type="button" class="btn btn-primary" id="btn-search-img"><span data-feather="search"></span></button></div>';
-  zu += '<div class="mb-1">Tham khảo:</div>';
-  zu += '<div class="mb-3">';
-  var zv = [
+  v470 += '<div class="mb-1">Tham khảo:</div>';
+  v470 += '<div class="mb-3">';
+  var v471 = [
     "bokeh",
     "Abstract",
     "Cityscape",
@@ -3850,37 +3692,36 @@ function openSearchFormImageFromUnsplash(
     "cloudy",
     "pets",
   ];
-  for (kw of zv) {
-    zu +=
+  for (kw of v471) {
+    v470 +=
       '<a class="btn btn-sm small" href="javascript:void(0);" onclick="el(\'search-input\').value=\'' +
       kw +
       "';el('btn-search-img').click();\">" +
       kw +
       "</a>";
   }
-  zu += "</div>";
-  zu += "";
-  var zw = "";
-  if (zo > 0 && zp > 0) {
-    zw = 'data-width="' + zo + '" data-height="' + zp + '"';
+  v470 += "</div>";
+  v470 += "";
+  var v472 = "";
+  if (p124 > 0 && p125 > 0) {
+    v472 = 'data-width="' + p124 + '" data-height="' + p125 + '"';
   }
-  if (zs !== "") {
-    zw += ' data-class="' + zs + '"';
+  if (p128 !== "") {
+    v472 += ' data-class="' + p128 + '"';
   }
-  zu += '<div id="photo-gallery" class="row g-3 mb-3" ' + zw + "></div>";
-  zu += '<input type="hidden" id="selected-img" value="" >';
-  zu +=
+  v470 += '<div id="photo-gallery" class="row g-3 mb-3" ' + v472 + "></div>";
+  v470 += '<input type="hidden" id="selected-img" value="" >';
+  v470 +=
     '<div class="d-grid gap-2"><button type="button" class="btn btn-primary" id="load-more">Xem thêm</button></div>';
-  el("modal-title").innerHTML =
-    '<span data-feather="image"></span> Chọn ảnh nền từ unsplash.com';
-  el("modal-body").innerHTML = zu;
-  el("modal-footer").innerHTML = zt;
+  el("modal-title").innerHTML = v468;
+  el("modal-body").innerHTML = v470;
+  el("modal-footer").innerHTML = v469;
   el("modal-dialog").classList.add("modal-lg");
   feather.replace();
-  var zx = new bootstrap.Modal(el("myModal"), {
+  var v473 = new bootstrap.Modal(el("myModal"), {
     backdrop: true,
   });
-  zx.show();
+  v473.show();
   document.querySelector(".modal-backdrop").style.zIndex = "1040";
   el("myModal").parentNode.style.zIndex = "1050";
   el("myModal").addEventListener("hidden.bs.modal", function () {
@@ -3888,7 +3729,7 @@ function openSearchFormImageFromUnsplash(
     el("myModal").parentNode.style.zIndex = "";
     el("modal-dialog").classList.remove("modal-lg");
   });
-  el("btn-search-img").addEventListener("click", function (zy) {
+  el("btn-search-img").addEventListener("click", function (p129) {
     currentQuery = el("search-input").value;
     currentPage = 1;
     el("photo-gallery").innerHTML = "";
@@ -3901,42 +3742,44 @@ function openSearchFormImageFromUnsplash(
   setTimeout(function () {
     el("btn-search-img").click();
   }, 500);
-  el("search-input").addEventListener("keyup", function (zz) {
-    if (zz.key === "Enter") {
+  el("search-input").addEventListener("keyup", function (p130) {
+    if (p130.key === "Enter") {
       el("btn-search-img").click();
     }
   });
 }
 let editableElement = document.querySelector("#sector_list");
-editableElement.addEventListener("paste", function (aaa) {
-  aaa.preventDefault();
-  const aab = (aaa.clipboardData || window.clipboardData).getData("text/plain");
-  const aac = aab.split("\n");
-  const aad = document.createDocumentFragment();
-  aac.forEach((aae) => {
-    const aaf = document.createElement("div");
-    aaf.textContent = aae;
-    aad.appendChild(aaf);
+editableElement.addEventListener("paste", function (p131) {
+  p131.preventDefault();
+  const v474 = (p131.clipboardData || window.clipboardData).getData(
+    "text/plain"
+  );
+  const v475 = v474.split("\n");
+  const v476 = document.createDocumentFragment();
+  v475.forEach((p132) => {
+    const v477 = document.createElement("div");
+    v477.textContent = p132;
+    v476.appendChild(v477);
   });
-  const aag = window.getSelection();
-  const aah = aag.getRangeAt(0);
-  aah.deleteContents();
-  aah.insertNode(aad);
-  aah.collapse(false);
-  aag.removeAllRanges();
-  aag.addRange(aah);
+  const v478 = window.getSelection();
+  const v479 = v478.getRangeAt(0);
+  v479.deleteContents();
+  v479.insertNode(v476);
+  v479.collapse(false);
+  v478.removeAllRanges();
+  v478.addRange(v479);
 });
 editableElement.addEventListener("input", function () {
   if (this.innerHTML.trim() === "" || this.innerHTML.trim() === "<br>") {
     this.innerHTML = "<div><br></div>";
   }
 });
-el("is_advance").addEventListener("change", function (aai) {
-  aai.preventDefault();
-  var aaj = (modal_body = modal_footer = "");
+el("is_advance").addEventListener("change", function (p133) {
+  p133.preventDefault();
+  var v480 = (modal_body = modal_footer = "");
   if (this.checked) {
     this.checked = false;
-    aaj =
+    v480 =
       '<span style="width: 30px;heigh:30px;vertical-align: middle;" data-feather="help-circle"></span> Xác nhận';
     modal_body =
       '<p class="alert alert-warning"><strong>Bạn có chắc chắn muốn chuyển sang chế độ nâng cao không?</strong> Chế độ nâng cao cung cấp nhiều tùy chỉnh hơn, nhưng bạn không thể dán nhiều mục nhập cùng một lúc. Bạn luôn có thể quay lại bằng cách bỏ chọn hộp kiểm "Nâng cao".</p>';
@@ -3944,312 +3787,313 @@ el("is_advance").addEventListener("change", function (aai) {
       '<a class="text-decoration-none" data-bs-dismiss="modal">Bỏ qua</a> <button type="button" class="btn btn-primary" tabindex="1" data-bs-dismiss="modal" id="btn-agree-change-advanced" onClick="confirmAdvance(1);">Đồng ý</button>';
   } else {
     this.checked = true;
-    aaj =
+    v480 =
       '<span style="width: 30px;heigh:30px;vertical-align: middle;" data-feather="help-circle"></span> Xác nhận';
     modal_body =
       "Nếu bạn hoàn nguyên từ chế độ nâng cao, bạn có thể mất một số màu. Bạn có chắc chắn muốn tiếp tục không?";
     modal_footer =
       '<a class="text-decoration-none" data-bs-dismiss="modal">Bỏ qua</a> <button type="button" class="btn btn-primary" tabindex="1" data-bs-dismiss="modal" id="btn-agree-change-advanced" tabindex="1" onClick="confirmAdvance(0);">Đồng ý</button>';
   }
-  el("modal-title").innerHTML = aaj;
+  el("modal-title").innerHTML = v480;
   el("modal-body").innerHTML = modal_body;
   el("modal-footer").innerHTML = modal_footer;
   el("modal-footer").classList.remove("justify-content-center");
   feather.replace();
-  var aak = new bootstrap.Modal(el("myModal"), {
+  var v481 = new bootstrap.Modal(el("myModal"), {
     backdrop: true,
   });
-  aak.show();
+  v481.show();
   el("btn-agree-change-advanced").focus();
 });
 el("btn-download").addEventListener("click", function () {
   el("loading-spinner").style.display = "block";
   if (typeof domtoimage === "undefined") {
-    var aal = document.createElement("script");
-    aal.src =
+    var v482 = document.createElement("script");
+    v482.src =
       "https://cdn.jsdelivr.net/npm/dom-to-image@2.6.0/src/dom-to-image.min.js";
-    aal.onload = function () {
+    v482.onload = function () {
       downloadImage();
     };
-    document.body.appendChild(aal);
+    document.body.appendChild(v482);
   } else {
     downloadImage();
   }
 });
-
 function downloadImage() {
-  var aam = document.getElementById("wheel-container");
+  var v483 = document.getElementById("wheel-container");
   setTimeout(function () {
     domtoimage
-      .toPng(aam)
-      .then(function (aan) {
-        return fetch(aan)
-          .then((aao) => aao.blob())
-          .then((aap) => {
-            var aaq = document.createElement("a");
-            aaq.href = URL.createObjectURL(aap);
-            aaq.download = "vong-quay-may-man.png";
-            aaq.click();
+      .toPng(v483)
+      .then(function (p134) {
+        return fetch(p134)
+          .then((p135) => p135.blob())
+          .then((p136) => {
+            var v484 = document.createElement("a");
+            v484.href = URL.createObjectURL(p136);
+            v484.download = "vong-quay-may-man.png";
+            v484.click();
             setTimeout(function () {
               el("loading-spinner").style.display = "none";
             }, 3000);
           });
       })
-      .catch(function (aar) {
-        console.error("Error generating image:", aar);
+      .catch(function (p137) {
+        console.error("Error generating image:", p137);
         setTimeout(function () {
           el("loading-spinner").style.display = "none";
         }, 3000);
       });
   }, 2000);
 }
-
 function generateCodeForm() {
   el("modal-title").innerHTML =
     '<span data-feather="cpu"></span> Tạo mã bốc thăm';
-  el("modal-body").innerHTML =
+  var v485 =
     '<div class="">\n                  <div class="input-group mb-3"><span class="input-group-text">Số lượng</span> <input type="number" id="totalCode" min="1" class="form-control" value="50" ></div>\n                  <div class="input-group mb-3"><span class="input-group-text">Số kí tự</span> <input type="number" id="lenCode" min="2" class="form-control" value="5" ></div>\n                  Bao gồm: \n                  <div class="form-check form-check-inline">\n                    <input class="form-check-input gencode" type="checkbox" id="uppercase" checked>\n                    <label class="form-check-label" for="uppercase">ABC</label>\n                  </div>\n\n                  <div class="form-check form-check-inline">\n                    <input class="form-check-input gencode" type="checkbox" id="lowercase" checked>\n                    <label class="form-check-label" for="lowercase">abc</label>\n                  </div>\n\n                  <div class="form-check form-check-inline">\n                    <input class="form-check-input gencode" type="checkbox" id="number" checked>\n                    <label class="form-check-label" for="number">123</label>\n                  </div>\n\n                </div>\n             </div>';
+  el("modal-body").innerHTML = v485;
   el("modal-footer").innerHTML =
     '<button type="button" tabindex="1" class="btn btn-primary" id="btn-gencode"><span data-feather="cpu"></span> <span id="btn-gencode-txt">Tạo mã ngay</span></button>';
   feather.replace();
-  var aas = new bootstrap.Modal(el("myModal"), {
+  var v486 = new bootstrap.Modal(el("myModal"), {
     backdrop: true,
   });
-  aas.show();
-  var aat = document.querySelectorAll('input[type="checkbox"].gencode');
-  for (var aau = 0; aau < aat.length; aau++) {
-    aat[aau].addEventListener("click", function () {
+  v486.show();
+  var v487 = document.querySelectorAll('input[type="checkbox"].gencode');
+  for (var v488 = 0; v488 < v487.length; v488++) {
+    v487[v488].addEventListener("click", function () {
       if (countBoxCheckedByClass("gencode") == 1) {
-        for (var aav = 0; aav < aat.length; aav++) {
-          if (aat[aav].checked == true) {
-            aat[aav].disabled = true;
+        for (var v489 = 0; v489 < v487.length; v489++) {
+          if (v487[v489].checked == true) {
+            v487[v489].disabled = true;
           }
         }
       } else {
-        for (var aav = 0; aav < aat.length; aav++) {
-          aat[aav].disabled = false;
+        for (var v489 = 0; v489 < v487.length; v489++) {
+          v487[v489].disabled = false;
         }
       }
     });
   }
   el("btn-gencode").addEventListener("click", function () {
     el("btn-gencode-txt").textContent = "Đang tạo mã...";
-    var aaw = parseInt(el("totalCode").value);
-    var aax = parseInt(el("lenCode").value);
-    var aay = [];
-    var aaz = [];
-    if (aaw <= 0 || aaw == "") {
-      aaw = 10;
+    var vParseInt9 = parseInt(el("totalCode").value);
+    var vParseInt10 = parseInt(el("lenCode").value);
+    var v490 = [];
+    var v491 = [];
+    if (vParseInt9 <= 0 || vParseInt9 == "") {
+      vParseInt9 = 10;
     }
-    if (aax <= 3 || aax == "") {
-      aax = 3;
+    if (vParseInt10 <= 3 || vParseInt10 == "") {
+      vParseInt10 = 3;
     }
-    while (aay.length < aaw) {
+    while (v490.length < vParseInt9) {
       code = generateCode();
       codelower = code.toLowerCase();
-      if (!aaz.includes(codelower)) {
-        aay.push(code);
-        aaz.push(codelower);
+      if (!v491.includes(codelower)) {
+        v490.push(code);
+        v491.push(codelower);
       }
     }
     setTimeout(function () {
-      fillWheelContent(aay);
+      fillWheelContent(v490);
       el("btn-gencode-txt").textContent = "Tạo mã ngay";
       feather.replace();
     }, 500);
   });
 }
-
 function generateCode() {
-  var aba = parseInt(el("lenCode").value);
-  var abb = "";
+  var vParseInt11 = parseInt(el("lenCode").value);
+  var v492 = "";
   if (el("uppercase").checked == true) {
-    abb += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    v492 += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   }
   if (el("lowercase").checked == true) {
-    abb += "abcdefghijklmnopqrstuvwxyz";
+    v492 += "abcdefghijklmnopqrstuvwxyz";
   }
   if (el("number").checked == true) {
-    abb += "0123456789";
+    v492 += "0123456789";
   }
-  var abd = (abe = aba, abf = abb) =>
-    Array.from(crypto.getRandomValues(new Uint32Array(abe)))
-      .map((abg) => abf[abg % abf.length])
+  var vF5 = (p138 = vParseInt11, p139 = v492) =>
+    Array.from(crypto.getRandomValues(new Uint32Array(p138)))
+      .map((p140) => p139[p140 % p139.length])
       .join("");
-  var abh = abd();
-  return abh;
+  var vVF5 = vF5();
+  return vVF5;
 }
-
 function menuDecorating() {
-  var abi = document.querySelector(".template-link>a>span");
-  var abj = document.querySelector(".share-link>a>span");
-  var abk = document.querySelector(".fullscreen-link>a>span");
-  var abl = document.querySelector(".exit-fullscreen-link>a>span");
-  var abm = document.querySelector(".settings-link>a>span");
-  var abn = document.querySelector(".toggle-link>a>span");
-  var abo = document.querySelector(".gallery-link>a");
-  var abp = document.querySelector(".my-account-link>a");
-  var abq = document.querySelector(".more-link>a");
-  var abr = document.querySelector(".download-link>a");
-  var abt = document.querySelector(".language-link>a");
-  var abu = document.querySelector(".footer-language-link>a");
-  if (abi) {
-    abi.insertAdjacentHTML(
+  var v493 = document.querySelector(".template-link>a>span");
+  var v494 = document.querySelector(".share-link>a>span");
+  var v495 = document.querySelector(".fullscreen-link>a>span");
+  var v496 = document.querySelector(".exit-fullscreen-link>a>span");
+  var v497 = document.querySelector(".settings-link>a>span");
+  var v498 = document.querySelector(".toggle-link>a>span");
+  var v499 = document.querySelector(".gallery-link>a");
+  var v500 = document.querySelector(".my-account-link>a");
+  var v501 = document.querySelector(".more-link>a");
+  var v502 = document.querySelector(".download-link>a");
+  var v503 = document.querySelector(".language-link>a");
+  var v504 = document.querySelector(".footer-language-link>a");
+  if (v493) {
+    v493.insertAdjacentHTML(
       "afterbegin",
       '<span data-feather="folder"></span> '
     );
   }
-  if (abp) {
-    abp.insertAdjacentHTML("afterbegin", '<span data-feather="user"></span> ');
+  if (v500) {
+    v500.insertAdjacentHTML("afterbegin", '<span data-feather="user"></span> ');
     if (ajax_object.isShowAds != 1) {
-      abp.insertAdjacentHTML("afterend", "<sup>ᴾᴿᴼ</sup>");
+      v500.insertAdjacentHTML("afterend", "<sup>ᴾᴿᴼ</sup>");
     }
   }
-  if (abj) {
-    abj.insertAdjacentHTML(
+  if (v494) {
+    v494.insertAdjacentHTML(
       "afterbegin",
       '<span data-feather="share-2"></span> '
     );
   }
-  if (abk) {
-    abk.innerHTML = '<span data-feather="maximize"></span>';
+  if (v495) {
+    v495.innerHTML = '<span data-feather="maximize"></span>';
   }
-  if (abl) {
-    abl.innerHTML = '<span data-feather="minimize"></span>';
+  if (v496) {
+    v496.innerHTML = '<span data-feather="minimize"></span>';
   }
-  if (abm) {
-    abm.insertAdjacentHTML(
+  if (v497) {
+    v497.insertAdjacentHTML(
       "afterbegin",
       '<span data-feather="settings"></span> '
     );
   }
-  if (abn) {
-    abn.insertAdjacentHTML("afterbegin", '<span data-feather="eye"></span> ');
+  if (v498) {
+    v498.insertAdjacentHTML("afterbegin", '<span data-feather="eye"></span> ');
   }
-  if (abo) {
-    abo.insertAdjacentHTML("afterbegin", '<span data-feather="grid"></span> ');
+  if (v499) {
+    v499.insertAdjacentHTML("afterbegin", '<span data-feather="grid"></span> ');
   }
-  if (abq) {
-    abq.insertAdjacentHTML(
+  if (v501) {
+    v501.insertAdjacentHTML(
       "afterbegin",
       '<span data-feather="more-vertical"></span> '
     );
   }
-  if (abr) {
-    abr.innerHTML = '<span data-feather="download"></span>';
+  if (v502) {
+    v502.innerHTML = '<span data-feather="download"></span>';
   }
-  if (abt) {
-    abt.insertAdjacentHTML("afterbegin", '<span data-feather="globe"></span> ');
+  if (v503) {
+    v503.insertAdjacentHTML(
+      "afterbegin",
+      '<span data-feather="globe"></span> '
+    );
   }
-  if (abu) {
+  if (v504) {
     document
       .querySelector(".wp-block-navigation-item.footer-language-link")
       .classList.remove("turnoff");
-    abu.classList.add("d-flex");
-    abu.classList.add("align-items-center");
-    abu.innerHTML =
-      '<span class="me-2" style="font-size:24px">\uD83C\uDDFB\uD83C\uDDF3</span> Tiếng Việt';
+    v504.classList.add("d-flex");
+    v504.classList.add("align-items-center");
+    v504.innerHTML =
+      '<span class="me-2" style="font-size:24px">🇻🇳</span> Tiếng Việt';
   }
   feather.replace();
 }
-window.addEventListener("DOMContentLoaded", (abv) => {
-  var abw = getWheelSettingInArray();
-  if (abw) {
-    var abx = abw.title;
-    var aby = abw.desc;
-    var abz = abw.start_sound;
-    var aca = abw.end_sound;
-    var acb = abw.duration;
-    var acc = abw.show_confetti;
-    var acd = abw.show_popup;
-    var ace = abw.popup_label;
-    var acf = abw.show_remove_button;
-    var acg = abw.colors;
-    var ach = abw.custom_bg_color;
-    var aci = abw.custom_color;
-    var acj = abw.custom_bg_img;
-    var ack = abw.btn_spin_label;
-    var acl = "";
-    var acm = abw.is_stroke;
-    var acn = abw.entries;
-    var aco = "color";
-    var acp = "";
-    var acq = abw.is_advance;
-    el("start_sound").value = abz;
-    el("end_sound").value = aca;
-    el("duration").value = acb;
-    if (acc == "yes") {
+window.addEventListener("DOMContentLoaded", (p141) => {
+  var vGetWheelSettingInArray16 = getWheelSettingInArray();
+  if (vGetWheelSettingInArray16) {
+    var v505 = vGetWheelSettingInArray16.title;
+    var v506 = vGetWheelSettingInArray16.desc;
+    var v507 = vGetWheelSettingInArray16.start_sound;
+    var v508 = vGetWheelSettingInArray16.end_sound;
+    var v509 = vGetWheelSettingInArray16.duration;
+    var v510 = vGetWheelSettingInArray16.show_confetti;
+    var v511 = vGetWheelSettingInArray16.show_popup;
+    var v512 = vGetWheelSettingInArray16.popup_label;
+    var v513 = vGetWheelSettingInArray16.show_remove_button;
+    var v514 = vGetWheelSettingInArray16.colors;
+    var v515 = vGetWheelSettingInArray16.custom_bg_color;
+    var v516 = vGetWheelSettingInArray16.custom_color;
+    var v517 = vGetWheelSettingInArray16.custom_bg_img;
+    var v518 = vGetWheelSettingInArray16.btn_spin_label;
+    var v519 = "";
+    var v520 = vGetWheelSettingInArray16.is_stroke;
+    var v521 = vGetWheelSettingInArray16.entries;
+    var v522 = "color";
+    var v523 = "";
+    var v524 = vGetWheelSettingInArray16.is_advance;
+    el("start_sound").value = v507 != "" ? v507 : "0";
+    el("end_sound").value = v508 != "" ? v508 : "0";
+    el("duration").value = v509 != "" ? v509 : 0.991;
+    if (v510 == "yes") {
       el("show_confetti").checked = true;
     } else {
       el("show_confetti").checked = false;
     }
-    if (acd == "yes") {
+    if (v511 == "yes") {
       el("show_popup").checked = true;
     } else {
       el("show_popup").checked = false;
     }
-    if (acf == "yes") {
+    el("popup_label").value = v512;
+    if (v513 == "yes") {
       el("show_remove_button").checked = true;
     } else {
       el("show_remove_button").checked = false;
     }
-    if (acm == "yes") {
+    if (v520 == "yes") {
       el("is_stroke").checked = true;
     } else {
       el("is_stroke").checked = false;
     }
-    if (abw.hasOwnProperty("btn_spin_img")) {
-      acl = abw.btn_spin_img;
-      el("btn-spin-img").value = acl;
+    if (vGetWheelSettingInArray16.hasOwnProperty("btn_spin_img")) {
+      v519 = vGetWheelSettingInArray16.btn_spin_img;
+      el("btn-spin-img").value = v519;
     }
-    if (abw.hasOwnProperty("type")) {
-      aco = abw.type;
-      setWheelType(aco);
-      if (abw.hasOwnProperty("cover_img")) {
-        acp = abw.cover_img;
-        el("cover_img_display").src = acp;
-        el("cover_img").value = acp;
+    if (vGetWheelSettingInArray16.hasOwnProperty("type")) {
+      v522 = vGetWheelSettingInArray16.type;
+      setWheelType(v522);
+      if (vGetWheelSettingInArray16.hasOwnProperty("cover_img")) {
+        v523 = vGetWheelSettingInArray16.cover_img;
+        el("cover_img_display").src = v523;
+        el("cover_img").value = v523;
       }
     }
-    if (abw.hasOwnProperty("show_border")) {
-      if (abw.show_border == "yes") {
+    if (vGetWheelSettingInArray16.hasOwnProperty("show_border")) {
+      if (vGetWheelSettingInArray16.show_border == "yes") {
         el("show_border").checked = true;
         el("custom_border_color").classList.remove("d-none");
       } else {
         el("show_border").checked = false;
         el("custom_border_color").classList.add("d-none");
       }
-      el("border_color").value = abw.border_color;
-      el("diamond_color").value = abw.diamond_color;
+      el("border_color").value = vGetWheelSettingInArray16.border_color;
+      el("diamond_color").value = vGetWheelSettingInArray16.diamond_color;
     }
-    var acr = document.getElementsByName("chkcolor");
-    if (acr.length) {
-      for (var acs of acr) {
-        acs.checked = false;
+    var v525 = document.getElementsByName("chkcolor");
+    if (v525.length) {
+      for (var v526 of v525) {
+        v526.checked = false;
       }
     }
-    if (acg.length) {
-      for (var act of acg) {
-        el("chkcolor-" + act.key).checked = true;
-        el("color-" + act.key).value = act.value;
+    if (v514.length) {
+      for (var v527 of v514) {
+        el("chkcolor-" + v527.key).checked = true;
+        el("color-" + v527.key).value = v527.value;
       }
     }
-    el("popup_label").value = ace;
-    el("custom-bg-color").value = ach;
-    el("custom-color").value = aci;
-    el("btn-spin-label").value = ack;
-    root.style.setProperty("--custom_bg_color", ach);
-    root.style.setProperty("--custom_color", aci);
-    if (acj) {
-      setBackgroundImage(acj, "update");
+    el("popup_label").value = v512;
+    el("custom-bg-color").value = v515;
+    el("custom-color").value = v516;
+    el("btn-spin-label").value = v518;
+    root.style.setProperty("--custom_bg_color", v515);
+    root.style.setProperty("--custom_color", v516);
+    if (v517) {
+      setBackgroundImage(v517, "update");
     }
-    fillTitleDesc(abx, aby);
-    if (acq == 1) {
+    fillTitleDesc(v505, v506);
+    if (v524 == 1) {
       el("is_advance").checked = true;
     } else {
       el("is_advance").checked = false;
     }
-    fillEntries(acn, acq);
+    fillEntries(v521, v524);
   } else {
     wheelSettings();
   }
@@ -4264,10 +4108,10 @@ window.addEventListener("DOMContentLoaded", (abv) => {
     fixVerticalAlign();
   }
   if (isLoggedIn() && ajax_object.isShowAds == 1) {
-    const acu = getWithExpiry("isAlertExpired");
-    if (!acu) {
-      const acv = document.querySelectorAll(".modal.show");
-      if (acv.length == 0) {
+    const vGetWithExpiry = getWithExpiry("isAlertExpired");
+    if (!vGetWithExpiry) {
+      const v528 = document.querySelectorAll(".modal.show");
+      if (v528.length == 0) {
         setTimeout(function () {
           el("modal-title").innerHTML =
             '<span data-feather="message-square"></span> Nhận tài khoản PRO miễn phí ?';
@@ -4278,15 +4122,17 @@ window.addEventListener("DOMContentLoaded", (abv) => {
             ajax_object.home_url +
             '/tat-quang-cao/">Hướng dẫn tôi</a>';
           feather.replace();
-          var acw = new bootstrap.Modal(el("myModal"), {
+          var v529 = new bootstrap.Modal(el("myModal"), {
             backdrop: "static",
             keyboard: false,
           });
-          acw.show();
+          v529.show();
           setWithExpiry("isAlertExpired", 1, 30);
         }, 30000);
       }
     }
   }
   feather.replace();
+  const v530 = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  const v531 = [...v530].map((p142) => new bootstrap.Tooltip(p142));
 });
