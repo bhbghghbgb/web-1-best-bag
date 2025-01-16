@@ -2,8 +2,16 @@ import { Parser } from "acorn";
 import { traverse, builders, is as nodeIs } from "estree-toolkit";
 import { generate, FORMAT_MINIFY } from "escodegen";
 import obsfucator from "javascript-obfuscator";
+import jsStringEscape from "js-string-escape";
 
-function translate(wheelDeobJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
+function translate(
+  wheelDeobJs,
+  wheelPatchJs,
+  wheelPatch2Js,
+  wheelPatch3Js,
+  wheelScripter,
+  riggedValues
+) {
   const wholeFileNode = Parser.parse(wheelDeobJs, { sourceType: "script" });
   const wholeFileNode_Body = wholeFileNode.body;
 
@@ -165,7 +173,9 @@ function translate(wheelDeobJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
         return false;
       if (
         expression.arguments.length !== 2 ||
-        !nodeIs.literal(expression.arguments[0], { value: "click" }) ||
+        !nodeIs.literal(expression.arguments[0], {
+          value: "click",
+        }) ||
         expression.arguments[1].type !== "ArrowFunctionExpression"
       )
         return false;
@@ -213,7 +223,9 @@ function translate(wheelDeobJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
       (node) =>
         nodeIs.expressionStatement(node) &&
         nodeIs.callExpression(node.expression) &&
-        nodeIs.identifier(node.expression.callee, { name: "clearInterval" }) &&
+        nodeIs.identifier(node.expression.callee, {
+          name: "clearInterval",
+        }) &&
         node.expression.arguments.length === 1 &&
         nodeIs.identifier(node.expression.arguments[0])
     );
@@ -314,7 +326,9 @@ function translate(wheelDeobJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
           const init = node.declarations[0].init;
           if (
             !nodeIs.memberExpression(init) ||
-            !nodeIs.identifier(init.object, { name: wheelSectors_Name }) ||
+            !nodeIs.identifier(init.object, {
+              name: wheelSectors_Name,
+            }) ||
             !nodeIs.callExpression(init.property) ||
             !nodeIs.identifier(init.property.callee, {
               name: calcCurrentSectorIndex_Name,
@@ -329,6 +343,22 @@ function translate(wheelDeobJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
     if (!updateWheelDisplay_FunctionDeclaration) return null;
     return updateWheelDisplay_FunctionDeclaration.id.name;
   })();
+  const afterScriptLoadFunctions = wholeFileNode_Body
+    .filter(
+      (node) =>
+        nodeIs.expressionStatement(node) &&
+        nodeIs.memberExpression(node.expression.callee) &&
+        nodeIs.identifier(node.expression.callee.object, { name: "window" }) &&
+        nodeIs.identifier(node.expression.callee.property, {
+          name: "addEventListener",
+        }) &&
+        nodeIs.literal(node.expression.arguments[0], {
+          value: "DOMContentLoaded",
+        }) &&
+        nodeIs.arrowFunctionExpression(node.expression.arguments[1])
+    )
+    .map((node) => node.expression.arguments[1]);
+
   // input settings for the patched function
   const patchIdentifierMap = {
     calcCurrentSectorIndex: calcCurrentSectorIndex_Name,
@@ -347,8 +377,8 @@ function translate(wheelDeobJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
     riggedValues,
     stopThreshold: stopThreshold_Value,
   };
-  console.log({ patchIdentifierMap, patchValueMap });
-  debugger;
+  const patchAstNodeMap = { afterScriptLoadFunctions };
+
   // replace the identifiers and values in the patched function
   const randomizerPatchFunctionExpression = Parser.parse(wheelPatchJs, {
     sourceType: "script",
@@ -443,7 +473,11 @@ function translate(wheelDeobJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
     // in the middle
     traverse(updateWheelClearInterval_Expression, {
       CallExpression(path) {
-        if (!nodeIs.identifier(path.node.callee, { name: "clearInterval" }))
+        if (
+          !nodeIs.identifier(path.node.callee, {
+            name: "clearInterval",
+          })
+        )
           return;
         path.replaceWith(
           builders.sequenceExpression([
@@ -488,7 +522,9 @@ function translate(wheelDeobJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
         !nodeIs.variableDeclaration(nearbyVariableDeclaration, {
           kind: "var",
         }) &&
-        !nodeIs.variableDeclaration(nearbyVariableDeclaration, { kind: "let" })
+        !nodeIs.variableDeclaration(nearbyVariableDeclaration, {
+          kind: "let",
+        })
       )
         continue;
       const nodesToInsert = [
@@ -507,6 +543,37 @@ function translate(wheelDeobJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
       break;
     }
   })();
+
+  // replace the identifiers and values in the patched function
+  const afterScriptLoadFunctionExpression = Parser.parse(wheelPatch3Js, {
+    sourceType: "script",
+  }).body[0].expression;
+  traverse(afterScriptLoadFunctionExpression, {
+    // _astreplace_functions_* is replaced to an array of functions defined locally
+    VariableDeclarator(path) {
+      if (
+        !nodeIs.identifier(path.node.id) ||
+        !path.node.id.name.startsWith("_astreplace_") ||
+        path.node.init.name !== "undefined"
+      )
+        return;
+      const [type, name] = path.node.id.name.slice(12).split("_");
+      switch (type) {
+        case "functions":
+          path.replaceWith(
+            builders.variableDeclarator(
+              structuredClone(path.node.id),
+              patchAstNodeMap[name] != null
+                ? builders.arrayExpression(
+                    patchAstNodeMap[name].map((func) => structuredClone(func))
+                  )
+                : builders.literal(null)
+            )
+          );
+          break;
+      }
+    },
+  });
   // reobfuscate to make final code looks like original, but minimize techniques used
   const obfuscationOptions = {
     compact: true,
@@ -555,11 +622,28 @@ function translate(wheelDeobJs, wheelPatchJs, wheelPatch2Js, riggedValues) {
     unicodeEscapeSequence: false,
   };
   const sourceComplete = generate(wholeFileNode, { format: FORMAT_MINIFY });
+  const sourceCompleteObfuscated = obsfucator
+    .obfuscate(sourceComplete, obfuscationOptions)
+    .getObfuscatedCode();
+  // an userscript version requires rerunning the DOMContentLoaded listeners
+  wholeFileNode_Body.push(afterScriptLoadFunctionExpression);
+  const sourceForUserScriptInject = obsfucator
+    .obfuscate(
+      generate(wholeFileNode, { format: FORMAT_MINIFY }),
+      obfuscationOptions
+    )
+    .getObfuscatedCode();
+  const sourceForUserScriptInjectEscaped = jsStringEscape(
+    sourceForUserScriptInject
+  );
+  const sourceUserScriptComplete = wheelScripter.replace(
+    "_strreplace_completesource",
+    sourceForUserScriptInjectEscaped
+  );
   return {
     sourceComplete,
-    sourceCompleteObfuscated: obsfucator
-      .obfuscate(sourceComplete, obfuscationOptions)
-      .getObfuscatedCode(),
+    sourceCompleteObfuscated,
+    sourceUserScriptComplete,
   };
 }
 

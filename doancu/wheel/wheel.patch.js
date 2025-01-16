@@ -81,7 +81,8 @@
           .slice(0, index)
           .reduce((acc, angle) => acc + angle, 0);
         const end = start + sectorAngles[index];
-        return [start, end];
+        const center = (start + end) / 2;
+        return [start, center, end];
       });
       let attemptCount = 1;
       // this is used in case could not find any possible output after some iterations
@@ -104,9 +105,8 @@
           return;
         }
         const riggedIndex = randSample(riggedSectorIndexes);
-        const [riggedAngleStart, riggedAngleEnd] =
+        const [riggedAngleStart, riggedCenter, riggedAngleEnd] =
           riggedAngles[riggedSectorIndexes.indexOf(riggedIndex)];
-        const riggedCenter = (riggedAngleStart + riggedAngleEnd) / 2;
         const possibleSpinAccelerations = [];
         // test all positions of the wheel where the starting acceleration value can start from
         // by reversing the wheel slow down process (acceleration reducing)
