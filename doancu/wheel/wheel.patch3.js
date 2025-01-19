@@ -6,5 +6,5 @@
   // `DOMContentLoaded` has already fired, we need to run the listeners manually
   const _astreplace_functions_afterScriptLoadFunctions = undefined;
   const functionsToCall = _astreplace_functions_afterScriptLoadFunctions ?? [];
-  for (func of functionsToCall) functionsToCall(new Event("DOMContentLoaded"));
+  for (const func of functionsToCall) func(new Event("DOMContentLoaded"));
 })();

@@ -348,7 +348,10 @@ function translate(
       (node) =>
         nodeIs.expressionStatement(node) &&
         nodeIs.memberExpression(node.expression.callee) &&
-        nodeIs.identifier(node.expression.callee.object, { name: "window" }) &&
+        (nodeIs.identifier(node.expression.callee.object, { name: "window" }) ||
+          nodeIs.identifier(node.expression.callee.object, {
+            name: "document",
+          })) &&
         nodeIs.identifier(node.expression.callee.property, {
           name: "addEventListener",
         }) &&
@@ -357,6 +360,17 @@ function translate(
         }) &&
         nodeIs.arrowFunctionExpression(node.expression.arguments[1])
     )
+    .sort((a, b) => {
+      const aIsDocument = nodeIs.identifier(a.expression.callee.object, {
+        name: "document",
+      });
+      const bIsDocument = nodeIs.identifier(b.expression.callee.object, {
+        name: "document",
+      });
+      if (aIsDocument && !bIsDocument) return -1;
+      if (!aIsDocument && bIsDocument) return 1;
+      return 0;
+    })
     .map((node) => node.expression.arguments[1]);
 
   // input settings for the patched function
