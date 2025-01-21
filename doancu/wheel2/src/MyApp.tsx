@@ -1,4 +1,4 @@
-import { Editor, type OnMount } from "@monaco-editor/react";
+import { Editor } from "@monaco-editor/react";
 import BiotechIcon from "@mui/icons-material/Biotech";
 import DescriptionIcon from "@mui/icons-material/Description";
 import FoundationIcon from "@mui/icons-material/Foundation";
@@ -7,19 +7,22 @@ import KeyIcon from "@mui/icons-material/Key";
 import RunningWithErrorsIcon from "@mui/icons-material/RunningWithErrors";
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
 import { Box, Divider, Stack, Tab, Tabs } from "@mui/material";
-import React, { useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { editor } from "monaco-editor";
+import React, { useEffect, useRef, useState } from "react";
 
-type IStandaloneCodeEditor = Parameters<OnMount>[0];
+type MonacoEditor = editor.IStandaloneCodeEditor;
 
 export default function MyApp() {
   const [tabIndex, setTabIndex] = useState(0);
-  const editorOriginalRef = useRef<IStandaloneCodeEditor | null>(null);
-  const editorClairvoyanceRef = useRef<IStandaloneCodeEditor | null>(null);
-  const editorSnapRef = useRef<IStandaloneCodeEditor | null>(null);
-  const editoReinitRef = useRef<IStandaloneCodeEditor | null>(null);
-  const editorScripterRef = useRef<IStandaloneCodeEditor | null>(null);
-  const editorDeobfuscatedRef = useRef<IStandaloneCodeEditor | null>(null);
-  const editorUserscriptef = useRef<IStandaloneCodeEditor | null>(null);
+  const editorOriginalRef = useRef<MonacoEditor | null>(null);
+  const editorClairvoyanceRef = useRef<MonacoEditor | null>(null);
+  const editorSnapRef = useRef<MonacoEditor | null>(null);
+  const editoReinitRef = useRef<MonacoEditor | null>(null);
+  const editorScripterRef = useRef<MonacoEditor | null>(null);
+  const editorDeobfuscatedRef = useRef<MonacoEditor | null>(null);
+  const editorUserscriptef = useRef<MonacoEditor | null>(null);
   return (
     <>
       <Stack
@@ -47,26 +50,31 @@ export default function MyApp() {
             index={0}
             value={tabIndex}
             editorRef={editorOriginalRef}
+            defaultFiles={["wheel.deob.txt", "wheel.min.txt"]}
           ></EditorTabPanel>
           <EditorTabPanel
             index={1}
             value={tabIndex}
             editorRef={editorClairvoyanceRef}
+            defaultFiles={["wheel.patch.txt"]}
           ></EditorTabPanel>
           <EditorTabPanel
             index={2}
             value={tabIndex}
             editorRef={editorSnapRef}
+            defaultFiles={["wheel.patch2.txt"]}
           ></EditorTabPanel>
           <EditorTabPanel
             index={3}
             value={tabIndex}
             editorRef={editoReinitRef}
+            defaultFiles={["wheel.patch3.txt"]}
           ></EditorTabPanel>
           <EditorTabPanel
             index={4}
             value={tabIndex}
             editorRef={editorScripterRef}
+            defaultFiles={["wheel.userscripter.txt"]}
           ></EditorTabPanel>
           <EditorTabPanel
             index={5}
@@ -90,16 +98,51 @@ interface EditorTabPanelProps {
   index: number;
   value: number;
   readOnly?: boolean;
-  editorRef: React.MutableRefObject<IStandaloneCodeEditor>;
+  editorRef: React.MutableRefObject<MonacoEditor | null>;
+  defaultFiles?: string[];
 }
 function EditorTabPanel(props: EditorTabPanelProps) {
-  const { value, index, readOnly, editorRef, ...other } = props;
-
+  const { value, index, readOnly, editorRef, defaultFiles, ...other } = props;
+  const [ref, setRef] = useState<MonacoEditor | null>(null);
+  const { isSuccess, data } = useQuery({
+    enabled: !!defaultFiles && defaultFiles.length > 0,
+    queryKey: ["resource-file", defaultFiles],
+    queryFn: async () => {
+      if (!!defaultFiles && defaultFiles.length > 0) {
+        for (const file of defaultFiles) {
+          const response = await axios.get(`./public/${file}`, {
+            responseType: "text",
+          });
+          if (response.data) {
+            return response.data;
+          }
+        }
+        return null;
+      }
+      return null;
+    },
+  });
+  useEffect(() => {
+    if (ref && isSuccess) {
+      ref.setValue(data);
+    }
+  }, [ref, isSuccess, data]);
   return (
     <div hidden={value !== index} {...other} style={{ height: "100%" }}>
       <Editor
-        options={{ readOnly }}
-        onMount={(editor) => (editorRef.current = editor)}
+        options={{ readOnly: !!readOnly }}
+        defaultLanguage="javascript"
+        defaultValue={
+          !!defaultFiles && defaultFiles.length > 0
+            ? `// loading files ${defaultFiles.join(" and ")}`
+            : readOnly
+            ? "// your output here"
+            : "// nothing to load"
+        }
+        onMount={(editor) => {
+          setRef(editor);
+          editorRef.current = editor;
+        }}
       ></Editor>
     </div>
   );
