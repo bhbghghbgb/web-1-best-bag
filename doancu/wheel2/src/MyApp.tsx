@@ -6,13 +6,26 @@ import GpsFixedIcon from "@mui/icons-material/GpsFixed";
 import KeyIcon from "@mui/icons-material/Key";
 import RunningWithErrorsIcon from "@mui/icons-material/RunningWithErrors";
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
-import { Box, Divider, Stack, Tab, Tabs } from "@mui/material";
+import { Box, Button, Divider, Stack, Tab, Tabs } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { editor } from "monaco-editor";
 import React, { useEffect, useRef, useState } from "react";
+import { Control, Controller, useForm } from "react-hook-form";
+import { webcrack } from "webcrack";
+import { safeEval } from "./sandbox";
 
 type MonacoEditor = editor.IStandaloneCodeEditor;
+
+interface FormProps {
+  original: string;
+  clairvoyance: string;
+  snap: string;
+  reinit: string;
+  scripter: string;
+  deobfuscated: string;
+  userscript: string;
+}
 
 export default function MyApp() {
   const [tabIndex, setTabIndex] = useState(0);
@@ -23,6 +36,40 @@ export default function MyApp() {
   const editorScripterRef = useRef<MonacoEditor | null>(null);
   const editorDeobfuscatedRef = useRef<MonacoEditor | null>(null);
   const editorUserscriptef = useRef<MonacoEditor | null>(null);
+  const {
+    handleSubmit: handleSubmitForm,
+    reset: resetForm,
+    control: controlForm,
+  } = useForm<FormProps>({
+    defaultValues: {
+      original: "",
+      clairvoyance: "",
+      snap: "",
+      reinit: "",
+      scripter: "",
+      deobfuscated: "",
+      userscript: "",
+    },
+  });
+  const deobfuscateCode = async (code: string) =>
+    (
+      await webcrack(code, {
+        jsx: false,
+        unpack: false,
+        unminify: false,
+        deobfuscate: true,
+        mangle: (id) => id.startsWith("_0x"),
+        sandbox: safeEval,
+      })
+    ).code;
+  const handleSubmit = () =>
+    handleSubmitForm(async (data) => {
+      const { original } = data;
+      const deobfuscated = await deobfuscateCode(original);
+      editorDeobfuscatedRef.current?.setValue(deobfuscated);
+      setTabIndex(5);
+    })();
+
   return (
     <>
       <Stack
@@ -50,45 +97,67 @@ export default function MyApp() {
             index={0}
             value={tabIndex}
             editorRef={editorOriginalRef}
-            defaultFiles={["wheel.deob.txt", "wheel.min.txt"]}
+            defaultFiles={[/*"wheel.deob.txt",*/ "wheel.min.txt"]}
+            name="original"
+            control={controlForm}
           ></EditorTabPanel>
           <EditorTabPanel
             index={1}
             value={tabIndex}
             editorRef={editorClairvoyanceRef}
             defaultFiles={["wheel.patch.txt"]}
+            name="clairvoyance"
+            control={controlForm}
           ></EditorTabPanel>
           <EditorTabPanel
             index={2}
             value={tabIndex}
             editorRef={editorSnapRef}
             defaultFiles={["wheel.patch2.txt"]}
+            name="snap"
+            control={controlForm}
           ></EditorTabPanel>
           <EditorTabPanel
             index={3}
             value={tabIndex}
             editorRef={editoReinitRef}
             defaultFiles={["wheel.patch3.txt"]}
+            name="reinit"
+            control={controlForm}
           ></EditorTabPanel>
           <EditorTabPanel
             index={4}
             value={tabIndex}
             editorRef={editorScripterRef}
             defaultFiles={["wheel.userscripter.txt"]}
+            name="scripter"
+            control={controlForm}
           ></EditorTabPanel>
           <EditorTabPanel
             index={5}
             value={tabIndex}
             readOnly
             editorRef={editorDeobfuscatedRef}
+            name="deobfuscated"
+            control={controlForm}
           ></EditorTabPanel>
           <EditorTabPanel
             index={6}
             value={tabIndex}
             readOnly
             editorRef={editorUserscriptef}
+            name="userscript"
+            control={controlForm}
           ></EditorTabPanel>
         </Box>
+        <Stack gap={2} justifyContent={"center"}>
+          <Button onClick={handleSubmit} variant={"contained"}>
+            Submit
+          </Button>
+          <Button onClick={() => resetForm()} variant={"outlined"}>
+            Reset
+          </Button>
+        </Stack>
       </Stack>
     </>
   );
@@ -101,8 +170,28 @@ interface EditorTabPanelProps {
   editorRef: React.MutableRefObject<MonacoEditor | null>;
   defaultFiles?: string[];
 }
-function EditorTabPanel(props: EditorTabPanelProps) {
-  const { value, index, readOnly, editorRef, defaultFiles, ...other } = props;
+interface InputControllerProps {
+  name:
+    | "original"
+    | "clairvoyance"
+    | "snap"
+    | "reinit"
+    | "scripter"
+    | "deobfuscated"
+    | "userscript";
+  control: Control<FormProps>;
+}
+function EditorTabPanel(props: EditorTabPanelProps & InputControllerProps) {
+  const {
+    value,
+    index,
+    readOnly,
+    editorRef,
+    defaultFiles,
+    name,
+    control,
+    ...other
+  } = props;
   const [ref, setRef] = useState<MonacoEditor | null>(null);
   const { isSuccess, data } = useQuery({
     enabled: !!defaultFiles && defaultFiles.length > 0,
@@ -113,7 +202,10 @@ function EditorTabPanel(props: EditorTabPanelProps) {
           const response = await axios.get(`./public/${file}`, {
             responseType: "text",
           });
-          if (response.data) {
+          if (
+            response?.headers["content-type"] !== "text/html" &&
+            response.data
+          ) {
             return response.data;
           }
         }
@@ -129,21 +221,22 @@ function EditorTabPanel(props: EditorTabPanelProps) {
   }, [ref, isSuccess, data]);
   return (
     <div hidden={value !== index} {...other} style={{ height: "100%" }}>
-      <Editor
-        options={{ readOnly: !!readOnly }}
-        defaultLanguage="javascript"
-        defaultValue={
-          !!defaultFiles && defaultFiles.length > 0
-            ? `// loading files ${defaultFiles.join(" and ")}`
-            : readOnly
-            ? "// your output here"
-            : "// nothing to load"
-        }
-        onMount={(editor) => {
-          setRef(editor);
-          editorRef.current = editor;
-        }}
-      ></Editor>
+      <Controller
+        name={name}
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <Editor
+            options={{ readOnly: !!readOnly }}
+            defaultLanguage="javascript"
+            value={value}
+            onChange={onChange}
+            onMount={(editor) => {
+              setRef(editor);
+              editorRef.current = editor;
+            }}
+          ></Editor>
+        )}
+      ></Controller>
     </div>
   );
 }
