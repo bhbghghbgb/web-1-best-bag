@@ -359,6 +359,7 @@ function populateRandomizerPatch(
               structuredClone(path.node.id),
               patchValueMap[name] != null
                 ? Parser.parse(JSON.stringify(patchValueMap[name]), {
+                    ecmaVersion: 2022,
                     sourceType: "script",
                   }).body[0].expression
                 : builders.literal(null)
@@ -861,12 +862,15 @@ function parsePatchesToAst(randomizer, sectorIndex, afterScriptLoad) {
   try {
     return {
       randomizer: Parser.parse(randomizer, {
+        ecmaVersion: 2022,
         sourceType: "script",
       }).body[0].expression,
       sectorIndex: Parser.parse(sectorIndex, {
+        ecmaVersion: 2022,
         sourceType: "script",
       }).body[0].expression,
       afterScriptLoad: Parser.parse(afterScriptLoad, {
+        ecmaVersion: 2022,
         sourceType: "script",
       }).body[0].expression,
     };

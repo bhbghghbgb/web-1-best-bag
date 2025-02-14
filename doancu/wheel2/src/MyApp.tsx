@@ -14,7 +14,8 @@ import { editor } from "monaco-editor";
 import React, { useEffect, useRef, useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
 import { translate } from "./patcher";
-import { deobfuscateCode } from "./deobfus";
+import UrlForm from "./UrlForm";
+import useDeobfuscatorWorker from "./employer";
 
 type MonacoEditor = editor.IStandaloneCodeEditor;
 
@@ -41,7 +42,7 @@ export default function MyApp() {
   const editorUserscriptRef = useRef<MonacoEditor | null>(null);
   const {
     handleSubmit: handleSubmitForm,
-    reset: resetForm,
+    reset: clearForm,
     control: controlForm,
   } = useForm<FormProps>({
     defaultValues: {
@@ -55,25 +56,59 @@ export default function MyApp() {
       userscript: "",
     },
   });
+  const formDataRef = useRef<FormProps | null>(null);
+  const deobfuscateRequest = useDeobfuscatorWorker((response) => {
+    const { success, deobfuscatedCode, error } = response;
+    if (!success || error) {
+      console.error(response);
+      throw new Error("Deobfuscation unsuccessful");
+    }
+    if (!deobfuscatedCode) {
+      console.error(deobfuscatedCode);
+      throw new Error("Deobfuscated code is invalid");
+    }
+    editorDeobfuscatedRef.current?.setValue(deobfuscatedCode);
+    setTabIndex(5);
+    if (!formDataRef.current) {
+      throw new Error("Sanity fail: formData null after deobfuscateRequest");
+    }
+    const { clairvoyance, snap, reinit, scripter } = formDataRef.current;
+    const { patchedAsSource, patchedAsUserscript } = translate(
+      deobfuscatedCode,
+      clairvoyance,
+      snap,
+      reinit,
+      scripter,
+      ["mmsb"]
+    );
+    editorPatchedRef.current?.setValue(patchedAsSource);
+    setTabIndex(6);
+    editorUserscriptRef.current?.setValue(patchedAsUserscript);
+  });
   const handleSubmit = () =>
-    handleSubmitForm(async (data) => {
-      const { original, clairvoyance, snap, reinit, scripter } = data;
-      const deobfuscatedCode = await deobfuscateCode(original);
-      editorDeobfuscatedRef.current?.setValue(deobfuscatedCode);
-      setTabIndex(5);
-      const { patchedAsSource, patchedAsUserscript } = translate(
-        deobfuscatedCode,
-        clairvoyance,
-        snap,
-        reinit,
-        scripter,
-        ["mmsb"]
-      );
-      editorPatchedRef.current?.setValue(patchedAsSource);
-      setTabIndex(6);
-      editorUserscriptRef.current?.setValue(patchedAsUserscript);
+    handleSubmitForm((data) => {
+      formDataRef.current = data;
+      const { original } = data;
+      deobfuscateRequest({ code: original });
     })();
-
+  const [urlFormOpen, setUrlFormOpen] = useState<boolean>(false);
+  const urlFormRef = useRef<string>("");
+  const { refetch: fetchUrlForm } = useQuery({
+    enabled: false,
+    staleTime: 0,
+    queryKey: ["urlForm", urlFormRef.current],
+    queryFn: async () => {
+      const response = await axios.get(urlFormRef.current, {
+        responseType: "text",
+      });
+      if (response.data) {
+        urlFormRef.current = "";
+        editorOriginalRef.current?.setValue(response.data);
+        setTabIndex(0);
+        return response.data;
+      }
+    },
+  });
   return (
     <>
       <Stack
@@ -167,11 +202,27 @@ export default function MyApp() {
           <Button onClick={handleSubmit} variant={"contained"}>
             Submit
           </Button>
-          <Button onClick={() => resetForm()} variant={"outlined"}>
-            Reset
+          <Button
+            onClick={() => {
+              clearForm();
+              setTabIndex(0);
+            }}
+            variant={"outlined"}
+          >
+            Clear
           </Button>
+          <Button onClick={() => setUrlFormOpen(true)}>Read URL</Button>
         </Stack>
       </Stack>
+      <UrlForm
+        open={urlFormOpen}
+        onClose={() => setUrlFormOpen(false)}
+        onAccept={({ url }) => {
+          urlFormRef.current = url;
+          fetchUrlForm();
+        }}
+        placeholder={`${location.protocol}//${location.host}${location.pathname}wheel.min.js.txt`}
+      />
     </>
   );
 }
@@ -209,11 +260,12 @@ function EditorTabPanel(props: EditorTabPanelProps & InputControllerProps) {
   const [ref, setRef] = useState<MonacoEditor | null>(null);
   const { isSuccess, data } = useQuery({
     enabled: !!defaultFiles && defaultFiles.length > 0,
+    staleTime: Infinity,
     queryKey: ["resource-file", defaultFiles],
     queryFn: async () => {
       if (!!defaultFiles && defaultFiles.length > 0) {
         for (const file of defaultFiles) {
-          const response = await axios.get(`./public/${file}`, {
+          const response = await axios.get(`./${file}`, {
             responseType: "text",
           });
           if (
@@ -244,10 +296,11 @@ function EditorTabPanel(props: EditorTabPanelProps & InputControllerProps) {
             defaultLanguage="javascript"
             value={value}
             onChange={onChange}
-            onMount={(editor) => {
+            onMount={(editor, monaco) => {
               setRef(editor);
               editorRef.current = editor;
               editor.getModel()?.updateOptions({ tabSize: 2 });
+              monaco.editor.setTheme("vs-dark");
             }}
           ></Editor>
         )}
