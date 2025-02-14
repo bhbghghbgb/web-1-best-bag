@@ -15,7 +15,7 @@
   // "features": {},
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [5173],
+  "forwardPorts": [4000, 5173],
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "yarn install && yarn cache clean && git config --global core.autocrlf true",

@@ -4,6 +4,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import FoundationIcon from "@mui/icons-material/Foundation";
 import GpsFixedIcon from "@mui/icons-material/GpsFixed";
 import KeyIcon from "@mui/icons-material/Key";
+import FindReplaceIcon from "@mui/icons-material/FindReplace";
 import RunningWithErrorsIcon from "@mui/icons-material/RunningWithErrors";
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
 import { Box, Button, Divider, Stack, Tab, Tabs } from "@mui/material";
@@ -12,8 +13,8 @@ import axios from "axios";
 import { editor } from "monaco-editor";
 import React, { useEffect, useRef, useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
-import { webcrack } from "webcrack";
-import { safeEval } from "./sandbox";
+import { translate } from "./patcher";
+import { deobfuscateCode } from "./deobfus";
 
 type MonacoEditor = editor.IStandaloneCodeEditor;
 
@@ -24,6 +25,7 @@ interface FormProps {
   reinit: string;
   scripter: string;
   deobfuscated: string;
+  patched: string;
   userscript: string;
 }
 
@@ -35,7 +37,8 @@ export default function MyApp() {
   const editoReinitRef = useRef<MonacoEditor | null>(null);
   const editorScripterRef = useRef<MonacoEditor | null>(null);
   const editorDeobfuscatedRef = useRef<MonacoEditor | null>(null);
-  const editorUserscriptef = useRef<MonacoEditor | null>(null);
+  const editorPatchedRef = useRef<MonacoEditor | null>(null);
+  const editorUserscriptRef = useRef<MonacoEditor | null>(null);
   const {
     handleSubmit: handleSubmitForm,
     reset: resetForm,
@@ -48,26 +51,27 @@ export default function MyApp() {
       reinit: "",
       scripter: "",
       deobfuscated: "",
+      patched: "",
       userscript: "",
     },
   });
-  const deobfuscateCode = async (code: string) =>
-    (
-      await webcrack(code, {
-        jsx: false,
-        unpack: false,
-        unminify: false,
-        deobfuscate: true,
-        mangle: (id) => id.startsWith("_0x"),
-        sandbox: safeEval,
-      })
-    ).code;
   const handleSubmit = () =>
     handleSubmitForm(async (data) => {
-      const { original } = data;
-      const deobfuscated = await deobfuscateCode(original);
-      editorDeobfuscatedRef.current?.setValue(deobfuscated);
+      const { original, clairvoyance, snap, reinit, scripter } = data;
+      const deobfuscatedCode = await deobfuscateCode(original);
+      editorDeobfuscatedRef.current?.setValue(deobfuscatedCode);
       setTabIndex(5);
+      const { patchedAsSource, patchedAsUserscript } = translate(
+        deobfuscatedCode,
+        clairvoyance,
+        snap,
+        reinit,
+        scripter,
+        ["mmsb"]
+      );
+      editorPatchedRef.current?.setValue(patchedAsSource);
+      setTabIndex(6);
+      editorUserscriptRef.current?.setValue(patchedAsUserscript);
     })();
 
   return (
@@ -89,6 +93,7 @@ export default function MyApp() {
           <EditorTab label="Reinit" icon={<RunningWithErrorsIcon />} />
           <EditorTab label="Scripter" icon={<DescriptionIcon />} />
           <EditorTab label="Deobfuscated" icon={<SanitizerIcon />} />
+          <EditorTab label="Patched" icon={<FindReplaceIcon />} />
           <EditorTab label="Userscript" icon={<KeyIcon />} />
         </Tabs>
         <Divider orientation="vertical" flexItem />
@@ -97,7 +102,7 @@ export default function MyApp() {
             index={0}
             value={tabIndex}
             editorRef={editorOriginalRef}
-            defaultFiles={[/*"wheel.deob.txt",*/ "wheel.min.txt"]}
+            defaultFiles={[/*"wheel.deob.js.txt",*/ "wheel.min.js.txt"]}
             name="original"
             control={controlForm}
           ></EditorTabPanel>
@@ -105,7 +110,7 @@ export default function MyApp() {
             index={1}
             value={tabIndex}
             editorRef={editorClairvoyanceRef}
-            defaultFiles={["wheel.patch.txt"]}
+            defaultFiles={["wheel.patch.js.txt"]}
             name="clairvoyance"
             control={controlForm}
           ></EditorTabPanel>
@@ -113,7 +118,7 @@ export default function MyApp() {
             index={2}
             value={tabIndex}
             editorRef={editorSnapRef}
-            defaultFiles={["wheel.patch2.txt"]}
+            defaultFiles={["wheel.patch2.js.txt"]}
             name="snap"
             control={controlForm}
           ></EditorTabPanel>
@@ -121,7 +126,7 @@ export default function MyApp() {
             index={3}
             value={tabIndex}
             editorRef={editoReinitRef}
-            defaultFiles={["wheel.patch3.txt"]}
+            defaultFiles={["wheel.patch3.js.txt"]}
             name="reinit"
             control={controlForm}
           ></EditorTabPanel>
@@ -129,7 +134,7 @@ export default function MyApp() {
             index={4}
             value={tabIndex}
             editorRef={editorScripterRef}
-            defaultFiles={["wheel.userscripter.txt"]}
+            defaultFiles={["wheel.scripter.js.txt"]}
             name="scripter"
             control={controlForm}
           ></EditorTabPanel>
@@ -145,7 +150,15 @@ export default function MyApp() {
             index={6}
             value={tabIndex}
             readOnly
-            editorRef={editorUserscriptef}
+            editorRef={editorPatchedRef}
+            name="patched"
+            control={controlForm}
+          ></EditorTabPanel>
+          <EditorTabPanel
+            index={7}
+            value={tabIndex}
+            readOnly
+            editorRef={editorUserscriptRef}
             name="userscript"
             control={controlForm}
           ></EditorTabPanel>
@@ -178,6 +191,7 @@ interface InputControllerProps {
     | "reinit"
     | "scripter"
     | "deobfuscated"
+    | "patched"
     | "userscript";
   control: Control<FormProps>;
 }
@@ -233,6 +247,7 @@ function EditorTabPanel(props: EditorTabPanelProps & InputControllerProps) {
             onMount={(editor) => {
               setRef(editor);
               editorRef.current = editor;
+              editor.getModel()?.updateOptions({ tabSize: 2 });
             }}
           ></Editor>
         )}
