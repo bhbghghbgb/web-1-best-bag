@@ -2,6 +2,7 @@ import { Parser } from "acorn";
 import { FORMAT_DEFAULTS, FORMAT_MINIFY, generate } from "escodegen";
 import { builders, is as nodeIs, traverse } from "estree-toolkit";
 import jsStringEscape from "js-string-escape";
+import { minify } from "terser";
 
 const FORMAT_DEFAULT = {
   ...FORMAT_DEFAULTS,
@@ -29,9 +30,9 @@ class TranslationArgumentError extends Error {
  * @param {string} reinitPatch
  * @param {string} scripterTemplate
  * @param {string[]} riggingValues
- * @returns {{patchedAsSource: string, patchedAsUserscript: string}}
+ * @returns {Promise<{patchedAsSource: string, patchedAsUserscript: string}>}
  */
-export function translate(
+export async function translate(
   deobfuscatedSource,
   clairvoyancePatch,
   snapPatch,
@@ -62,7 +63,7 @@ export function translate(
     updateWheelClearInterval_Expression,
   ] = locateInLoadWheelBy_spinElementClick(loadWheel_Body);
   const [accelerationFactor_Name, stopThreshold_Value] =
-    locateInLoadWheelBy_spinAccelerationZeroTest(
+    locateInLoadWheelBy_spinAccelerationIsZeroTest(
       loadWheel_Body,
       spinAcceleration_Name
     );
@@ -126,11 +127,13 @@ export function translate(
     afterScriptLoadFunctionExpression,
     patchAstNodeMap
   );
-  const patchedAsSource = /** @type {string} */ generate(wholeFileNode, {
-    format: FORMAT_DEFAULT,
-  });
+  const patchedAsSource =
+    /** @type {string} */
+    generatePatchedSource(wholeFileNode);
   // an userscript version requires rerunning the DOMContentLoaded listeners
-  const patchedAsUserscript = patchFileWithUserscript(
+  // of the original source code, because we can only inject it after 'load'
+  // event has fired or some required globals wouldn't have been initialized
+  const patchedAsUserscript = /** @type {string} */ await generateUserscript(
     wholeFileNode_Body,
     afterScriptLoadFunctionExpression,
     wholeFileNode,
@@ -138,22 +141,65 @@ export function translate(
   );
   return { patchedAsSource, patchedAsUserscript };
 }
-function patchFileWithUserscript(
+function generatePatchedSource(wholeFileNode) {
+  console.debug(
+    "[patcher]:generatePatchedSource - Generating patched source from AST",
+    { wholeFileNode }
+  );
+  const patchedSource = generate(wholeFileNode, {
+    format: FORMAT_DEFAULT,
+  });
+  console.debug("[patcher]:generatePatchedSource - Generated patched source", {
+    result: patchedSource,
+  });
+  return patchedSource;
+}
+
+async function generateUserscript(
   wholeFileNode_Body,
   afterScriptLoadFunctionExpression,
   wholeFileNode,
   scripterTemplate
 ) {
+  console.debug(
+    "[patcher]:generateUserscript - Generating userscript with after script load function",
+    {
+      wholeFileNode_Body,
+      afterScriptLoadFunctionExpression,
+      wholeFileNode,
+      scripterTemplate,
+    }
+  );
   wholeFileNode_Body.push(afterScriptLoadFunctionExpression);
   const sourceForUserScriptInject = generate(wholeFileNode, {
     format: FORMAT_MINIFY,
   });
+  console.debug(
+    "[patcher]:generateUserscript - Generated source for userscript inject",
+    { sourceForUserScriptInject }
+  );
+  const sourceForUserScriptInjectMinified = await minify(
+    sourceForUserScriptInject,
+    { ecma: 2020 }
+  );
+  console.debug(
+    "[patcher]:generateUserscript - Minified source for userscript inject",
+    { sourceForUserScriptInjectMinified }
+  );
   const sourceForUserScriptInjectEscaped = jsStringEscape(
-    sourceForUserScriptInject
+    sourceForUserScriptInjectMinified.code
+  );
+  console.debug(
+    "[patcher]:generateUserscript - Escaped source for userscript inject",
+    { sourceForUserScriptInjectEscaped }
   );
   const patchedAsUserscript = /** @type {string} */ scripterTemplate.replace(
     "_strreplace_completesource",
     sourceForUserScriptInjectEscaped
+  );
+  console.debug(
+    "[patcher]:generateUserscript - Replaced scripter template with source",
+    { patchedAsUserscript }
   );
   return patchedAsUserscript;
 }
@@ -162,6 +208,10 @@ function populateAfterScriptLoadPatch(
   afterScriptLoadFunctionExpression,
   patchAstNodeMap
 ) {
+  console.debug(
+    "[patcher]:populateAfterScriptLoadPatch - Populating after script load patch with functions",
+    { afterScriptLoadFunctionExpression, patchAstNodeMap }
+  );
   traverse(afterScriptLoadFunctionExpression, {
     // _astreplace_functions_* is replaced to an array of functions defined locally
     VariableDeclarator(path) {
@@ -199,6 +249,19 @@ function patchLoadWheelWithSectorIndex(
   loadWheel_Body,
   patchIdentifierMap
 ) {
+  console.debug(
+    "[patcher]:patchLoadWheelWithSectorIndex - Patching loadWheel with sector index",
+    {
+      updateWheelClearInterval_Expression,
+      updateWheelIntervalId_Name,
+      calcCurrentSectorIndex_VariableDeclaration,
+      calcCurrentSectorIndex_Name,
+      sectorIndexPatchFunctionExpression,
+      loadWheel_Body,
+      patchIdentifierMap,
+    }
+  );
+
   // patch the code inside spinElementClickListener so it sets the interval id to null
   // after calling clearInterval, this allows us to test it and restore the original functionality
   // of calcCurrentSectorIndex when loadWheel is called again
@@ -228,6 +291,7 @@ function patchLoadWheelWithSectorIndex(
       this.stop();
     },
   });
+
   // patches the calcCurrentSectorIndex function
   traverse(calcCurrentSectorIndex_VariableDeclaration, {
     ArrowFunctionExpression(path) {
@@ -244,6 +308,7 @@ function patchLoadWheelWithSectorIndex(
       this.stop();
     },
   });
+
   // find a var or let variable declaration and borrow it to initialize
   // _astinsert_identifier_riggedSectorIndexes
   // try to settle it nearby for easy debugging
@@ -284,6 +349,10 @@ function populateSectorIndexPatch(
   sectorIndexPatchFunctionExpression,
   patchIdentifierMap
 ) {
+  console.debug(
+    "[patcher]:populateSectorIndexPatch - Populating sector index patch with identifiers",
+    { sectorIndexPatchFunctionExpression, patchIdentifierMap }
+  );
   traverse(sectorIndexPatchFunctionExpression, {
     Identifier(path) {
       if (!path.node.name.startsWith("_astreplace_")) return;
@@ -306,6 +375,13 @@ function patchLoadWheelWithRandomizer(
   spinAccelerationRandomizer_Name,
   randomizerPatchFunctionExpression
 ) {
+  console.debug(
+    "[patcher]:patchLoadWheelWithRandomizer - Patching loadWheel with randomizer",
+    {
+      spinAccelerationRandomizer_Name,
+      randomizerPatchFunctionExpression,
+    }
+  );
   for (const node of loadWheel_Body) {
     if (nodeIs.variableDeclaration(node, { kind: "const" })) {
       const index = node.declarations.findIndex(
@@ -328,8 +404,12 @@ function populateRandomizerPatch(
   patchIdentifierMap,
   patchValueMap
 ) {
+  console.debug(
+    "[patcher]:populateRandomizerPatch - Populating randomizer patch with identifiers and values",
+    { randomizerPatchFunctionExpression, patchIdentifierMap, patchValueMap }
+  );
   traverse(randomizerPatchFunctionExpression, {
-    // _astreplace_identifier_* is  replaced to an identifier within the scope of the original code
+    // _astreplace_identifier_* is replaced to an identifier within the scope of the original code
     Identifier(path) {
       if (!path.node.name.startsWith("_astreplace_")) return;
       const [type, name] = path.node.name.slice(12).split("_");
@@ -403,10 +483,18 @@ function locateInLoadWheelBy_updateWheelDisplay(
       "loadWheel_Body",
       "No children matching filter"
     );
+  console.debug(
+    "[patcher]:locateInLoadWheelBy_updateWheelDisplay - Located updateWheelDisplay function",
+    {
+      updateWheelDisplayName: updateWheelDisplay_FunctionDeclaration.id.name,
+      wheelSectors_Name,
+      calcCurrentSectorIndex_Name,
+    }
+  );
   return updateWheelDisplay_FunctionDeclaration.id.name;
 }
 
-function locateInLoadWheelBy_spinAccelerationZeroTest(
+function locateInLoadWheelBy_spinAccelerationIsZeroTest(
   loadWheel_Body,
   spinAcceleration_Name
 ) {
@@ -486,6 +574,13 @@ function locateInLoadWheelBy_spinAccelerationZeroTest(
       spinAccelerationThresholdFirstExpression.right.value !== 0
     )
       continue;
+    console.debug(
+      "[patcher]:locateInLoadWheelBy_spinAccelerationIsZeroTest - Located spinAccelerationZeroTest",
+      {
+        accelerationFactorName,
+        spinAccelerationStopThresholdValue,
+      }
+    );
     return [accelerationFactorName, spinAccelerationStopThresholdValue];
   }
   throw new TranslationNodeLocateError(
@@ -607,6 +702,15 @@ function locateInLoadWheelBy_spinElementClick(loadWheel_Body) {
     );
   const clearIntervalIdName =
     clearInvervalExpression.expression.arguments[0].name;
+  console.debug(
+    "[patcher]:locateInLoadWheelBy_spinElementClick - Located spinElementClick listener",
+    {
+      spinAccelerationName,
+      spinAccelerationRandomizerName,
+      clearIntervalIdName,
+      clearInvervalExpression,
+    }
+  );
   return [
     spinAccelerationName,
     spinAccelerationRandomizerName,
@@ -652,7 +756,12 @@ function locateInLoadWheelBy_wheelSectors(loadWheel_Body) {
     throw new TranslationNodeLocateError("wheelSectors", "VariableDeclaration");
   const wheelSectors_VariableDeclarator =
     wheelSectors_VariableDeclaration.declarations[0];
-  return wheelSectors_VariableDeclarator.id.name;
+  const wheelSectorsName = wheelSectors_VariableDeclarator.id.name;
+  console.debug(
+    "[patcher]:locateInLoadWheelBy_wheelSectors - Located wheelSectors variable",
+    { wheelSectorsName, wheelSectors_VariableDeclaration }
+  );
+  return wheelSectorsName;
 }
 
 function locateInLoadWheelBy_calcCurrentSectorIndex(loadWheel_Body) {
@@ -790,6 +899,15 @@ function locateInLoadWheelBy_calcCurrentSectorIndex(loadWheel_Body) {
       "Unexpected test argument type"
     );
   const currentWheelAngle_Name = absArgument.name;
+  console.debug(
+    "[patcher]:locateInLoadWheelBy_calcCurrentSectorIndex - Located calcCurrentSectorIndex function",
+    {
+      calcCurrentSectorIndexName,
+      sanityTrySectorAngle,
+      currentWheelAngle_Name,
+      calcCurrentSectorIndex_VariableDeclaration,
+    }
+  );
   return [
     calcCurrentSectorIndexName,
     sanityTrySectorAngle,
@@ -812,22 +930,34 @@ function findLoadWheelBody(wholeFileNode_Body) {
       "type FunctionDeclaration"
     );
   const loadWheel_BlockStatement = loadWheel_FunctionDeclaration.body;
+  console.debug(
+    "[patcher]:findLoadWheelBody - Located loadWheel function body",
+    {
+      loadWheel_FunctionDeclaration,
+      loadWheel_BlockStatement,
+    }
+  );
   return loadWheel_BlockStatement.body;
 }
+
 /**
  * Parse source string and returns whole file node
  * @param {string} deobfuscatedSource
  * @returns File Node
  */
 function findFileNode(deobfuscatedSource) {
-  return Parser.parse(deobfuscatedSource, {
+  const fileNode = Parser.parse(deobfuscatedSource, {
     ecmaVersion: 2020,
     sourceType: "script",
   });
+  console.debug("[patcher]:findFileNode - Parsed source string to AST", {
+    fileNode,
+  });
+  return fileNode;
 }
 
 function findAfterScriptLoadFunctions(wholeFileNode_Body) {
-  return wholeFileNode_Body
+  const afterScriptLoadFunctions = wholeFileNode_Body
     .filter(
       (node) =>
         nodeIs.expressionStatement(node) &&
@@ -856,25 +986,93 @@ function findAfterScriptLoadFunctions(wholeFileNode_Body) {
       return 0;
     })
     .map((node) => node.expression.arguments[1]);
+  console.debug(
+    "[patcher]:findAfterScriptLoadFunctions - Located and sorted after script load functions",
+    { afterScriptLoadFunctions }
+  );
+  return afterScriptLoadFunctions;
 }
 
 function parsePatchesToAst(randomizer, sectorIndex, afterScriptLoad) {
+  let randomizerAst, sectorIndexAst, afterScriptLoadAst;
   try {
-    return {
-      randomizer: Parser.parse(randomizer, {
-        ecmaVersion: 2022,
-        sourceType: "script",
-      }).body[0].expression,
-      sectorIndex: Parser.parse(sectorIndex, {
-        ecmaVersion: 2022,
-        sourceType: "script",
-      }).body[0].expression,
-      afterScriptLoad: Parser.parse(afterScriptLoad, {
-        ecmaVersion: 2022,
-        sourceType: "script",
-      }).body[0].expression,
-    };
+    randomizerAst = Parser.parse(randomizer, {
+      ecmaVersion: 2022,
+      sourceType: "script",
+    });
+    sectorIndexAst = Parser.parse(sectorIndex, {
+      ecmaVersion: 2022,
+      sourceType: "script",
+    });
+    afterScriptLoadAst = Parser.parse(afterScriptLoad, {
+      ecmaVersion: 2022,
+      sourceType: "script",
+    });
   } catch (e) {
     throw new TranslationArgumentError(e, "Error while parsing patches");
   }
+  if (randomizerAst.body.length !== 1) {
+    throw new TranslationArgumentError(
+      "randomizer",
+      "Must have exactly one statement"
+    );
+  }
+  if (sectorIndexAst.body.length !== 1) {
+    throw new TranslationArgumentError(
+      "sectorIndex",
+      "Must have exactly one statement"
+    );
+  }
+  if (afterScriptLoadAst.body.length !== 1) {
+    throw new TranslationArgumentError(
+      "afterScriptLoad",
+      "Must have exactly one statement"
+    );
+  }
+  const randomizerExpression = randomizerAst.body[0].expression;
+  const sectorIndexExpression = sectorIndexAst.body[0].expression;
+  const afterScriptLoadExpression = afterScriptLoadAst.body[0].expression;
+  if (
+    !(
+      (randomizerExpression.type === "FunctionExpression" ||
+        randomizerExpression.type === "ArrowFunctionExpression") &&
+      randomizerExpression.params.length === 2
+    )
+  ) {
+    throw new TranslationArgumentError(
+      "randomizer",
+      "Must be a function with exactly two arguments"
+    );
+  }
+  if (
+    !(
+      (sectorIndexExpression.type === "FunctionExpression" ||
+        sectorIndexExpression.type === "ArrowFunctionExpression") &&
+      sectorIndexExpression.params.length === 0
+    )
+  ) {
+    throw new TranslationArgumentError(
+      "sectorIndex",
+      "Must be a function with exactly zero arguments"
+    );
+  }
+  if (
+    !(
+      afterScriptLoadExpression.type === "CallExpression" &&
+      (afterScriptLoadExpression.callee.type === "FunctionExpression" ||
+        afterScriptLoadExpression.callee.type === "ArrowFunctionExpression")
+    )
+  ) {
+    throw new TranslationArgumentError("afterScriptLoad", "Must be an IIFE");
+  }
+  const expressions = {
+    randomizer: randomizerExpression,
+    sectorIndex: sectorIndexExpression,
+    afterScriptLoad: afterScriptLoadExpression,
+  };
+  console.debug(
+    "[patcher]:parsePatchesToAst Patch code expression parsed",
+    expressions
+  );
+  return expressions;
 }

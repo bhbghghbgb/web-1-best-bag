@@ -19,10 +19,17 @@ function isDeobfuscateRequestEvent(
 }
 
 self.addEventListener("message", async (event: MessageEvent) => {
+  // tons of these events are sent idk why
+  if (
+    Object.prototype.hasOwnProperty.call(event.data, "vscodeScheduleAsyncWork")
+  ) {
+    return;
+  }
   if (!isDeobfuscateRequestEvent(event)) {
     console.error(event);
     throw new Error("Unknown event type sent to deobfuscator worker");
   }
+  console.info("[DeobfuscatorWorker] received request", event);
   const { code } = event.data;
   try {
     const deobfuscatedCode = await deobfuscateCode(code);

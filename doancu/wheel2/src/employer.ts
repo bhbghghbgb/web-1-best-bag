@@ -7,7 +7,7 @@ import {
 } from "./worker";
 
 const useDeobfuscatorWorker = (
-  onResponse: (response: DeobfuscateResponseData) => void
+  onResponse: (response: DeobfuscateResponseData) => Promise<unknown>
 ) => {
   const workerRef = useRef<Worker | null>(null);
   // Saving the callback as a ref. With this, I don't need to put onResponse in the
@@ -17,32 +17,43 @@ const useDeobfuscatorWorker = (
   // event handler, this is less problem than having the component use useCallback
   const onResponseRef = useRef(onResponse);
   onResponseRef.current = onResponse;
-  const onMessage = useCallback((event: MessageEvent) => {
+  const onMessage = useCallback(async (event: MessageEvent) => {
     const data = event.data as DeobfuscateResponseData;
-    console.debug("useDeobfuscatorWorker onMessage", event, data);
+    console.debug("[useDeobfuscatorWorker] onMessage", event, data);
     if (!isDeobfuscateResponseData(data)) {
       console.error(event);
       throw new Error("Unknown event type received from deobfuscator worker");
     }
     console.debug(
-      "useDeobfuscatorWorker onMessage successful, sending response",
+      "[useDeobfuscatorWorker] onMessage successful, sending response",
       event,
       data,
       onResponseRef.current
     );
-    onResponseRef.current?.(data);
+    await onResponseRef.current?.(data);
   }, []);
   useEffect(() => {
     const url = new URL("./worker.ts", import.meta.url);
     const worker = new Worker(url, { type: "module" });
     workerRef.current = worker;
-    console.debug("useDeobfuscatorWorker useEffect addEventListener", worker);
-    worker.addEventListener("message", onMessage);
+    const controller = new AbortController();
+    console.debug(
+      "[useDeobfuscatorWorker] useEffect addEventListener",
+      worker,
+      controller,
+      onMessage
+    );
+    worker.addEventListener("message", onMessage, {
+      signal: controller.signal,
+    });
     return () => {
       console.debug(
-        "useDeobfuscatorWorker useEffect removeEventListener",
-        worker
+        "[useDeobfuscatorWorker] useEffect removeEventListener",
+        worker,
+        controller,
+        onMessage
       );
+      controller.abort("[useDeobfuscatorWorker] effect hook is unmounting");
       worker.removeEventListener("message", onMessage);
       worker.terminate();
       workerRef.current = null;
@@ -50,7 +61,7 @@ const useDeobfuscatorWorker = (
   }, [onMessage]);
 
   const requestDeobfuscate = (request: DeobfuscateRequestData) => {
-    console.debug("useDeobfuscatorWorker requestDeobfuscate", request);
+    console.debug("[useDeobfuscatorWorker] requestDeobfuscate", request);
     workerRef.current?.postMessage(request);
   };
 

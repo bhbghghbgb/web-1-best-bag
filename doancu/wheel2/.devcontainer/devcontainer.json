@@ -4,29 +4,30 @@
   "name": "Node.js & TypeScript",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
-  "features": {
-    // "ghcr.io/devcontainers-extra/features/corepack:1": {},
-    "ghcr.io/devcontainers-extra/features/live-server:1": {},
-    "ghcr.io/devcontainers-extra/features/ts-node:1": {},
-    "ghcr.io/devcontainers-extra/features/tsx:1": {}
-  },
 
   // Features to add to the dev container. More info: https://containers.dev/features.
-  // "features": {},
+  "features": {
+    "ghcr.io/devcontainers-extra/features/live-server:1": {},
+    "ghcr.io/devcontainers-extra/features/ts-node:1": {},
+    "ghcr.io/devcontainers-extra/features/tsx:1": {},
+    "ghcr.io/devcontainers-extra/features/bash-command:1": {
+      "command": "npm install --global --force --yes corepack"
+    }
+  },
+  "containerEnv": { "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0" },
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [4000, 5173],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "yarn install && yarn cache clean && git config --global core.autocrlf true",
+  "postCreateCommand": "corepack enable && yarn set version berry && yarn config set enableGlobalCache false && yarn config set enableMirror false && yarn install && yarn cache clean --mirror && git config --global core.autocrlf true",
+
+  // Configure tool-specific properties.
   "customizations": {
     "vscode": {
       "extensions": ["esbenp.prettier-vscode", "antfu.vite"]
     }
   }
-
-  // Configure tool-specific properties.
-  // "customizations": {},
 
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
   // "remoteUser": "root"

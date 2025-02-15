@@ -11,7 +11,7 @@ const JsSanbox = await newQuickJSWASMModuleFromVariant(
   })
 );
 export async function safeEval(code: string) {
-  console.debug("sandbox safeEval", code);
+  console.debug("[sandbox] safeEval", code);
   return JsSanbox.evalCode(code, {
     shouldInterrupt: shouldInterruptAfterDeadline(Date.now() + 1000),
     memoryLimitBytes: 1024 * 1024 * 1024,

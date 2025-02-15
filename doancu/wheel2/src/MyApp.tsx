@@ -57,7 +57,7 @@ export default function MyApp() {
     },
   });
   const formDataRef = useRef<FormProps | null>(null);
-  const deobfuscateRequest = useDeobfuscatorWorker((response) => {
+  const deobfuscateRequest = useDeobfuscatorWorker(async (response) => {
     const { success, deobfuscatedCode, error } = response;
     if (!success || error) {
       console.error(response);
@@ -68,12 +68,11 @@ export default function MyApp() {
       throw new Error("Deobfuscated code is invalid");
     }
     editorDeobfuscatedRef.current?.setValue(deobfuscatedCode);
-    setTabIndex(5);
     if (!formDataRef.current) {
       throw new Error("Sanity fail: formData null after deobfuscateRequest");
     }
     const { clairvoyance, snap, reinit, scripter } = formDataRef.current;
-    const { patchedAsSource, patchedAsUserscript } = translate(
+    const { patchedAsSource, patchedAsUserscript } = await translate(
       deobfuscatedCode,
       clairvoyance,
       snap,
@@ -82,8 +81,8 @@ export default function MyApp() {
       ["mmsb"]
     );
     editorPatchedRef.current?.setValue(patchedAsSource);
-    setTabIndex(6);
     editorUserscriptRef.current?.setValue(patchedAsUserscript);
+    setTabIndex(7);
   });
   const handleSubmit = () =>
     handleSubmitForm((data) => {
@@ -98,9 +97,11 @@ export default function MyApp() {
     staleTime: 0,
     queryKey: ["urlForm", urlFormRef.current],
     queryFn: async () => {
+      console.debug(`[download] Downloading ${urlFormRef.current}`);
       const response = await axios.get(urlFormRef.current, {
         responseType: "text",
       });
+      console.debug(`[download] Downloaded ${urlFormRef.current}`, response);
       if (response.data) {
         urlFormRef.current = "";
         editorOriginalRef.current?.setValue(response.data);
