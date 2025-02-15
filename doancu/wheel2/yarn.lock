@@ -717,34 +717,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jitl/quickjs-wasmfile-debug-asyncify@npm:0.31.0":
-  version: 0.31.0
-  resolution: "@jitl/quickjs-wasmfile-debug-asyncify@npm:0.31.0"
-  dependencies:
-    "@jitl/quickjs-ffi-types": "npm:0.31.0"
-  checksum: 10c0/b67657419f396df6e3292f66775060389ec11537ee8c5805128e879160c6790fe5d0e4d35568ff240bc163528063c36a0b18a56346bdec504ec1a92398e41efc
-  languageName: node
-  linkType: hard
-
-"@jitl/quickjs-wasmfile-debug-sync@npm:0.31.0":
-  version: 0.31.0
-  resolution: "@jitl/quickjs-wasmfile-debug-sync@npm:0.31.0"
-  dependencies:
-    "@jitl/quickjs-ffi-types": "npm:0.31.0"
-  checksum: 10c0/5e62740218b6674cb511547363def9e4dc916fc014a8008dd11aecf2a3b7852ae864d8cbab666e09c3fc3342d4b327953f4aaeb606f77f171b5b87a53595f43e
-  languageName: node
-  linkType: hard
-
-"@jitl/quickjs-wasmfile-release-asyncify@npm:0.31.0":
-  version: 0.31.0
-  resolution: "@jitl/quickjs-wasmfile-release-asyncify@npm:0.31.0"
-  dependencies:
-    "@jitl/quickjs-ffi-types": "npm:0.31.0"
-  checksum: 10c0/463d9e38fc7e2f4f62de3c6296d610661f127cd4a0964df47278fd62941b7d416fd6c8de7c9ab7b0002122255b6c3f1904930db26f7e1793cc01955769f962f5
-  languageName: node
-  linkType: hard
-
-"@jitl/quickjs-wasmfile-release-sync@npm:0.31.0":
+"@jitl/quickjs-wasmfile-release-sync@npm:^0.31.0":
   version: 0.31.0
   resolution: "@jitl/quickjs-wasmfile-release-sync@npm:0.31.0"
   dependencies:
@@ -4446,25 +4419,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"quickjs-emscripten-core@npm:0.31.0":
+"quickjs-emscripten-core@npm:^0.31.0":
   version: 0.31.0
   resolution: "quickjs-emscripten-core@npm:0.31.0"
   dependencies:
     "@jitl/quickjs-ffi-types": "npm:0.31.0"
   checksum: 10c0/f212754ada4bbcf0bbf43f7128c7ba1890a1071bb2e633767cc1dc5d25035ab88a4010d0db071dbd4a41c254bba57cbb8b1407b99bbe98419e706a3b1192ce48
-  languageName: node
-  linkType: hard
-
-"quickjs-emscripten@npm:^0.31.0":
-  version: 0.31.0
-  resolution: "quickjs-emscripten@npm:0.31.0"
-  dependencies:
-    "@jitl/quickjs-wasmfile-debug-asyncify": "npm:0.31.0"
-    "@jitl/quickjs-wasmfile-debug-sync": "npm:0.31.0"
-    "@jitl/quickjs-wasmfile-release-asyncify": "npm:0.31.0"
-    "@jitl/quickjs-wasmfile-release-sync": "npm:0.31.0"
-    quickjs-emscripten-core: "npm:0.31.0"
-  checksum: 10c0/18cfda9477cb68e0bd5812ea4642b7b67d14bfd16e414ff611b495a8af27b1f9fc879c062cb79e5e428fc961ad4591e3798f1ead16cc5b3bf2b0ae02415e5648
   languageName: node
   linkType: hard
 
@@ -5483,6 +5443,7 @@ __metadata:
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.0"
     "@eslint/js": "npm:^9.17.0"
+    "@jitl/quickjs-wasmfile-release-sync": "npm:^0.31.0"
     "@monaco-editor/react": "npm:^4.6.0"
     "@mui/icons-material": "npm:^6.4.0"
     "@mui/material": "npm:^6.4.0"
@@ -5504,7 +5465,7 @@ __metadata:
     globals: "npm:^15.14.0"
     js-string-escape: "npm:^1.0.1"
     monaco-editor: "npm:^0.52.2"
-    quickjs-emscripten: "npm:^0.31.0"
+    quickjs-emscripten-core: "npm:^0.31.0"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-hook-form: "npm:^7.54.2"

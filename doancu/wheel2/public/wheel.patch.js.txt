@@ -20,9 +20,9 @@
     // gather info stage
     const _astreplace_value_riggedIndexes = undefined;
     const riggedIndexes = _astreplace_value_riggedIndexes ?? [];
-    const _astreplace_value_riggedValues = undefined;
-    const riggedValues = _astreplace_value_riggedValues ?? [];
-    if (riggedValues.length < 1) return originalFunctionResult;
+    const _astreplace_value_riggedNames = undefined;
+    const riggedNames = _astreplace_value_riggedNames ?? [];
+    if (riggedNames.length < 1) return originalFunctionResult;
     const _astreplace_value_stopThreshold = undefined;
     const stopThreshold = _astreplace_value_stopThreshold ?? 0.002;
     if (typeof _astreplace_identifier_accelerationFactor === "undefined")
@@ -44,7 +44,7 @@
       ...riggedIndexes.filter(
         (index) => index >= 0 && index < sectorAngles.length
       ),
-      ...riggedValues.reduce((indexes, value) => {
+      ...riggedNames.reduce((indexes, value) => {
         indexes.push(
           ...wheelSectors.reduce((indexes, sectorInfo, index) => {
             if (

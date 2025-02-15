@@ -1,10 +1,11 @@
 import { Editor } from "@monaco-editor/react";
 import BiotechIcon from "@mui/icons-material/Biotech";
 import DescriptionIcon from "@mui/icons-material/Description";
+import FindReplaceIcon from "@mui/icons-material/FindReplace";
 import FoundationIcon from "@mui/icons-material/Foundation";
 import GpsFixedIcon from "@mui/icons-material/GpsFixed";
 import KeyIcon from "@mui/icons-material/Key";
-import FindReplaceIcon from "@mui/icons-material/FindReplace";
+import RecentActorsIcon from "@mui/icons-material/RecentActors";
 import RunningWithErrorsIcon from "@mui/icons-material/RunningWithErrors";
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
 import { Box, Button, Divider, Stack, Tab, Tabs } from "@mui/material";
@@ -13,13 +14,13 @@ import axios from "axios";
 import { editor } from "monaco-editor";
 import React, { useEffect, useRef, useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
+import useDeobfuscatorWorker from "./employer";
+import NameList from "./NameList";
 import { translate } from "./patcher";
 import UrlForm from "./UrlForm";
-import useDeobfuscatorWorker from "./employer";
-
 type MonacoEditor = editor.IStandaloneCodeEditor;
 
-interface FormProps {
+export interface MyFormProps {
   original: string;
   clairvoyance: string;
   snap: string;
@@ -28,6 +29,7 @@ interface FormProps {
   deobfuscated: string;
   patched: string;
   userscript: string;
+  nameList: { value: string }[];
 }
 
 export default function MyApp() {
@@ -44,7 +46,7 @@ export default function MyApp() {
     handleSubmit: handleSubmitForm,
     reset: clearForm,
     control: controlForm,
-  } = useForm<FormProps>({
+  } = useForm<MyFormProps>({
     defaultValues: {
       original: "",
       clairvoyance: "",
@@ -54,9 +56,10 @@ export default function MyApp() {
       deobfuscated: "",
       patched: "",
       userscript: "",
+      nameList: [],
     },
   });
-  const formDataRef = useRef<FormProps | null>(null);
+  const formDataRef = useRef<MyFormProps | null>(null);
   const deobfuscateRequest = useDeobfuscatorWorker(async (response) => {
     const { success, deobfuscatedCode, error } = response;
     if (!success || error) {
@@ -71,14 +74,15 @@ export default function MyApp() {
     if (!formDataRef.current) {
       throw new Error("Sanity fail: formData null after deobfuscateRequest");
     }
-    const { clairvoyance, snap, reinit, scripter } = formDataRef.current;
+    const { clairvoyance, snap, reinit, scripter, nameList } =
+      formDataRef.current;
     const { patchedAsSource, patchedAsUserscript } = await translate(
       deobfuscatedCode,
       clairvoyance,
       snap,
       reinit,
       scripter,
-      ["mmsb"]
+      nameList.map((o) => o.value)
     );
     editorPatchedRef.current?.setValue(patchedAsSource);
     editorUserscriptRef.current?.setValue(patchedAsUserscript);
@@ -128,6 +132,7 @@ export default function MyApp() {
           <EditorTab label="Snap" icon={<GpsFixedIcon />} />
           <EditorTab label="Reinit" icon={<RunningWithErrorsIcon />} />
           <EditorTab label="Scripter" icon={<DescriptionIcon />} />
+          <EditorTab label="Targets" icon={<RecentActorsIcon />} />
           <EditorTab label="Deobfuscated" icon={<SanitizerIcon />} />
           <EditorTab label="Patched" icon={<FindReplaceIcon />} />
           <EditorTab label="Userscript" icon={<KeyIcon />} />
@@ -136,7 +141,7 @@ export default function MyApp() {
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <EditorTabPanel
             index={0}
-            value={tabIndex}
+            displayIndex={tabIndex}
             editorRef={editorOriginalRef}
             defaultFiles={[/*"wheel.deob.js.txt",*/ "wheel.min.js.txt"]}
             name="original"
@@ -144,7 +149,7 @@ export default function MyApp() {
           ></EditorTabPanel>
           <EditorTabPanel
             index={1}
-            value={tabIndex}
+            displayIndex={tabIndex}
             editorRef={editorClairvoyanceRef}
             defaultFiles={["wheel.patch.js.txt"]}
             name="clairvoyance"
@@ -152,7 +157,7 @@ export default function MyApp() {
           ></EditorTabPanel>
           <EditorTabPanel
             index={2}
-            value={tabIndex}
+            displayIndex={tabIndex}
             editorRef={editorSnapRef}
             defaultFiles={["wheel.patch2.js.txt"]}
             name="snap"
@@ -160,7 +165,7 @@ export default function MyApp() {
           ></EditorTabPanel>
           <EditorTabPanel
             index={3}
-            value={tabIndex}
+            displayIndex={tabIndex}
             editorRef={editoReinitRef}
             defaultFiles={["wheel.patch3.js.txt"]}
             name="reinit"
@@ -168,31 +173,34 @@ export default function MyApp() {
           ></EditorTabPanel>
           <EditorTabPanel
             index={4}
-            value={tabIndex}
+            displayIndex={tabIndex}
             editorRef={editorScripterRef}
             defaultFiles={["wheel.scripter.js.txt"]}
             name="scripter"
             control={controlForm}
           ></EditorTabPanel>
+          <div hidden={tabIndex !== 5} style={{ height: "100%" }}>
+            <NameList control={controlForm}></NameList>
+          </div>
           <EditorTabPanel
-            index={5}
-            value={tabIndex}
+            index={6}
+            displayIndex={tabIndex}
             readOnly
             editorRef={editorDeobfuscatedRef}
             name="deobfuscated"
             control={controlForm}
           ></EditorTabPanel>
           <EditorTabPanel
-            index={6}
-            value={tabIndex}
+            index={7}
+            displayIndex={tabIndex}
             readOnly
             editorRef={editorPatchedRef}
             name="patched"
             control={controlForm}
           ></EditorTabPanel>
           <EditorTabPanel
-            index={7}
-            value={tabIndex}
+            index={8}
+            displayIndex={tabIndex}
             readOnly
             editorRef={editorUserscriptRef}
             name="userscript"
@@ -230,7 +238,7 @@ export default function MyApp() {
 
 interface EditorTabPanelProps {
   index: number;
-  value: number;
+  displayIndex: number;
   readOnly?: boolean;
   editorRef: React.MutableRefObject<MonacoEditor | null>;
   defaultFiles?: string[];
@@ -245,11 +253,11 @@ interface InputControllerProps {
     | "deobfuscated"
     | "patched"
     | "userscript";
-  control: Control<FormProps>;
+  control: Control<MyFormProps>;
 }
 function EditorTabPanel(props: EditorTabPanelProps & InputControllerProps) {
   const {
-    value,
+    displayIndex: value,
     index,
     readOnly,
     editorRef,

@@ -1,11 +1,11 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import tsLogo from "/typescript.svg";
-import "./App.css";
 import { Container } from "@mui/material";
-import MyApp from "./MyApp";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
+import "./App.css";
+import reactLogo from "./assets/react.svg";
+import tsLogo from "./assets/ts.svg";
+import MyApp from "./MyApp";
+import viteLogo from "/vite.svg";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +25,7 @@ function App() {
               <img src={reactLogo} className="logo react" alt="React logo" />
             </a>
             <a href="https://www.typescriptlang.org/" target="_blank">
-              <img src={tsLogo} className="logo typescript" alt="Typescript logo" />
+              <img src={tsLogo} className="logo ts" alt="Typescript logo" />
             </a>
           </div>
           <h1>Vite + React + Typescript</h1>

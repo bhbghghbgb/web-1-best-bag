@@ -40,6 +40,7 @@ export async function translate(
   scripterTemplate,
   riggingValues
 ) {
+  const { riggedIndexes, riggedNames } = parseRiggingValues(riggingValues);
   const {
     randomizer: randomizerPatchFunctionExpression,
     sectorIndex: sectorIndexPatchFunctionExpression,
@@ -89,10 +90,11 @@ export async function translate(
     riggedSectorIndexes: "_astinsert_identifier_riggedSectorIndexes",
   };
   const patchValueMap = {
-    riggedIndexes: [],
-    riggedValues: riggingValues,
+    riggedIndexes,
+    riggedNames,
     stopThreshold: stopThreshold_Value,
   };
+
   const patchAstNodeMap = { afterScriptLoadFunctions };
 
   // replace the identifiers and values in the patched function
@@ -1070,9 +1072,26 @@ function parsePatchesToAst(randomizer, sectorIndex, afterScriptLoad) {
     sectorIndex: sectorIndexExpression,
     afterScriptLoad: afterScriptLoadExpression,
   };
-  console.debug(
-    "[patcher]:parsePatchesToAst Patch code expression parsed",
-    expressions
-  );
+  console.debug("[patcher]:parsePatchesToAst Patch code expression parsed", {
+    expressions,
+  });
   return expressions;
+}
+
+function parseRiggingValues(riggingValues) {
+  const riggedIndexes = [];
+  const riggedNames = [];
+  riggingValues.forEach((x) => {
+    const n = /^\d+$/.test(x) ? Number(x) : NaN;
+    if (Number.isSafeInteger(n)) {
+      riggedIndexes.push(n);
+    } else {
+      riggedNames.push(x);
+    }
+  });
+  console.debug("[patcher]:parseRiggingValues rigging values parsed", {
+    riggedIndexes,
+    riggedNames,
+  });
+  return { riggedIndexes, riggedNames };
 }

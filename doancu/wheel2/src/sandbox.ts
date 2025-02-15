@@ -1,10 +1,10 @@
+import QUICKJS_RELEASE_SYNC from "@jitl/quickjs-wasmfile-release-sync";
 import QUICKJS_WASM_LOCATION from "@jitl/quickjs-wasmfile-release-sync/wasm?url";
 import {
   newQuickJSWASMModuleFromVariant,
   newVariant,
-  RELEASE_SYNC as QUICKJS_RELEASE_SYNC,
   shouldInterruptAfterDeadline,
-} from "quickjs-emscripten";
+} from "quickjs-emscripten-core";
 const JsSanbox = await newQuickJSWASMModuleFromVariant(
   newVariant(QUICKJS_RELEASE_SYNC, {
     wasmLocation: QUICKJS_WASM_LOCATION,
