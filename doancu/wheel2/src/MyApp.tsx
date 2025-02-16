@@ -15,9 +15,11 @@ import { editor } from "monaco-editor";
 import React, { useEffect, useRef, useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
 import useDeobfuscatorWorker from "./employer";
+import "./monaco";
 import NameList from "./NameList";
 import { translate } from "./patcher";
 import UrlForm from "./UrlForm";
+
 type MonacoEditor = editor.IStandaloneCodeEditor;
 
 export interface MyFormProps {
@@ -86,7 +88,7 @@ export default function MyApp() {
     );
     editorPatchedRef.current?.setValue(patchedAsSource);
     editorUserscriptRef.current?.setValue(patchedAsUserscript);
-    setTabIndex(7);
+    setTabIndex(8);
   });
   const handleSubmit = () =>
     handleSubmitForm((data) => {

@@ -7,20 +7,23 @@
 
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
-    "ghcr.io/devcontainers-extra/features/live-server:1": {},
-    "ghcr.io/devcontainers-extra/features/ts-node:1": {},
-    "ghcr.io/devcontainers-extra/features/tsx:1": {},
     "ghcr.io/devcontainers-extra/features/bash-command:1": {
       "command": "npm install --global --force --yes corepack"
-    }
+    },
+    "ghcr.io/devcontainers-extra/features/live-server:1": {},
+    "ghcr.io/devcontainers-extra/features/ts-node:1": {},
+    "ghcr.io/devcontainers-extra/features/tsx:1": {}
   },
   "containerEnv": { "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0" },
+  "overrideFeatureInstallOrder": [
+    "ghcr.io/devcontainers-extra/features/bash-command:1"
+  ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [4000, 5173],
+  "forwardPorts": [4000, 4173, 5173],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "corepack enable && yarn set version berry && yarn config set enableGlobalCache false && yarn config set enableMirror false && yarn install && yarn cache clean --mirror && git config --global core.autocrlf true",
+  "postCreateCommand": "corepack enable && yarn set version berry && yarn cache clean --all && rm -f yarn.lock && rm -rf node_modules && yarn install && yarn cache clean --mirror && git config --global core.autocrlf true",
 
   // Configure tool-specific properties.
   "customizations": {

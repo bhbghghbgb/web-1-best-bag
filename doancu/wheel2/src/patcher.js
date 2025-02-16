@@ -1,7 +1,7 @@
 import { Parser } from "acorn";
 import { FORMAT_DEFAULTS, FORMAT_MINIFY, generate } from "escodegen";
 import { builders, is as nodeIs, traverse } from "estree-toolkit";
-import jsStringEscape from "js-string-escape";
+import jsesc from "jsesc";
 import { minify } from "terser";
 
 const FORMAT_DEFAULT = {
@@ -188,8 +188,9 @@ async function generateUserscript(
     "[patcher]:generateUserscript - Minified source for userscript inject",
     { sourceForUserScriptInjectMinified }
   );
-  const sourceForUserScriptInjectEscaped = jsStringEscape(
-    sourceForUserScriptInjectMinified.code
+  const sourceForUserScriptInjectEscaped = jsesc(
+    sourceForUserScriptInjectMinified.code,
+    { quotes: "single", minimal: true }
   );
   console.debug(
     "[patcher]:generateUserscript - Escaped source for userscript inject",

@@ -19,7 +19,7 @@
   "use strict";
   const inject = document.createElement("script");
   inject.type = "text/javascript";
-  inject.appendChild(document.createTextNode("_strreplace_completesource"));
+  inject.appendChild(document.createTextNode('_strreplace_completesource'));
   const target = document.body.querySelector('script[src*="wheel.min.js"]');
   if (target) document.body.insertBefore(inject, target.nextSibling);
 })();

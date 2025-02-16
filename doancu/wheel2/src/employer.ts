@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef } from "react";
-import Worker from "web-worker";
 import {
   DeobfuscateRequestData,
   DeobfuscateResponseData,
   isDeobfuscateResponseData,
 } from "./worker";
+import DeobfuscatorWorker from "./worker?worker";
 
 const useDeobfuscatorWorker = (
   onResponse: (response: DeobfuscateResponseData) => Promise<unknown>
@@ -33,8 +33,7 @@ const useDeobfuscatorWorker = (
     await onResponseRef.current?.(data);
   }, []);
   useEffect(() => {
-    const url = new URL("./worker.ts", import.meta.url);
-    const worker = new Worker(url, { type: "module" });
+    const worker = new DeobfuscatorWorker();
     workerRef.current = worker;
     const controller = new AbortController();
     console.debug(
