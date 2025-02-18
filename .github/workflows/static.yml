@@ -37,6 +37,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Enable Corepack
+        run: corepack enable
       - name: Run install
         uses: borales/actions-yarn@v4
         with:
@@ -54,6 +56,10 @@ jobs:
         uses: JesseTG/rm@v1.0.3
         with:
           path: doancu/wheel2/node_modules
+      - name: Remove yarn local caches
+        uses: JesseTG/rm@v1.0.3
+        with:
+          path: doancu/wheel2/.yarn
       - name: Upload static files as artifact
         uses: actions/upload-pages-artifact@v3
         with:
