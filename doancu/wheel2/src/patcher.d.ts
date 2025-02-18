@@ -8,7 +8,14 @@
  * @param {string[]} riggingValues
  * @returns {Promise<{patchedAsSource: string, patchedAsUserscript: string}>}
  */
-export function translate(deobfuscatedSource: string, clairvoyancePatch: string, snapPatch: string, reinitPatch: string, scripterTemplate: string, riggingValues: string[]): Promise<{
-    patchedAsSource: string;
-    patchedAsUserscript: string;
+export function translate(
+  deobfuscatedSource: string,
+  clairvoyancePatch: string,
+  snapPatch: string,
+  reinitPatch: string,
+  scripterTemplate: string,
+  riggingValues: string[]
+): Promise<{
+  patchedAsSource: string;
+  patchedAsUserscript: string;
 }>;

@@ -12,14 +12,18 @@ import { Box, Button, Divider, Stack, Tab, Tabs } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { editor } from "monaco-editor";
-import React, { useEffect, useRef, useState } from "react";
+import {
+  MutableRefObject,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Control, Controller, useForm } from "react-hook-form";
 import useDeobfuscatorWorker from "./employer";
-import "./monaco";
 import NameList from "./NameList";
-import { translate } from "./patcher";
 import UrlForm from "./UrlForm";
-
+// import "./monaco";
 type MonacoEditor = editor.IStandaloneCodeEditor;
 
 export interface MyFormProps {
@@ -78,6 +82,8 @@ export default function MyApp() {
     }
     const { clairvoyance, snap, reinit, scripter, nameList } =
       formDataRef.current;
+    console.log("[MyApp] lazy loading patcher");
+    const { translate } = await import("./patcher");
     const { patchedAsSource, patchedAsUserscript } = await translate(
       deobfuscatedCode,
       clairvoyance,
@@ -242,7 +248,7 @@ interface EditorTabPanelProps {
   index: number;
   displayIndex: number;
   readOnly?: boolean;
-  editorRef: React.MutableRefObject<MonacoEditor | null>;
+  editorRef: MutableRefObject<MonacoEditor | null>;
   defaultFiles?: string[];
 }
 interface InputControllerProps {
@@ -321,7 +327,7 @@ function EditorTabPanel(props: EditorTabPanelProps & InputControllerProps) {
 }
 interface EditorTabProps {
   label: string;
-  icon?: React.ReactElement;
+  icon?: ReactElement;
 }
 function EditorTab(props: EditorTabProps) {
   return <Tab iconPosition="start" {...props} />;

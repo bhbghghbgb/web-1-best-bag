@@ -7,7 +7,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import React from "react";
+import { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 interface FormData {
@@ -21,7 +21,7 @@ interface SubscribeDialogProps {
   placeholder: string;
 }
 
-const SubscribeDialog: React.FC<SubscribeDialogProps> = ({
+const SubscribeDialog: FC<SubscribeDialogProps> = ({
   open,
   onClose,
   onAccept,

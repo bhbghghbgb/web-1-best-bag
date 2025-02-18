@@ -23,27 +23,49 @@ concurrency:
   # that ra nen cancel vi xai debounce roi
   cancel-in-progress: true
 
+# We are still uploading entire repo, we only need extra steps to build wheel2,
+# so it's still static in a sense.
 jobs:
-  # Single deploy job since we're just deploying
+  # Build job
+  build:
+    # Specify runner +  build & upload the static files as an artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install # will run `yarn install` command
+          dir: doancu/wheel2
+      - name: Build wheel2 production
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build # will run `yarn build` command
+          dir: doancu/wheel2
+        env:
+          VITE_BASE_URL: /web-1-best-bag/doancu/wheel2/dist
+      # TODO: write test ci (browser)
+      - name: Remove node_modules
+        uses: JesseTG/rm@v1.0.3
+        with:
+          path: doancu/wheel2/node_modules
+      - name: Upload static files as artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: "."
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - name: Workflow Run Debounce
-        uses: zachary95/github-action-debounce@v0.1.0
-        with:
-          wait: 3600
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload entire repository
-          path: "."
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

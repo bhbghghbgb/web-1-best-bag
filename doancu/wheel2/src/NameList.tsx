@@ -1,13 +1,13 @@
-import React from "react";
-import { useFieldArray, Controller, Control } from "react-hook-form";
-import { Button, TextField, IconButton, Grid2, Stack } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Button, Grid2, IconButton, Stack, TextField } from "@mui/material";
+import { FC } from "react";
+import { Control, Controller, useFieldArray } from "react-hook-form";
 import { MyFormProps } from "./MyApp";
 
 interface NameListControlProps {
   control: Control<MyFormProps>;
 }
-const NameList: React.FC<NameListControlProps> = ({ control }) => {
+const NameList: FC<NameListControlProps> = ({ control }) => {
   const { fields, prepend, insert, remove } = useFieldArray<MyFormProps>({
     control,
     name: "nameList",

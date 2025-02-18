@@ -12,6 +12,9 @@
   will-change: filter;
   transition: filter 300ms;
 }
+.logo.oiiai {
+  width: 6em;
+}
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
@@ -20,6 +23,9 @@
 }
 .logo.ts:hover {
   filter: drop-shadow(0 0 2em #d5f6ffaa);
+}
+.logo.oiiai:hover {
+  filter: drop-shadow(0 0 2em #524939aa);
 }
 
 @keyframes logo-spin {
