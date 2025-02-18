@@ -9,15 +9,17 @@ btnLogin.addEventListener("click", (e) => {
 
   if (!username.value || !password.value) {
     alert("Vui lòng nhập đầy đủ thông tin");
-  }
-
-  else {
+  } else {
     if (!regExpUser.test(username.value)) {
-      alert("UserName không hợp lệ ! Username bao gồm các ký tự chữ cái, chữ số, dấu gạch dưới, dấu chấm Độ dài 6-32 ký tự")
+      alert(
+        "UserName không hợp lệ ! Username bao gồm các ký tự chữ cái, chữ số, dấu gạch dưới, dấu chấm Độ dài 6-32 ký tự"
+      );
     }
 
     if (!regExpPass.test(password.value)) {
-      alert("Mật khẩu không hợp lệ ! Mật khẩu bao gồm các ký chữ cái, chữ số, ký tự đặc biệt, dấu chấm. Bắt đầu bằng ký tự in hoa. Độ dài 6-32 ký tự")
+      alert(
+        "Mật khẩu không hợp lệ ! Mật khẩu bao gồm các ký chữ cái, chữ số, ký tự đặc biệt, dấu chấm. Bắt đầu bằng ký tự in hoa. Độ dài 6-32 ký tự"
+      );
     }
 
     let data = JSON.parse(localStorage.getItem(username.value));
@@ -29,14 +31,16 @@ btnLogin.addEventListener("click", (e) => {
     var tk = data.username;
     var mk = data.password;
 
-    if (tk == username.value && mk == password.value
-      && regExpUser.test(username.value) && regExpPass.test(password.value)) {
-      alert("Đăng nhập thành công")
+    if (
+      tk == username.value &&
+      mk == password.value &&
+      regExpUser.test(username.value) &&
+      regExpPass.test(password.value)
+    ) {
+      alert("Đăng nhập thành công");
       window.location.href = "index.html";
-    }
-    else {
+    } else {
       alert("Sai thông tin đăng nhập");
     }
   }
-
 });

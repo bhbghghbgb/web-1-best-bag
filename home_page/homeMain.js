@@ -50,7 +50,7 @@ function renderItemSanPham(sanPham) {
   btn.addEventListener("click", () =>
     hienTrangChiTiet(sanPham["web-scraper-order"])
   );
-  btn.className = "homepage-button"
+  btn.className = "homepage-button";
   btn.textContent = "Xem Chi Tiết";
   item.appendChild(btn);
   return item;

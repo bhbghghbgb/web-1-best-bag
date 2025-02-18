@@ -58,7 +58,7 @@ async function taiDuLieu(datakey, datafile, dataobj) {
   // thi can phai tai du lieu ban dau tu file
   const response = await fetch(`${mainJsScriptDirectory}/Data/${datafile}`);
   const json = await response.json();
-  console.debug("taiDuLieu", {response, datakey, datafile, json});
+  console.debug("taiDuLieu", { response, datakey, datafile, json });
   return json;
 }
 
@@ -122,7 +122,7 @@ function taoBoLocSanPham() {
     return;
   }
   // cac param muon giu lai khi sua bo loc
-  const {search, min, max, sort, categories} = layParamUrl();
+  const { search, min, max, sort, categories } = layParamUrl();
   // Dynamically add categories to the form
   g_theLoaiSanPham.forEach((category) => {
     const checkbox = document.createElement("input");
@@ -272,7 +272,7 @@ function tinhSanPhamHienThi(wrapperSelector = ".product-list") {
     console.info("tinhSanPhamHienThi khong tim thay wrapper");
     return;
   }
-  let {page, sort, min, max, search, categories} = layParamUrl();
+  let { page, sort, min, max, search, categories } = layParamUrl();
   let sanPhamsDaLoc = [...g_sanPham];
   sanPhamsDaLoc = locGiaSanPham(min, max, sanPhamsDaLoc);
   sanPhamsDaLoc = locTheLoaiSanPham(categories, sanPhamsDaLoc);
@@ -293,7 +293,7 @@ function tinhSanPhamHienThi(wrapperSelector = ".product-list") {
     soSanPhamMoiTrang,
   });
 
-  duLieuDaTinh = {duLieuDaLoc: sanPhamsDaLoc, soPageToiDa, pageHienTai: page};
+  duLieuDaTinh = { duLieuDaLoc: sanPhamsDaLoc, soPageToiDa, pageHienTai: page };
 
   hienThiSanPham(duLieuDaTinh, wrapperSelector);
 }
@@ -398,8 +398,8 @@ function hienThiDanhSach(duLieuDaTinh, hamRenderItem, wrapperSelector) {
   wrapper.innerHTML = "";
   const container = document.createElement("div");
   container.classList.add("grid-container");
-  const {duLieuDaLoc, soPageToiDa} = duLieuDaTinh;
-  let {pageHienTai} = duLieuDaTinh;
+  const { duLieuDaLoc, soPageToiDa } = duLieuDaTinh;
+  let { pageHienTai } = duLieuDaTinh;
   let chiSoBatDau = 0;
   let chiSoPage = 0;
   if (pageHienTai < 1 || isNaN(pageHienTai) || pageHienTai == null) {
@@ -409,7 +409,7 @@ function hienThiDanhSach(duLieuDaTinh, hamRenderItem, wrapperSelector) {
   chiSoBatDau = chiSoPage * soSanPhamMoiTrang;
   // phan trang bam vuot gioi han so trang
   if (chiSoBatDau > duLieuDaTinh.length) {
-    caiParamUrl({page: soPageToiDa}, false, true);
+    caiParamUrl({ page: soPageToiDa }, false, true);
   }
   // mang sau khi chia phan trang
   const duLieuPhanTrang = duLieuDaLoc.slice(
@@ -431,15 +431,15 @@ function hienThiPagination(
   khiBamTrang,
   wrapperSelector = ".pagination"
 ) {
-  const {soPageToiDa} = duLieuDaTinh;
-  let {pageHienTai} = duLieuDaTinh;
+  const { soPageToiDa } = duLieuDaTinh;
+  let { pageHienTai } = duLieuDaTinh;
   if (soPageToiDa === 0) return;
   if (pageHienTai < 1 || isNaN(pageHienTai) || pageHienTai == null) {
     pageHienTai = 1;
   }
   const onPaginationChange = (goToPage) => {
     goToPage = parseInt(goToPage, 10);
-    caiParamUrl({page: goToPage}, false, false);
+    caiParamUrl({ page: goToPage }, false, false);
     duLieuDaTinh.pageHienTai = goToPage;
     // Calculate the scroll position relative to the bottom
     const distanceFromBottom =
@@ -453,8 +453,8 @@ function hienThiPagination(
       window.scrollTo(
         0,
         document.documentElement.scrollHeight -
-        window.innerHeight -
-        distanceFromBottom
+          window.innerHeight -
+          distanceFromBottom
       );
     }, 0);
     khiBamTrang(goToPage);
@@ -648,13 +648,13 @@ function timTheoTen(name, sanPhamsDaLoc) {
             (keyword === nameword
               ? Math.max(100, 25 * keyword.length)
               : nameword.startsWith(keyword)
-                ? Math.max(50, 10 * keyword.length)
-                : nameword.includes(keyword)
-                  ? Math.max(
-                    10,
-                    3 * keyword.length * (nameword.split(keyword).length - 1)
-                  )
-                  : 0),
+              ? Math.max(50, 10 * keyword.length)
+              : nameword.includes(keyword)
+              ? Math.max(
+                  10,
+                  3 * keyword.length * (nameword.split(keyword).length - 1)
+                )
+              : 0),
           0
         ),
       0
@@ -663,13 +663,13 @@ function timTheoTen(name, sanPhamsDaLoc) {
   console.table(
     matchScores
       .map((matchScore, i) => {
-        return {name: sanPhamsDaLoc[i]["name"], matchScore};
+        return { name: sanPhamsDaLoc[i]["name"], matchScore };
       })
       .sort((a, b) => a.score - b.score)
   );
   return matchScores
     .map((matchScore, i) => {
-      return {...sanPhamsDaLoc[i], matchScore};
+      return { ...sanPhamsDaLoc[i], matchScore };
     })
     .filter((sanPham) => sanPham.matchScore > 0);
 }
@@ -687,7 +687,7 @@ function luuHoaDonLocalStorage() {
 }
 
 function luuDuLieuLocalStorage(datakey, g_duLieu) {
-  console.debug("luuDuLieuLocalStorage", {datakey, g_duLieu});
+  console.debug("luuDuLieuLocalStorage", { datakey, g_duLieu });
   localStorage.setItem(
     datakey,
     JSON.stringify(g_duLieu, (k, v) =>
@@ -711,7 +711,7 @@ function taiHoaDonLocalStorage() {
 function taiDuLieuLocalStorage(datakey) {
   const dl = localStorage.getItem(datakey);
   const obj = JSON.parse(dl);
-  console.debug("taiDuLieuLocalStorage", {datakey, strlen: dl?.length, obj});
+  console.debug("taiDuLieuLocalStorage", { datakey, strlen: dl?.length, obj });
   return obj;
 }
 
@@ -1147,7 +1147,7 @@ function themNguoiDung(id, nguoiDung) {
   }
   createNguoiDung(nguoiDung);
   if (readGioHang(id)) return;
-  createGioHang({"nguoi-dung": id, "chi-tiet": []});
+  createGioHang({ "nguoi-dung": id, "chi-tiet": [] });
 }
 
 // tim nguoi dung theo idOrUsernameOrEmail
@@ -1208,7 +1208,7 @@ function timGioHang(id) {
   }
   let gioHang = readGioHang(id);
   if (!gioHang) {
-    gioHang = {"nguoi-dung": id, "chi-tiet": []};
+    gioHang = { "nguoi-dung": id, "chi-tiet": [] };
     createGioHang(gioHang);
   }
   return gioHang;
@@ -1288,8 +1288,7 @@ async function taiDuLieuTongMainJs(sauKhiTai) {
   taiNguoiDung(() => {
     tinhNguoiDungHienThi();
   });
-  taiGioHang(() => {
-  });
+  taiGioHang(() => {});
   taiHoaDon(() => {
     tinhHoaDonHienThi();
   });
@@ -1375,7 +1374,7 @@ function showDebugMenu() {
 
   // Helper function to download a file
   function downloadFile(filename, content) {
-    const blob = new Blob([content], {type: "application/json"});
+    const blob = new Blob([content], { type: "application/json" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = filename;

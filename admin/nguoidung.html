@@ -18,43 +18,60 @@
 <!-- <title>Web 1 Best Bag</title> -->
 <!-- </head> -->
 <!-- <body> -->
-  <div class="button-container">
-    <button class="mode-button color-add">
-      <i class="fas fa-plus"></i> 
-    </button>
-  </div>
-  <h1>Quản Lý Người Dùng</h1>
-  <form id="filter" style="margin: 20px ;">
-    <label for="disabled">&nbsp; Lọc tài khoản:</label>
-    <select id="disabled" name="disabled">
-      <option value="0">Chưa chọn</option>
-      <option value="1">Bị Khóa</option>
-      <option value="-1">Không Khóa</option>
-    </select>
-    <label for="sort">&nbsp; Sắp xếp theo:</label>
-    <select id="sort" name="sort">
-      <option value="">Chưa chọn</option>
-      <option value="asc">Khách hàng lâu năm</option>
-      <option value="desc">Khách hàng mới</option>
-    </select>
-    <button type="submit" id="apply">Áp dụng</button>
-  </form>
-<dialog id="editFormDialog" >
+<div class="button-container">
+  <button class="mode-button color-add">
+    <i class="fas fa-plus"></i>
+  </button>
+</div>
+<h1>Quản Lý Người Dùng</h1>
+<form id="filter" style="margin: 20px">
+  <label for="disabled">&nbsp; Lọc tài khoản:</label>
+  <select id="disabled" name="disabled">
+    <option value="0">Chưa chọn</option>
+    <option value="1">Bị Khóa</option>
+    <option value="-1">Không Khóa</option>
+  </select>
+  <label for="sort">&nbsp; Sắp xếp theo:</label>
+  <select id="sort" name="sort">
+    <option value="">Chưa chọn</option>
+    <option value="asc">Khách hàng lâu năm</option>
+    <option value="desc">Khách hàng mới</option>
+  </select>
+  <button type="submit" id="apply">Áp dụng</button>
+</form>
+<dialog id="editFormDialog">
   <h2>Thông tin người dùng</h2>
-  <form id="editForm" >
-
+  <form id="editForm">
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" placeholder="Nhập tên" required />
-    
+
     <label for="username">Username:</label>
-    <input type="text" id="username" name="username" placeholder="Nhập tài khoản" required />
-    
+    <input
+      type="text"
+      id="username"
+      name="username"
+      placeholder="Nhập tài khoản"
+      required
+    />
+
     <label for="email">Email:</label>
-    <input type="email" id="email" name="email" placeholder="Nhập email" required />
-    
+    <input
+      type="email"
+      id="email"
+      name="email"
+      placeholder="Nhập email"
+      required
+    />
+
     <label for="password">Password:</label>
-    <input type="password" id="password" name="password" placeholder="Nhập mật khẩu" required />
-    
+    <input
+      type="password"
+      id="password"
+      name="password"
+      placeholder="Nhập mật khẩu"
+      required
+    />
+
     <!-- Không cho phép chỉnh sửa ngày tạo -->
     <label for="ngay-tao">Ngày tạo:</label>
     <input type="text" id="ngay-tao" name="ngay-tao" required />
@@ -67,7 +84,6 @@
     <button type="button" id="closeFormBtn">Thoát</button>
   </form>
 </dialog>
-
 
 <div class="account-list"></div>
 <div class="pagination2"></div>

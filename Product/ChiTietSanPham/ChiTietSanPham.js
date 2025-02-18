@@ -841,8 +841,11 @@ function luuHoaDon(danhSachHoaDon) {
     // Lưu vào localStorage
     localStorage.setItem("hoaDon", JSON.stringify(danhSachHoaDon));
 
+    // ??? web 1 co lam backend a
+    // null luon de bot phien phuc
     // Gửi request để lưu vào file
-    fetch("/api/hoa-don", {
+    // fetch("/api/hoa-don", {
+    fetch(null, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

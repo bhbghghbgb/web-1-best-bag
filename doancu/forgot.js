@@ -11,10 +11,11 @@ btnforgot.addEventListener("click", (e) => {
   e.preventDefault();
   if (!email.value || !username.value) {
     alert("Vui lòng nhập đầy đủ thông tin");
-  }
-  else {
+  } else {
     if (!regExpUser.test(username.value)) {
-      alert("UserName không hợp lệ ! Username bao gồm các ký tự chữ cái, chữ số, dấu gạch dưới, dấu chấm Độ dài 6-32 ký tự")
+      alert(
+        "UserName không hợp lệ ! Username bao gồm các ký tự chữ cái, chữ số, dấu gạch dưới, dấu chấm Độ dài 6-32 ký tự"
+      );
     }
 
     if (!regExpEmail.test(email.value)) {
@@ -30,27 +31,29 @@ btnforgot.addEventListener("click", (e) => {
     var tk = data.username;
     var em = data.email;
 
-    if (tk == username.value && em == email.value
-      && regExpUser.test(username.value) && regExpEmail.test(email.value)) {
+    if (
+      tk == username.value &&
+      em == email.value &&
+      regExpUser.test(username.value) &&
+      regExpEmail.test(email.value)
+    ) {
       var passwordnew = prompt("Nhập mật khẩu mới", "D123123");
 
       if (!regExpPass.test(passwordnew)) {
-        alert("Mật khẩu không hợp lệ ! Mật khẩu bao gồm các ký chữ cái, chữ số, ký tự đặc biệt, dấu chấm. Bắt đầu bằng ký tự in hoa. Độ dài 6-32 ký tự");
-      }
-      else {
+        alert(
+          "Mật khẩu không hợp lệ ! Mật khẩu bao gồm các ký chữ cái, chữ số, ký tự đặc biệt, dấu chấm. Bắt đầu bằng ký tự in hoa. Độ dài 6-32 ký tự"
+        );
+      } else {
         let user = {
           username: username.value,
           password: passwordnew,
           email: email.value,
         };
         localStorage.setItem(username.value, JSON.stringify(user));
-        alert("Thành công")
+        alert("Thành công");
       }
-    }
-    else {
+    } else {
       alert("Sai thông tin");
     }
-
   }
-
 });

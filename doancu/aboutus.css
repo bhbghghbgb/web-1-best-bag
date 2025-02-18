@@ -1,69 +1,67 @@
 /* Hoang Bao Loc - Tran Cuong */
-body{
-    font-family: 'Spartan', sans-serif;
-    margin: 0;
-    color: #F1F1F1;;
-    box-sizing: border-box;
+body {
+  font-family: "Spartan", sans-serif;
+  margin: 0;
+  color: #f1f1f1;
+  box-sizing: border-box;
 }
-.developers{
-    background: 101116;
+.developers {
+  background: 101116;
 }
-.developers h1{
-    font-weight: 700;
-    font-size: 48px;
+.developers h1 {
+  font-weight: 700;
+  font-size: 48px;
 }
-.developers p{
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 1.75;
-    margin-top: 9px;
-    color: #95989D;
+.developers p {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.75;
+  margin-top: 9px;
+  color: #95989d;
 }
-.cards{
-    padding: 48px;
-    background: #040405;
+.cards {
+  padding: 48px;
+  background: #040405;
 }
-.card{
-    margin: auto;
+.card {
+  margin: auto;
 }
-.btn-card{
-    background-color: #FF7640;
-    color: #ffffff;
-    font-weight: 700;
+.btn-card {
+  background-color: #ff7640;
+  color: #ffffff;
+  font-weight: 700;
 }
 
 /* FOOTER */
-footer{
-    background: #101010;
+footer {
+  background: #101010;
 }
-footer h3{
-    font-size: 16px;
-    letter-spacing: 2px;
-    color: #ec7532;
-    margin-bottom: 15px;
+footer h3 {
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: #ec7532;
+  margin-bottom: 15px;
 }
-footer li{
-    list-style: none;
-
+footer li {
+  list-style: none;
 }
-footer a{
-    font-size: 13px;
-    color: white;
-    text-decoration: none;
-    letter-spacing: 1.5px;
-    padding: 3px 0;
-    transition: 0.5s;
+footer a {
+  font-size: 13px;
+  color: white;
+  text-decoration: none;
+  letter-spacing: 1.5px;
+  padding: 3px 0;
+  transition: 0.5s;
 }
-footer a:hover{
-    color: #fbbd61;
-    text-decoration:none;
+footer a:hover {
+  color: #fbbd61;
+  text-decoration: none;
 }
-.footer__copyright{
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    padding: 15px 0;
-
+.footer__copyright {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 15px 0;
 }
-.footer__copyright p{
-    margin-bottom: 0;
+.footer__copyright p {
+  margin-bottom: 0;
 }

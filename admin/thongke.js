@@ -1,3 +1,12 @@
+// Get the current script element (the one that included this JS file)
+const web1thongkeScriptElement = document.currentScript;
+const web1thongkeScriptPath = web1thongkeScriptElement.src;
+// Get the directory of the script
+const web1thongkeScriptDirectory = web1thongkeScriptPath.substring(
+  0,
+  web1thongkeScriptPath.lastIndexOf("/")
+);
+
 function shouldProcessDate(date, { ngay, thang, nam }) {
   const nt = new Date(date);
   return (
@@ -321,7 +330,9 @@ function thongKeThoiGian() {
 }
 
 async function thongKeThoiGian2() {
-  return await (await fetch("./tktgv18.json")).json();
+  return await (
+    await fetch(`${web1thongkeScriptDirectory}/tktgv18.json"`)
+  ).json();
 }
 
 function thongKeDanhMuc() {

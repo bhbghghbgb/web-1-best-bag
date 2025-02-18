@@ -2,7 +2,6 @@
 body {
   background-color: #191a1c;
   font-size: 20px;
-
 }
 
 .wapper {
@@ -13,7 +12,6 @@ body {
 }
 
 #form-login {
-  
   max-width: 508px;
   flex-grow: 1;
   padding: 55px 30px 40px;
@@ -68,11 +66,11 @@ input {
   font-size: 23px;
   color: #fff;
   pointer-events: none;
-  transition: .5s;
+  transition: 0.5s;
 }
 
-input:focus~label,
-input:valid~label {
+input:focus ~ label,
+input:valid ~ label {
   top: -20px;
   left: 0;
   color: #f5f5f5;
@@ -84,7 +82,7 @@ input:valid~label {
   margin-top: 17.6px;
   margin-bottom: 17.6px;
   font-size: 23px;
-  text-decoration: none
+  text-decoration: none;
 }
 
 .squaredcheck {
@@ -106,7 +104,7 @@ input:valid~label {
 
 .rules {
   color: #ff6740;
-  text-decoration: none
+  text-decoration: none;
 }
 
 .wapper .btn {
@@ -146,7 +144,6 @@ input:valid~label {
   background: #ff67407a;
 }
 
-
 .chu {
   cursor: pointer;
   line-height: 50px;
@@ -157,21 +154,16 @@ input:valid~label {
 }
 
 #form-rules {
-   margin-top: 60px;
+  margin-top: 60px;
   padding-left: 100px;
   padding-right: 100px;
 }
 
 .divchu {
-
   padding-left: 65px;
   padding-right: 65px;
 }
 
-.fonts
-{
-  font-size: 28px ;
+.fonts {
+  font-size: 28px;
 }
-
- 
-
