@@ -1,0 +1,95 @@
+<!-- <!DOCTYPE html> -->
+<!-- <html lang="en"> -->
+<!-- <head> -->
+<!-- <meta charset="UTF-8"> -->
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+<!-- <link rel="stylesheet" href="/style.css" /> -->
+<!-- <link rel="stylesheet" href="./admin.css" /> -->
+<!-- <link -->
+<!-- rel="shortcut icon" -->
+<!-- href="images/icons8-bag-96.png" -->
+<!-- type="image/png" -->
+<!-- /> -->
+<!-- <link -->
+<!-- href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" -->
+<!-- rel="stylesheet" -->
+<!-- /> -->
+<!-- <title>Web 1 Best Bag</title> -->
+<!-- </head> -->
+<!-- <body> -->
+<h1>Quản Lý Sản Phẩm</h1>
+
+<form id="productForm" style="border: 1px solid green">
+  <label for="search">Name:</label>
+  <input type="text" id="search" name="search" placeholder="Product Name" />
+
+  <label for="priceRange">Price Range:</label>
+  <input type="number" id="minPrice" name="min" placeholder="Min Price" />
+  <input type="number" id="maxPrice" name="max" placeholder="Max Price" />
+
+  <label for="categories">Categories:</label>
+  <div id="categories"></div>
+
+  <label for="sortBy">Sort By:</label>
+  <select id="sortBy" name="sort">
+    <option value selected>(Chua chon)</option>
+    <option value="asc">Price Ascending</option>
+    <option value="desc">Price Descending</option>
+    <option value="best">Best Match</option>
+  </select>
+
+  <button type="submit">Search</button>
+</form>
+<dialog id="infoFormDialog">
+  <h2>Thông tin sản phẩm</h2>
+  <form id="infoForm">
+    <label for="tenSanPham">Tên sản phẩm:</label>
+    <input type="text" id="tenSanPham" name="tenSanPham" placeholder="Nhập tên" required/><br><br>
+
+    <label for="giaSanPham">Giá sản phẩm:</label>
+    <input id="giaSanPham" type="number" name="giaSanPham" placeholder="Nhập giá sản phẩm" required/><br><br>
+
+    <label for="giaKhuyenMai">Giá khuyến mãi:</label>
+    <input id="giaKhuyenMai" type="number" name="giaKhuyenMai" placeholder="Nhập giá khuyến mãi:" required/><br><br>
+
+    <label for="loaiSanPham">Loại sản phẩm:</label>
+    <select name="loaiSanPham" id="loaiSanPham">
+      <option value="" disabled selected>--Chọn loại--</option>
+      <option value="tote">Tote</option>
+      <option value="standard">Standard</option>
+      <option value="sling">Sling</option>
+      <option value="messsenger">Messenger</option>
+      <option value="laptop">Laptop</option>
+      <option value="duffle">Duffle</option>
+    </select>
+
+    <label for="moTaSanPham">Mô tả sản phẩm</label>
+    <textarea name="moTaSanPham" id="moTaSanPham" placeholder="Nhập mô tả sản phẩm"></textarea>
+
+    <label for="hinhAnhSanPham1">Hình ảnh sản phẩm 1</label>
+    <input type="file" id="hinhAnhSanPham1" name="hinhAnhSanPham1" accept="image/*"/><br><br>
+
+    <label for="hinhAnhSanPham2">Hình ảnh sản phẩm 2</label>
+    <input type="file" id="hinhAnhSanPham2" name="hinhAnhSanPham2" accept="image/*"/><br><br>
+
+    <label for="linkHinhAnh1">Đường dẫn hình ảnh 1</label>
+    <input type="text" id="linkHinhAnh1" name="linkHinhAnh1" placeholder="Nhập đường dẫn hình ảnh 1"/><br><br>
+
+    <label for="linkHinhAnh2">Đường dẫn hình ảnh 2</label>
+    <input type="text" id="linkHinhAnh2" name="linkHinhAnh2" placeholder="Nhập đường dẫn hình ảnh 2"/><br><br>
+
+    <button type="submit">Lưu</button>
+    <button type="button" id="cancel-button">Thoát</button>
+  </form>
+</dialog>
+<div style="justify-content: center; text-align: center">
+  <button type="button" id="addproduct-button">Thêm mới</button>
+</div>
+<div class="admin-product-list"></div>
+<div class="pagination"></div>
+
+<!-- </body> -->
+<!-- <script src="/main.js"></script> -->
+<!-- <script src="./admin.js"></script> -->
+
+<!-- </html> -->

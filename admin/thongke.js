@@ -154,10 +154,10 @@ function thongKeDoanhThu() {
   const tktg = thongKeThoiGian();
   return {
     thisMonth:
-      tktg["chi-tiet"][now.getFullYear()]["chi-tiet"][now.getMonth()][
+      tktg["chi-tiet"][now.getFullYear()]?.["chi-tiet"]?.[now.getMonth()]?.[
         "tong-thu"
-      ],
-    total: tktg["tong-thu"],
+      ] ?? 0,
+    total: tktg?.["tong-thu"] ?? 0,
   };
 }
 

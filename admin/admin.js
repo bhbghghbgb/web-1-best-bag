@@ -1532,11 +1532,11 @@ function loadTabContent(tabName, sauKhiTai) {
   };
   const onFetchFailure = () => {
     fetchContent(`${tabName}.html`, onFetchSuccess, (error) => {
-      console.error("loadTabContent Error loading HTML content:", error);
+      console.error("loadTabContent Error loading HTML admin tab content:", error);
     });
   };
   fetchContent(`${tabName}.xml`, onFetchSuccess, (error) => {
-    console.error("loadTabContent Error loading XML content:", error);
+    console.error("loadTabContent Error loading XML admin tab content:", error);
     onFetchFailure();
   });
 }
