@@ -7,7 +7,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { FC } from "react";
+import { FC, useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 interface FormData {
@@ -18,7 +18,7 @@ interface SubscribeDialogProps {
   open: boolean;
   onClose: () => void;
   onAccept: (data: FormData) => void;
-  placeholder: string;
+  placeholder: { currentUrl: string; fileName: string };
 }
 
 const SubscribeDialog: FC<SubscribeDialogProps> = ({
@@ -27,14 +27,20 @@ const SubscribeDialog: FC<SubscribeDialogProps> = ({
   onAccept,
   placeholder,
 }) => {
-  const { handleSubmit, control, reset } = useForm<FormData>();
-
+  const { handleSubmit, control, reset, setFocus } = useForm<FormData>();
   const onSubmit = (data: FormData) => {
     onAccept(data);
     onClose();
     reset();
   };
-
+  const { currentUrl, fileName } = placeholder;
+  const defaultValue = useMemo(
+    () => `${extractUrlDirectory(currentUrl)}/${fileName}`,
+    [currentUrl, fileName]
+  );
+  useEffect(() => {
+    setFocus("url", { shouldSelect: true });
+  }, [setFocus]);
   return (
     <Dialog
       open={open}
@@ -55,13 +61,14 @@ const SubscribeDialog: FC<SubscribeDialogProps> = ({
         <Controller
           name="url"
           control={control}
-          defaultValue={placeholder}
+          defaultValue={defaultValue}
           render={({ field }) => (
             <TextField
               {...field}
+              inputRef={field.ref}
               autoFocus
               required
-              placeholder={placeholder}
+              placeholder={defaultValue}
               margin="dense"
               label="URL"
               type="url"
@@ -80,6 +87,22 @@ const SubscribeDialog: FC<SubscribeDialogProps> = ({
     </Dialog>
   );
 };
+
+// https://stackoverflow.com/a/77695630/12495504
+function extractUrlDirectory(url: string) {
+  // Is this a file-like path, e.g. http.../foo.bar?
+  const regex = /^(.*)\/([^.]+(\.([^/?#]+))+)(\?[^#]*)?(#.*)?$/;
+  const match = url.match(regex);
+  // Only if it is, do we cut that part off:
+  if (match !== null) {
+    const { [1]: dirname, [2]: file, [4]: ext } = match;
+    console.debug(
+      `[UrlForm] URL "${url}" is for a file "${file}", with extension "${ext}", extracted dirname "${dirname}"`
+    );
+    url = dirname;
+  }
+  return url.replace(/\/+$/, "");
+}
 
 const UrlForm = SubscribeDialog;
 export default UrlForm;

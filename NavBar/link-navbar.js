@@ -126,19 +126,24 @@ fetch(`${navbarScriptDirectory}/navbar.html`)
     document.addEventListener("scroll", watchNavbarBg);
     const currentUserId = localStorage.getItem("currentUserId");
     if (currentUserId) {
-      const thongTinNguoiDung = timNguoiDung(currentUserId);
-      document.getElementById("navbar-right-non-login").remove();
-      const navBarRight = document.getElementById("navbar-right-logged-in");
-      const userName = document.createElement("h3");
-      const logoutButton = document.createElement("button");
-      userName.innerText = thongTinNguoiDung["name"];
-      logoutButton.innerText = "Đăng xuất";
-      logoutButton.style = "margin-right:150px;";
-      navBarRight.appendChild(userName);
-      navBarRight.appendChild(logoutButton);
-      logoutButton.addEventListener("click", () => {
-        dangXuat();
-        window.location.reload();
+      taiNguoiDung(() => {
+        const thongTinNguoiDung = timNguoiDung(currentUserId);
+        document.getElementById("navbar-right-non-login").remove();
+        const navBarRight = document.getElementById("navbar-right-logged-in");
+        const userNameA = document.createElement("a");
+        userNameA.href = `${navbarScriptDirectory}/../User/Profile/AccountUser.html`;
+        const userName = document.createElement("h3");
+        userNameA.appendChild(userName);
+        const logoutButton = document.createElement("button");
+        userName.innerText = thongTinNguoiDung["name"];
+        logoutButton.innerText = "Đăng xuất";
+        logoutButton.style = "margin-right:150px;";
+        navBarRight.appendChild(userNameA);
+        navBarRight.appendChild(logoutButton);
+        logoutButton.addEventListener("click", () => {
+          dangXuat();
+          window.location.reload();
+        });
       });
     } else {
       document.getElementById("navCartContainer").remove();

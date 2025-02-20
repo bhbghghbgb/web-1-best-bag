@@ -1,6 +1,4 @@
 function SignIn() {
-
-
   const emailOrUserNameField = document.getElementById("emailOrUsernameField");
   const passwordField = document.getElementById("password_signin");
 
@@ -16,7 +14,6 @@ function SignIn() {
     }
   } else {
     alert("Login failed: Username or password is incorrect");
-
   }
 }
 
@@ -47,6 +44,5 @@ window.addEventListener("load", () => {
       }
       SignIn();
     });
-  })
-})
-
+  });
+});

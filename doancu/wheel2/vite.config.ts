@@ -8,7 +8,7 @@ export default defineConfig({
   base: process.env.VITE_BASE_URL ?? "./",
   plugins: [
     react(),
-    nodePolyfills({ include: ["process", "path"] }),
+    nodePolyfills({ include: ["process", "path"], protocolImports: true }),
     // monacoEditorEsmPlugin({
     //   // editorWorkerService is must include base worker
     //   // javascript shares the same worker
@@ -16,6 +16,12 @@ export default defineConfig({
     //   globalAPI: true,
     // }),
   ],
+  resolve: {
+    alias: {
+      fs: "node-stdlib-browser/mock/empty",
+      "node:fs/promises": "node-stdlib-browser/mock/empty",
+    },
+  },
   optimizeDeps: {
     exclude: ["isolated-vm"],
   },

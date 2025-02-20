@@ -50,9 +50,9 @@
         margin: 10px 0;
       }
 
-        .navbar-right {
-            margin-left: auto;
-        }
+      .navbar-right {
+        margin-left: auto;
+      }
 
       .navbar-search-pseudo {
         display: flex;
@@ -61,10 +61,10 @@
         background-color: rgba(128, 128, 128, 0.5);
       }
 
-        .navbar-search-pseudo>svg {
-            position: relative;
-            left: 12px;
-        }
+      .navbar-search-pseudo > svg {
+        position: relative;
+        left: 12px;
+      }
 
       .navbar-search-pseudo > input {
         padding-top: 0;
@@ -78,32 +78,32 @@
           visibility 0.3s step-end;
       }
 
-        .navbar-search-pseudo>input:focus {
-            outline: none;
+      .navbar-search-pseudo > input:focus {
+        outline: none;
+      }
+
+      @media (max-width: 640px) {
+        .navbar-search-pseudo > input {
+          width: 160px;
+        }
+      }
+
+      @media (max-width: 512px) {
+        .navbar-search-pseudo > input {
+          opacity: 0;
+          width: 0;
+          visibility: hidden;
         }
 
-        @media (max-width: 640px) {
-            .navbar-search-pseudo>input {
-                width: 160px;
-            }
+        .navbar-search-pseudo {
+          background-color: transparent;
         }
+      }
 
-        @media (max-width: 512px) {
-            .navbar-search-pseudo>input {
-                opacity: 0;
-                width: 0;
-                visibility: hidden;
-            }
-
-            .navbar-search-pseudo {
-                background-color: transparent;
-            }
-        }
-
-        input::placeholder {
-            font-family: inherit;
-            color: inherit;
-        }
+      input::placeholder {
+        font-family: inherit;
+        color: inherit;
+      }
 
       .navbar-scrolleddown {
         background-color: rgba(0, 0, 0, 0.7);
@@ -113,9 +113,9 @@
     </style>
     <!-- <link rel="stylesheet" href="common.css">
     <script src="link-navbar.js" defer></script> -->
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="navbar">
       <div class="navbar-left">
         <a>
@@ -152,6 +152,5 @@
       </div>
       <div class="navbar-right" id="navbar-right-logged-in"></div>
     </div>
-</body>
-
+  </body>
 </html>

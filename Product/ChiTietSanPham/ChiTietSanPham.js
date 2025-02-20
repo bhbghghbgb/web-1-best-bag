@@ -1,28 +1,27 @@
 // Thêm vào đầu file
-window.addEventListener("load", async () => {
+window.addEventListener("load", () => {
+  function khoiTaoUi() {
+    // Khởi tạo UI
+    const navCartContainer = document.getElementById("navCartContainer");
+    if (navCartContainer) {
+      navCartContainer.appendChild(createCartButton());
+    }
+
+    document.body.appendChild(createCartModal());
+    document.body.appendChild(createProductDetailModal());
+
+    // Kiểm tra đăng nhập và cập nhật giỏ hàng
+    const savedUserId = localStorage.getItem("currentUserId");
+    if (savedUserId) {
+      modalCart.currentUserId = savedUserId;
+      handleLogin(savedUserId);
+    }
+
+    // Thêm dialog lịch sử đơn hàng
+    document.body.appendChild(createOrderHistoryModal());
+  }
   // Đợi tải dữ liệu trước
-  await taiDuLieuTongMainJs(() => {
-    console.info("Tai du lieu tong o mainjs");
-  });
-
-  // Khởi tạo UI
-  const navCartContainer = document.getElementById("navCartContainer");
-  if (navCartContainer) {
-    navCartContainer.appendChild(createCartButton());
-  }
-
-  document.body.appendChild(createCartModal());
-  document.body.appendChild(createProductDetailModal());
-
-  // Kiểm tra đăng nhập và cập nhật giỏ hàng
-  const savedUserId = localStorage.getItem("currentUserId");
-  if (savedUserId) {
-    modalCart.currentUserId = savedUserId;
-    handleLogin(savedUserId);
-  }
-
-  // Thêm dialog lịch sử đơn hàng
-  document.body.appendChild(createOrderHistoryModal());
+  taiSanPham(() => taiHoaDon(() => taiGioHang(khoiTaoUi)));
 });
 
 let modalCart = {
@@ -439,17 +438,27 @@ function showOrderDetails(hoaDon) {
         <td><img src="../../images/${sanPham["image-file"]}" alt="${
         sanPham.name
       }" style="width: 50px; height: 50px; object-fit: cover;"></td>
-        <td>${sanPham["price-sale-n"].toLocaleString("vi-VN")}đ</td>
+        <td>${sanPham["price-sale-n"].toLocaleString("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        })}</td>
         <td>${item["so-luong"]}</td>
-        <td>${amount.toLocaleString("vi-VN")}đ</td>
+        <td>${amount.toLocaleString("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        })}</td>
       `;
       tbody.appendChild(tr);
     }
   });
 
   // Cập nhật tổng tiền
-  document.getElementById("orderDetailTotal").textContent =
-    totalAmount.toLocaleString("vi-VN") + "đ";
+  document.getElementById(
+    "orderDetailTotal"
+  ).textContent = `${totalAmount.toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  })} (${number2TextVietnamese(totalAmount.toString())})`;
 
   // Hiển thị dialog
   document.getElementById("orderDetailDialog").showModal();
@@ -649,8 +658,7 @@ function renderGioHang(cart, hamRenderItem, wrapperSelector = "#cartItems") {
     <div style="flex: 1"></div>
     <div style="width: 120px"></div>
     <div style="width: 100px"><strong>Tổng tiền:</strong></div>
-    <div class="final-total-cost" style="width: 150px"></div>
-    <div style="width: 50px"></div>
+    <div class="final-total-cost" style="width: 200px"></div>
   `;
   danhSach.appendChild(tongKetRow);
   gioHang.appendChild(danhSach);
@@ -670,10 +678,10 @@ function capNhatFinalTotalCost(cart) {
     return sum;
   }, 0);
 
-  finalTotal.textContent = total.toLocaleString("vi-VN", {
+  finalTotal.textContent = `${total.toLocaleString("vi-VN", {
     style: "currency",
     currency: "VND",
-  });
+  })} (${number2TextVietnamese(total.toString())})`;
 }
 
 // Thêm hàm xử lý đăng nhập
@@ -691,6 +699,7 @@ function handleLogin(userId) {
 // Thêm dialog hiển thị lịch sử hóa đơn
 function createOrderHistoryModal() {
   const dialog = document.createElement("dialog");
+  dialog.style = "overflow: scroll";
   dialog.id = "orderHistoryDialog";
 
   dialog.innerHTML = `
@@ -705,6 +714,7 @@ function createOrderHistoryModal() {
     </div>
   `;
 
+  document.body.appendChild(dialog);
   return dialog;
 }
 
@@ -715,8 +725,8 @@ function openOrderHistory() {
     return;
   }
 
-  const dialog = document.getElementById("orderHistoryDialog");
-  if (!dialog) return;
+  let dialog = document.getElementById("orderHistoryDialog");
+  if (!dialog) dialog = createOrderHistoryModal();
 
   // Lấy danh sách hóa đơn của người dùng từ g_hoaDon
   const userOrders = g_hoaDon.filter(
@@ -757,11 +767,13 @@ function openOrderHistory() {
     currency: "VND",
   });
 
+  let allHoaDonAmount = 0;
   userOrders.forEach((order) => {
     const totalAmount = order["chi-tiet"].reduce((sum, item) => {
       const sanPham = timSanPham(item["san-pham"]);
       return sum + (sanPham ? sanPham["price-sale-n"] * item["so-luong"] : 0);
     }, 0);
+    allHoaDonAmount += totalAmount;
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -797,6 +809,11 @@ function openOrderHistory() {
     `;
     tbody.appendChild(tr);
   });
+
+  tbody.innerHTML += `<td colspan="2" style="text-align: right;"><strong>Tổng tiền:</strong></td>
+    <td colspan="3">${formatter.format(
+      allHoaDonAmount
+    )} (${number2TextVietnamese(allHoaDonAmount.toString())})</td>`;
 
   orderHistoryItems.appendChild(table);
   dialog.showModal();
@@ -863,6 +880,7 @@ function luuHoaDon(danhSachHoaDon) {
 // Thêm hàm tạo dialog chi tiết đơn hàng
 function createOrderDetailModal() {
   const dialog = document.createElement("dialog");
+  dialog.style = "overflow: scroll";
   dialog.id = "orderDetailDialog";
 
   dialog.innerHTML = `

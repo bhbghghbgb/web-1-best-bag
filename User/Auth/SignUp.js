@@ -1,6 +1,4 @@
 function SignUp() {
-
-
   const name = document.getElementById("name");
   const username = document.getElementById("username");
   const passwordField = document.getElementById("password_signup");
@@ -10,7 +8,6 @@ function SignUp() {
   const passwordValue = passwordField.value;
   const emailValue = email.value;
   const nameValue = name.value;
-
 
   themNguoiDung(null, {
     name: nameValue,
@@ -30,7 +27,6 @@ function SignUp() {
 
   const signInButton = document.getElementById("signInSlide");
   signInButton.click();
-
 }
 
 function kiemTraInputSignUp() {
@@ -73,6 +69,5 @@ window.addEventListener("load", () => {
       }
       SignUp();
     });
-  })
-})
-
+  });
+});

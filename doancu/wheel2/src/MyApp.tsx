@@ -8,7 +8,15 @@ import KeyIcon from "@mui/icons-material/Key";
 import RecentActorsIcon from "@mui/icons-material/RecentActors";
 import RunningWithErrorsIcon from "@mui/icons-material/RunningWithErrors";
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
-import { Box, Button, Divider, Stack, Tab, Tabs } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Stack,
+  Tab,
+  Tabs,
+} from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { editor } from "monaco-editor";
@@ -95,15 +103,19 @@ export default function MyApp() {
     editorPatchedRef.current?.setValue(patchedAsSource);
     editorUserscriptRef.current?.setValue(patchedAsUserscript);
     setTabIndex(8);
+    setIsLoading(false);
   });
-  const handleSubmit = () =>
+  const [isLoading, setIsLoading] = useState(false);
+  const handleSubmit = () => {
+    setIsLoading(true);
     handleSubmitForm((data) => {
       formDataRef.current = data;
       const { original } = data;
       deobfuscateRequest({ code: original });
     })();
-  const [urlFormOpen, setUrlFormOpen] = useState<boolean>(false);
-  const urlFormRef = useRef<string>("");
+  };
+  const [urlFormOpen, setUrlFormOpen] = useState(false);
+  const urlFormRef = useRef("");
   const { refetch: fetchUrlForm } = useQuery({
     enabled: false,
     staleTime: 0,
@@ -215,7 +227,7 @@ export default function MyApp() {
             control={controlForm}
           ></EditorTabPanel>
         </Box>
-        <Stack gap={2} justifyContent={"center"}>
+        <Stack gap={2} justifyContent={"flex-start"}>
           <Button onClick={handleSubmit} variant={"contained"}>
             Submit
           </Button>
@@ -229,6 +241,11 @@ export default function MyApp() {
             Clear
           </Button>
           <Button onClick={() => setUrlFormOpen(true)}>Read URL</Button>
+          {isLoading && (
+            <Stack alignItems="center">
+              <CircularProgress disableShrink size={"3em"} />
+            </Stack>
+          )}
         </Stack>
       </Stack>
       <UrlForm
@@ -238,7 +255,10 @@ export default function MyApp() {
           urlFormRef.current = url;
           fetchUrlForm();
         }}
-        placeholder={`${location.protocol}//${location.host}${location.pathname}wheel.min.js.txt`}
+        placeholder={{
+          currentUrl: location.toString(),
+          fileName: "wheel.min.js.txt",
+        }}
       />
     </>
   );
