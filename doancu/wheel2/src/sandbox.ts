@@ -1,25 +1,16 @@
-import { QuickJSWASMModule } from "quickjs-emscripten-core";
+import {
+  QuickJSWASMModule,
+  newQuickJSWASMModuleFromVariant,
+  newVariant,
+  shouldInterruptAfterDeadline,
+} from "quickjs-emscripten-core";
+import QUICKJS_RELEASE_SYNC from "@jitl/quickjs-wasmfile-release-sync";
+import QUICKJS_WASM_LOCATION from "@jitl/quickjs-wasmfile-release-sync/wasm?url";
 
 let JsSanbox: QuickJSWASMModule | null = null;
 
-// test dynamic import chunk split, require internet when first time click submit
-// to download the remaining of the library
-
 export async function safeEval(code: string) {
   console.debug("[sandbox] safeEval, lazy loading sandbox core now", code);
-  const [
-    { default: QUICKJS_RELEASE_SYNC },
-    { default: QUICKJS_WASM_LOCATION },
-    {
-      newQuickJSWASMModuleFromVariant,
-      newVariant,
-      shouldInterruptAfterDeadline,
-    },
-  ] = await Promise.all([
-    import("@jitl/quickjs-wasmfile-release-sync"),
-    import("@jitl/quickjs-wasmfile-release-sync/wasm?url"),
-    import("quickjs-emscripten-core"),
-  ]);
   if (JsSanbox == null) {
     JsSanbox = await newQuickJSWASMModuleFromVariant(
       newVariant(QUICKJS_RELEASE_SYNC, {

@@ -1,12 +1,7 @@
-// test dynamic import chunk split, require internet when first time click submit
-// to download the remaining of the library
+import { webcrack } from "webcrack";
+import { safeEval } from "./sandbox";
 
 export async function deobfuscateCode(code: string) {
-  console.debug("[deobfuscateCode] lazy loading deobfuscator and sandbox");
-  const [{ webcrack }, { safeEval }] = await Promise.all([
-    import("webcrack"),
-    import("./sandbox"),
-  ]);
   return (
     await webcrack(code, {
       jsx: false,

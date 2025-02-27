@@ -31,6 +31,7 @@ import { Control, Controller, useForm } from "react-hook-form";
 import useDeobfuscatorWorker from "./employer";
 import NameList from "./NameList";
 import UrlForm from "./UrlForm";
+
 // import "./monaco";
 type MonacoEditor = editor.IStandaloneCodeEditor;
 
@@ -75,33 +76,16 @@ export default function MyApp() {
   });
   const formDataRef = useRef<MyFormProps | null>(null);
   const deobfuscateRequest = useDeobfuscatorWorker(async (response) => {
-    const { success, deobfuscatedCode, error } = response;
-    if (!success || error) {
-      console.error(response);
-      throw new Error("Deobfuscation unsuccessful");
+    if (response.error || !response.code) {
+      console.error("[MyApp] Deobfuscation unsuccessful", response);
+      return;
     }
-    if (!deobfuscatedCode) {
-      console.error(deobfuscatedCode);
-      throw new Error("Deobfuscated code is invalid");
-    }
-    editorDeobfuscatedRef.current?.setValue(deobfuscatedCode);
-    if (!formDataRef.current) {
-      throw new Error("Sanity fail: formData null after deobfuscateRequest");
-    }
-    const { clairvoyance, snap, reinit, scripter, nameList } =
-      formDataRef.current;
-    console.log("[MyApp] lazy loading patcher");
-    const { translate } = await import("./patcher");
-    const { patchedAsSource, patchedAsUserscript } = await translate(
-      deobfuscatedCode,
-      clairvoyance,
-      snap,
-      reinit,
-      scripter,
-      nameList.map((o) => o.value)
-    );
-    editorPatchedRef.current?.setValue(patchedAsSource);
-    editorUserscriptRef.current?.setValue(patchedAsUserscript);
+    const {
+      code: { deobfuscated, patched, scripted },
+    } = response;
+    editorDeobfuscatedRef.current?.setValue(deobfuscated);
+    editorPatchedRef.current?.setValue(patched);
+    editorUserscriptRef.current?.setValue(scripted);
     setTabIndex(8);
     setIsLoading(false);
   });
@@ -110,8 +94,9 @@ export default function MyApp() {
     setIsLoading(true);
     handleSubmitForm((data) => {
       formDataRef.current = data;
-      const { original } = data;
-      deobfuscateRequest({ code: original });
+      deobfuscateRequest({
+        code: { ...data, nameList: data.nameList.map((name) => name.value) },
+      });
     })();
   };
   const [urlFormOpen, setUrlFormOpen] = useState(false);
@@ -243,7 +228,7 @@ export default function MyApp() {
           <Button onClick={() => setUrlFormOpen(true)}>Read URL</Button>
           {isLoading && (
             <Stack alignItems="center">
-              <CircularProgress disableShrink size={"3em"} />
+              <CircularProgress /*disableShrink*/ size={"3em"} />
             </Stack>
           )}
         </Stack>

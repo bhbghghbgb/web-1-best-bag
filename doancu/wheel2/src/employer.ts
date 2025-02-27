@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import {
   DeobfuscateRequestData,
   DeobfuscateResponseData,
+  isDeobfuscateRequestData,
   isDeobfuscateResponseData,
 } from "./worker";
 import DeobfuscatorWorker from "./worker?worker";
@@ -21,8 +22,11 @@ const useDeobfuscatorWorker = (
     const data = event.data as DeobfuscateResponseData;
     console.debug("[useDeobfuscatorWorker] onMessage", event, data);
     if (!isDeobfuscateResponseData(data)) {
-      console.error(event);
-      throw new Error("Unknown event type received from deobfuscator worker");
+      console.error(
+        "[useDeobfuscatorWorker] Unexpected event data format received from deobfuscator worker",
+        event
+      );
+      return;
     }
     console.debug(
       "[useDeobfuscatorWorker] onMessage successful, sending response",
@@ -61,6 +65,13 @@ const useDeobfuscatorWorker = (
 
   const requestDeobfuscate = (request: DeobfuscateRequestData) => {
     console.debug("[useDeobfuscatorWorker] requestDeobfuscate", request);
+    if (!isDeobfuscateRequestData(request)) {
+      console.error(
+        "[useDeobfuscatorWorker] Unexpected request format",
+        request
+      );
+      return;
+    }
     workerRef.current?.postMessage(request);
   };
 
