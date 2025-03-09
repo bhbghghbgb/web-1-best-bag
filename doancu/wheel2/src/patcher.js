@@ -2,6 +2,7 @@ import { Parser } from "acorn";
 import { FORMAT_DEFAULTS, FORMAT_MINIFY, generate } from "escodegen";
 import { builders, is as nodeIs, traverse } from "estree-toolkit";
 import jsesc from "jsesc";
+import { compressToUTF16 } from "lz-string";
 import { minify } from "terser";
 
 const FORMAT_DEFAULT = {
@@ -189,9 +190,16 @@ async function generateUserscript(
     "[patcher]:generateUserscript - Minified source for userscript inject",
     { sourceForUserScriptInjectMinified }
   );
+  const sourceForUserScriptInjectCompressed = compressToUTF16(
+    sourceForUserScriptInjectMinified.code
+  );
+  console.debug(
+    "[patcher]:generateUserscript - Compressed source for userscript inject",
+    { sourceForUserScriptInjectCompressed }
+  );
   const sourceForUserScriptInjectEscaped = jsesc(
-    sourceForUserScriptInjectMinified.code,
-    { quotes: "single", minimal: true }
+    sourceForUserScriptInjectCompressed,
+    { wrap: true, minimal: true }
   );
   console.debug(
     "[patcher]:generateUserscript - Escaped source for userscript inject",

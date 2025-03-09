@@ -23,6 +23,7 @@
     "escodegen": "^2.1.0",
     "estree-toolkit": "^1.7.8",
     "jsesc": "^3.1.0",
+    "lz-string": "^1.5.0",
     "quickjs-emscripten-core": "^0.31.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -54,6 +55,9 @@
     "vite-bundle-visualizer": "^1.2.1",
     "vite-plugin-monaco-editor-esm": "^2.0.2",
     "vite-plugin-node-polyfills": "^0.23.0"
+  },
+  "overrides": {
+    "lz-string@^1.5.0": "1.5.0"
   },
   "resolutions": {
     "isolated-vm": "link:./.yarn/empty-package"
