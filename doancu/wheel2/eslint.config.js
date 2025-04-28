@@ -15,7 +15,7 @@ export default tseslint.config(
     ],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 2022, // https://github.com/eslint/eslint/discussions/15049#discussioncomment-1310652
       globals: globals.browser,
     },
     plugins: {
@@ -34,7 +34,7 @@ export default tseslint.config(
   {
     files: ["**/*.{js,jsx}"],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 2022,
       globals: globals.browser,
     },
     extends: [js.configs.recommended],
