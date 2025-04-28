@@ -100,6 +100,8 @@ function extractUrlDirectory(url: string) {
       `[UrlForm] URL "${url}" is for a file "${file}", with extension "${ext}", extracted dirname "${dirname}"`
     );
     url = dirname;
+  } else {
+    console.debug(`[UrlForm] URL "${url}" is for a directory`);
   }
   return url.replace(/\/+$/, "");
 }

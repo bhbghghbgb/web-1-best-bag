@@ -297,7 +297,6 @@ function EditorTabPanel(props: EditorTabPanelProps & InputControllerProps) {
             return response.data;
           }
         }
-        return null;
       }
       return null;
     },

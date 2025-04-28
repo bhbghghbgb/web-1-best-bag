@@ -2,6 +2,7 @@ import { Parser } from "acorn";
 import { FORMAT_DEFAULTS, FORMAT_MINIFY, generate } from "escodegen";
 import { builders, is as nodeIs, traverse } from "estree-toolkit";
 import jsesc from "jsesc";
+import { compressToUTF16 } from "lz-string";
 import { minify } from "terser";
 
 const FORMAT_DEFAULT = {
@@ -48,6 +49,7 @@ export async function translate(
   } = parsePatchesToAst(clairvoyancePatch, snapPatch, reinitPatch);
   const wholeFileNode = findFileNode(deobfuscatedSource);
   const wholeFileNode_Body = wholeFileNode.body;
+  patchForceRedirection(wholeFileNode_Body);
   // locate names, identifiers, values, commonly accessed nodes in the original code
   const loadWheel_Body = findLoadWheelBody(wholeFileNode_Body);
   const [
@@ -188,9 +190,16 @@ async function generateUserscript(
     "[patcher]:generateUserscript - Minified source for userscript inject",
     { sourceForUserScriptInjectMinified }
   );
+  const sourceForUserScriptInjectCompressed = compressToUTF16(
+    sourceForUserScriptInjectMinified.code
+  );
+  console.debug(
+    "[patcher]:generateUserscript - Compressed source for userscript inject",
+    { sourceForUserScriptInjectCompressed }
+  );
   const sourceForUserScriptInjectEscaped = jsesc(
-    sourceForUserScriptInjectMinified.code,
-    { quotes: "single", minimal: true }
+    sourceForUserScriptInjectCompressed,
+    { wrap: true, minimal: true }
   );
   console.debug(
     "[patcher]:generateUserscript - Escaped source for userscript inject",
@@ -318,7 +327,12 @@ function patchLoadWheelWithSectorIndex(
   const indexInBody = loadWheel_Body.findIndex(
     (node) => node === calcCurrentSectorIndex_VariableDeclaration
   );
-  if (indexInBody === -1) return;
+  if (indexInBody === -1)
+    throw new TranslationNodeLocateError(
+      "calcCurrentSectorIndex_VariableDeclaration",
+      "loadWheel_Body",
+      "Was previously found but now can't find index?"
+    );
   for (let i = 2; i <= loadWheel_Body.length / 2; i++) {
     const j = i % 2 === 0 ? i / 2 : -i / 2;
     const nearbyVariableDeclaration = loadWheel_Body[indexInBody + j];
@@ -1095,4 +1109,76 @@ function parseRiggingValues(riggingValues) {
     riggedNames,
   });
   return { riggedIndexes, riggedNames };
+}
+
+function patchForceRedirection(wholeFileNode_Body) {
+  // this function patches the if check to always be false by adding an auto-false condition,
+  // but does not remove any existing code
+
+  // original code inside of the source
+  // if (!rt || rt != b64DecodeUnicode('<a link's b64>') && rt != b64DecodeUnicode('another link's b64')) {
+  //   window.location.href = b64DecodeUnicode('another link's b64');
+  // }
+
+  // locate this statement inside of the file node body by finding an if statement that has a check
+  // if not <variable name> OR (<variable name> != <A function name> call AND <variable> != <A function name> call AND etc)
+  // consequent of if check should contain only one statement that sets window.location.href to a result of <A function name> call
+  // check the consistency of <variable name> and <A function name> to match
+  // only one occurrence of this statement exists so bail out fast
+  // don't care what string is used as the argument of <A function name> call, and set it to empty
+  console.debug(
+    "[patcher]:patchForceRedirection - Patching force redirection to origin's link"
+  );
+  let functionName = null;
+  const redirectionIfStatement = wholeFileNode_Body.find((node) => {
+    if (!nodeIs.ifStatement(node)) return false;
+    const { test, consequent } = node;
+    if (!nodeIs.logicalExpression(test, { operator: "||" })) return false;
+    const { left, right } = test;
+    if (!nodeIs.unaryExpression(left, { operator: "!" })) return false;
+    if (!nodeIs.logicalExpression(right, { operator: "&&" })) return false;
+    if (!nodeIs.blockStatement(consequent) || consequent.body.length !== 1)
+      return false;
+    const [consequentStatement] = consequent.body;
+    if (!nodeIs.expressionStatement(consequentStatement)) return false;
+    const { expression } = consequentStatement;
+    if (!nodeIs.assignmentExpression(expression, { operator: "=" }))
+      return false;
+    const { left: assignmentLeft, right: assignmentRight } = expression;
+    if (!nodeIs.memberExpression(assignmentLeft)) return false;
+    if (
+      !nodeIs.memberExpression(assignmentLeft.object) ||
+      !nodeIs.identifier(assignmentLeft.object.object, { name: "window" }) ||
+      !nodeIs.identifier(assignmentLeft.object.property, {
+        name: "location",
+      }) ||
+      !nodeIs.identifier(assignmentLeft.property, { name: "href" })
+    )
+      return false;
+    if (!nodeIs.callExpression(assignmentRight)) return false;
+    const variableName = left.argument.name;
+    functionName = right.left.right.callee.name;
+    // Verify the consistency of <variable name> and <A function name> in the right side of the logical expression
+    const isValid =
+      right.left.left.name === variableName &&
+      right.left.right.callee.name === functionName &&
+      right.right.left.name === variableName &&
+      right.right.right.callee.name === functionName &&
+      assignmentRight.callee.name === functionName;
+    return isValid;
+  });
+  if (redirectionIfStatement) {
+    redirectionIfStatement.test = builders.logicalExpression(
+      "&&",
+      builders.literal(false),
+      redirectionIfStatement.test
+    );
+    traverse(redirectionIfStatement, {
+      CallExpression(path) {
+        if (path.node.callee.name === functionName) {
+          path.node.arguments = [builders.literal("")];
+        }
+      },
+    });
+  }
 }
