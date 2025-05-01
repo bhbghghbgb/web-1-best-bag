@@ -1,5 +1,5 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Button, Grid2, IconButton, Stack, TextField } from "@mui/material";
+import { Button, Grid, IconButton, Stack, TextField } from "@mui/material";
 import { FC } from "react";
 import { Control, Controller, useFieldArray } from "react-hook-form";
 import { MyFormProps } from "./MyApp";
@@ -22,7 +22,7 @@ const NameList: FC<NameListControlProps> = ({ control }) => {
       >
         Add Name
       </Button>
-      <Grid2 container spacing={2} style={{ width: "100%" }}>
+      <Grid container spacing={2} style={{ width: "100%" }}>
         {fields.map((field, index) => (
           <Stack key={field.id} direction={"row"} alignItems={"center"}>
             <Controller
@@ -49,7 +49,7 @@ const NameList: FC<NameListControlProps> = ({ control }) => {
             </IconButton>
           </Stack>
         ))}
-      </Grid2>
+      </Grid>
     </Stack>
   );
 };
