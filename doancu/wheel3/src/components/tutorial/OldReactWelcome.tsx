@@ -1,10 +1,10 @@
 /* eslint-disable vue/one-component-per-file */
-import { defineComponent, ref } from 'vue'
 import oiiaiM from '@/assets/oiiai.webm'
 import oiiaiP from '@/assets/oiiai.webp'
-import viteLogo from '@/assets/vite.svg'
 import reactLogo from '@/assets/react.svg'
 import tsLogo from '@/assets/ts.svg'
+import viteLogo from '@/assets/vite.svg'
+import { defineComponent, ref } from 'vue'
 
 // Define the inline Oiiai component
 const Oiiai = defineComponent({

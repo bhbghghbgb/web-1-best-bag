@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import OldReactWelcome from './components/tutorial/OldReactWelcome.vue'
 import VueWelcome from './components/tutorial/VueWelcome.vue'
-import MyApp from './MyApp.vue'
+import MyApp from './components/MyApp.vue'
 </script>
 
 <template>
