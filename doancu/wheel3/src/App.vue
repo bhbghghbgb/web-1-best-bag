@@ -5,8 +5,8 @@ import MyApp from './components/MyApp.vue'
 </script>
 
 <template>
-  <MyApp />
   <div class="welcome">
+    <MyApp />
     <VueWelcome />
     <!-- Test JSX in Vue -->
     <OldReactWelcome />
