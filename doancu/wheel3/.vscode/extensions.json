@@ -7,6 +7,7 @@
     "EditorConfig.EditorConfig",
     "oxc.oxc-vscode",
     "esbenp.prettier-vscode",
-    "sdras.vue-vscode-snippets"
+    "sdras.vue-vscode-snippets",
+    "antfu.vite"
   ]
 }

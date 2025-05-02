@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import OldReactWelcome from './components/tutorial/OldReactWelcome.vue'
 import VueWelcome from './components/tutorial/VueWelcome.vue'
+import MyApp from './MyApp.vue'
 </script>
 
 <template>
+  <MyApp />
   <div class="welcome">
     <VueWelcome />
     <!-- Test JSX in Vue -->
