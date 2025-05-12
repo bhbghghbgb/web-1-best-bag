@@ -1,4 +1,3 @@
-/* eslint-disable */
 const root = document.querySelector(":root");
 var extra_name = el("extra_name").value;
 const languages = ajax_object.languages;

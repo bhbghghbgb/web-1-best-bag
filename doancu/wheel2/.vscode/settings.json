@@ -1,3 +1,5 @@
 {
-    "vite.autoStart": false
+    "vite.autoStart": false,
+    "bookmarks.useWorkaroundForFormatters": true,
+    "bookmarks.saveBookmarksInProject": true
 }

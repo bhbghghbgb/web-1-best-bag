@@ -1,0 +1,19 @@
+{
+	"files": [
+		{
+			"path": "public/index-v349-attempt.js",
+			"bookmarks": [
+				{
+					"line": 16973,
+					"column": 0,
+					"label": "app state"
+				},
+				{
+					"line": 17234,
+					"column": 0,
+					"label": "decelerating wheel state"
+				}
+			]
+		}
+	]
+}
