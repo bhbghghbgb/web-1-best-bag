@@ -1,5 +1,6 @@
 window.DENSITY = 100;
-window.TARGETS = ["Beatriz", "Ali"];
+window.TARGETS = ["Charles", "Fatima"];
+window.ISTARGETFN = (entry) => window.TARGETS.includes(entry.text);
 const vF = (
   i,
   m = vF,
@@ -17116,7 +17117,7 @@ function tryCalculateInitialAngleForTargets(
   for (let i = 0; i < pointsToTry.length; i++) {
     let point = pointsToTry[i];
     let entry = getEntryAtPointNFn(point);
-    if (window.TARGETS.includes(entry.text)) {
+    if (window.ISTARGETFN(entry)) {
       let offset = calculateOffsetToTargetPoint(
         angleInitial,
         totalAngleInc,
@@ -17127,6 +17128,18 @@ function tryCalculateInitialAngleForTargets(
   }
   // If no valid target is found, return original angleInitial
   return angleInitial;
+}
+function tryCalculateGivenStates(appState, wheelState) {
+  return tryCalculateInitialAngleForTargets(
+    appState.angle,
+    calculateTotalDeceleratingRotation(
+      appState.speed,
+      wheelState.deceleration,
+      wheelState.MAX_AGE
+    ),
+    randomPoints(),
+    (n) => appState.getEntryAtPointerN(n)
+  );
 }
 class C20 {
   name = "NullSpinState";
@@ -17230,16 +17243,7 @@ class C24 extends C20 {
     const i = t.speed;
     const s = 0.00015;
     this.deceleration = Math.exp(Math.log(s / i) / r);
-    t.angle = tryCalculateInitialAngleForTargets(
-      t.angle,
-      calculateTotalDeceleratingRotation(
-        t.speed,
-        this.deceleration,
-        this.MAX_AGE
-      ),
-      randomPoints(),
-      (n) => t.getEntryAtPointerN(n)
-    );
+    t.angle = tryCalculateGivenStates(t, this);
   }
   /** @param {gC2} t */
   tick(t) {
@@ -17631,7 +17635,7 @@ function f586(e, t) {
 }
 async function f587(e) {
   const { extractColors: t } = await vF4(async () => {
-    const { extractColors: r } = await import("./extract-colors-v349.js");
+    const { extractColors: r } = await import("/assets/extract-colors-v349.js");
     return {
       extractColors: r,
     };
@@ -18373,10 +18377,11 @@ async function f625() {
   } catch {}
 }
 async function f626() {
-  v173 = (await vF4(() => import("./index.esm-v349.js"), vF([0, 1]))).default;
-  await vF4(() => import("./index.esm-v3493.js"), vF([2, 1]));
-  await vF4(() => import("./index.esm-v3492.js"), vF([3, 1]));
-  v174 = await vF4(() => import("./esm-v349.js"), vF([4, 0, 1, 2, 5]));
+  v173 = (await vF4(() => import("/assets/index.esm-v349.js"), vF([0, 1])))
+    .default;
+  await vF4(() => import("/assets/index.esm-v3493.js"), vF([2, 1]));
+  await vF4(() => import("/assets/index.esm-v3492.js"), vF([3, 1]));
+  v174 = await vF4(() => import("/assets/esm-v349.js"), vF([4, 0, 1, 2, 5]));
 }
 function f627(e) {
   if (f628()) {
@@ -18992,7 +18997,7 @@ const vA27 = [
     path: "/faq/:section?",
     component: () =>
       vF4(
-        () => import("./FaqPage-v349.js"),
+        () => import("/assets/FaqPage-v349.js"),
         vF([6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21])
       ),
   },
@@ -19000,7 +19005,7 @@ const vA27 = [
     path: "/user-reviews-and-tutorials",
     component: () =>
       vF4(
-        () => import("./TutorialsPage-v349.js"),
+        () => import("/assets/TutorialsPage-v349.js"),
         vF([22, 7, 8, 23, 24, 10, 16, 17, 12, 18, 14, 19])
       ),
   },
@@ -19008,7 +19013,7 @@ const vA27 = [
     path: "/how-to-use-in-the-classroom",
     component: () =>
       vF4(
-        () => import("./ClassroomPage-v349.js"),
+        () => import("/assets/ClassroomPage-v349.js"),
         vF([25, 7, 8, 23, 24, 10, 16, 17, 12, 18, 14, 19])
       ),
   },
@@ -19017,7 +19022,7 @@ const vA27 = [
     alias: "/privacy-policy.html",
     component: () =>
       vF4(
-        () => import("./PrivacyPolicyPage-v349.js"),
+        () => import("/assets/PrivacyPolicyPage-v349.js"),
         vF([26, 7, 8, 20, 27, 10, 16, 17, 12, 18, 14, 19, 28])
       ),
   },
@@ -19025,7 +19030,7 @@ const vA27 = [
     path: "/terms",
     component: () =>
       vF4(
-        () => import("./TermsOfServicePage-v349.js"),
+        () => import("/assets/TermsOfServicePage-v349.js"),
         vF([29, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
       ),
   },
@@ -19033,7 +19038,7 @@ const vA27 = [
     path: "/changelog",
     component: () =>
       vF4(
-        () => import("./ChangelogPage-v349.js"),
+        () => import("/assets/ChangelogPage-v349.js"),
         vF([30, 7, 8, 10, 16, 17, 12, 18, 14, 19, 27, 31])
       ),
   },
@@ -19041,7 +19046,7 @@ const vA27 = [
     path: "/gallery",
     component: () =>
       vF4(
-        () => import("./GalleryPage-v349.js"),
+        () => import("/assets/GalleryPage-v349.js"),
         vF([
           32, 33, 7, 8, 9, 10, 16, 17, 12, 18, 14, 19, 34, 35, 36, 37, 13, 38,
           39,
@@ -19052,7 +19057,7 @@ const vA27 = [
     path: "/api-doc",
     component: () =>
       vF4(
-        () => import("./ApiPage-v349.js"),
+        () => import("/assets/ApiPage-v349.js"),
         vF([40, 7, 8, 9, 10, 41, 14, 13, 42, 38, 16, 17, 12, 18, 19, 43])
       ),
   },
@@ -19063,7 +19068,7 @@ const vA27 = [
         path: "",
         component: () =>
           vF4(
-            () => import("./EditWheelPage-v349.js"),
+            () => import("/assets/EditWheelPage-v349.js"),
             vF([
               44, 33, 7, 8, 10, 12, 11, 13, 14, 15, 42, 17, 35, 36, 37, 45, 46,
               47, 5, 48, 49, 38, 50, 51, 52, 53, 27, 54, 24, 20, 41, 55, 56,
@@ -19074,7 +19079,7 @@ const vA27 = [
         path: "noads",
         component: () =>
           vF4(
-            () => import("./EditWheelPage-v349.js"),
+            () => import("/assets/EditWheelPage-v349.js"),
             vF([
               44, 33, 7, 8, 10, 12, 11, 13, 14, 15, 42, 17, 35, 36, 37, 45, 46,
               47, 5, 48, 49, 38, 50, 51, 52, 53, 27, 54, 24, 20, 41, 55, 56,
@@ -19086,7 +19091,7 @@ const vA27 = [
         alias: "view/:sharedWheelPath(\\w\\w\\w-\\w\\w\\w)",
         component: () =>
           vF4(
-            () => import("./SharedWheelPage-v349.js"),
+            () => import("/assets/SharedWheelPage-v349.js"),
             vF([
               57, 33, 10, 8, 12, 42, 13, 47, 14, 5, 48, 49, 38, 46, 50, 55, 58,
             ])
@@ -19096,7 +19101,7 @@ const vA27 = [
         path: "gallery",
         component: () =>
           vF4(
-            () => import("./GalleryPage-v349.js"),
+            () => import("/assets/GalleryPage-v349.js"),
             vF([
               32, 33, 7, 8, 9, 10, 16, 17, 12, 18, 14, 19, 34, 35, 36, 37, 13,
               38, 39,
@@ -19109,7 +19114,7 @@ const vA27 = [
     path: "/view/:lang([a-z][a-z][a-z]?|[a-z][a-z]-[A-Z][A-Z])?/:sharedWheelPath(\\w\\w\\w-\\w\\w\\w)?",
     component: () =>
       vF4(
-        () => import("./SharedWheelPage-v349.js"),
+        () => import("/assets/SharedWheelPage-v349.js"),
         vF([57, 33, 10, 8, 12, 42, 13, 47, 14, 5, 48, 49, 38, 46, 50, 55, 58])
       ),
   },
@@ -19117,7 +19122,7 @@ const vA27 = [
     path: "/export",
     component: () =>
       vF4(
-        () => import("./ExportPage-v349.js"),
+        () => import("/assets/ExportPage-v349.js"),
         vF([59, 7, 8, 9, 10, 42, 13, 16, 17, 12, 18, 14, 19, 60])
       ),
   },
@@ -19125,7 +19130,7 @@ const vA27 = [
     path: "/translations",
     component: () =>
       vF4(
-        () => import("./TranslationPage-v349.js"),
+        () => import("/assets/TranslationPage-v349.js"),
         vF([61, 7, 8, 27, 10, 16, 17, 12, 18, 14, 19, 41])
       ),
   },
@@ -19133,7 +19138,7 @@ const vA27 = [
     path: "/migrate-account",
     component: () =>
       vF4(
-        () => import("./MigrateAccountPage-v349.js"),
+        () => import("/assets/MigrateAccountPage-v349.js"),
         vF([62, 7, 8, 13, 42, 38, 11, 12, 14, 15, 16, 17, 18, 19, 51, 63])
       ),
   },
@@ -19147,7 +19152,7 @@ const vA27 = [
         path: "",
         component: () =>
           vF4(
-            () => import("./AdminPage-v349.js"),
+            () => import("/assets/AdminPage-v349.js"),
             vF([64, 65, 35, 7, 8, 9, 10, 18, 12, 54, 24, 14, 66])
           ),
       },
@@ -19155,7 +19160,7 @@ const vA27 = [
         path: "review",
         component: () =>
           vF4(
-            () => import("./ReviewWheelPage-v349.js"),
+            () => import("/assets/ReviewWheelPage-v349.js"),
             vF([
               67, 65, 35, 45, 37, 7, 8, 27, 9, 10, 12, 13, 47, 14, 5, 48, 18,
               46, 38, 68,
@@ -19166,7 +19171,7 @@ const vA27 = [
         path: "gallery",
         component: () =>
           vF4(
-            () => import("./GalleryReviewPage-v349.js"),
+            () => import("/assets/GalleryReviewPage-v349.js"),
             vF([69, 65, 7, 8, 9, 10, 34, 35, 36, 37, 14, 13, 38, 39, 70])
           ),
       },
@@ -19174,7 +19179,7 @@ const vA27 = [
         path: "user",
         component: () =>
           vF4(
-            () => import("./AdminUserPage-v349.js"),
+            () => import("/assets/AdminUserPage-v349.js"),
             vF([71, 27, 38, 52, 42, 13, 14, 53, 47, 12, 5, 48])
           ),
       },
@@ -19182,7 +19187,7 @@ const vA27 = [
   },
   {
     path: "/:catchAll(.*)*",
-    component: () => vF4(() => import("./Error404-v349.js"), []),
+    component: () => vF4(() => import("/assets/Error404-v349.js"), []),
   },
 ];
 const vF141 = () => {
@@ -26019,8 +26024,8 @@ f653(vF91, vO93).then((e) => {
         ]
       : ["all", (r) => r.map((i) => i.default)];
   return Promise[t]([
-    vF4(() => import("./i18n-v349.js"), vF([72, 73])),
-    vF4(() => import("./head-v349.js"), vF([74, 55])),
+    vF4(() => import("/assets/i18n-v349.js"), vF([72, 73])),
+    vF4(() => import("/assets/head-v349.js"), vF([74, 55])),
   ]).then((r) => {
     const i = n(r).filter((s) => typeof s == "function");
     f772(e, i);
