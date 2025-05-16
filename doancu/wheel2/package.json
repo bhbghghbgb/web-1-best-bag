@@ -11,6 +11,7 @@
     "analyze": "vite-bundle-visualizer --template flamegraph --output ./stats.html"
   },
   "dependencies": {
+    "@armit/babel-merge": "^0.2.11",
     "@babel/core": "^7.26.10",
     "@babel/generator": "^7.27.0",
     "@babel/parser": "^7.27.0",
@@ -27,10 +28,12 @@
     "@tanstack/react-query": "^5.74.7",
     "acorn": "^8.14.1",
     "axios": "^1.9.0",
+    "debug": "^4.4.1",
     "escodegen": "^2.1.0",
     "estree-toolkit": "^1.7.12",
     "jsesc": "^3.1.0",
     "lz-string": "^1.5.0",
+    "pretty-bytes": "^7.0.0",
     "quickjs-emscripten-core": "^0.31.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -45,6 +48,7 @@
     "@types/babel__generator": "^7",
     "@types/babel__preset-env": "^7",
     "@types/babel__traverse": "^7",
+    "@types/debug": "^4",
     "@types/escodegen": "^0.0.10",
     "@types/jsesc": "^3.0.3",
     "@types/node": "^22.15.3",
