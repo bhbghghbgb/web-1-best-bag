@@ -1,15 +1,17 @@
 {
   "name": "wheel",
-  "packageManager": "yarn@4.4.1",
+  "scripts": {
+    "build": "esbuild wheel.web.js --bundle --minify --outfile=./dist/wheel.build.js"
+  },
   "dependencies": {
-    "acorn": "^8.14.0",
+    "acorn": "^8.14.1",
     "escodegen": "^2.1.0",
-    "estree-toolkit": "^1.7.8",
+    "estree-toolkit": "^1.7.13",
     "javascript-obfuscator": "^4.1.1",
     "jquery": "^3.7.1",
     "js-string-escape": "^1.0.1"
   },
   "devDependencies": {
-    "esbuild": "0.24.2"
+    "esbuild": "0.25.4"
   }
 }

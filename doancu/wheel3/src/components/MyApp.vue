@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import { useMediaQuery } from '@vueuse/core'
-import { ref, watchEffect, shallowRef, computed } from 'vue'
+import { computed, ref, shallowRef, watchEffect } from 'vue'
 
-import { editor } from 'monaco-editor'
 import { VueMonacoEditor } from '@guolao/vue-monaco-editor'
+import type { editor } from 'monaco-editor'
+
+import { mdiAccessPoint, mdiAccount, mdiLock } from '@mdi/js'
+
 type MonacoEditor = editor.IStandaloneCodeEditor
 
 type ColorScheme = 'light' | 'dark'
@@ -19,7 +22,7 @@ watchEffect(() => {
   theme.value = isPreferredDark.value ? 'dark' : 'light'
 })
 
-const MONACO_EDITOR_OPTIONS = {
+const MONACO_EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions = {
   automaticLayout: true,
   formatOnType: true,
   formatOnPaste: true,
@@ -40,7 +43,6 @@ const handleMount = (editorInstance: MonacoEditor) => {
   editorInstance.updateOptions({ wordWrap: 'on' })
   formatCode()
 }
-
 // your action
 function formatCode() {
   editor.value?.getAction('editor.action.formatDocument')?.run()
@@ -53,9 +55,9 @@ function formatCode() {
       <v-row class="flex-nowrap">
         <v-col cols="auto">
           <v-tabs v-model="tab" direction="vertical">
-            <v-tab value="one" prepend-icon="mdi-account">Item One</v-tab>
-            <v-tab value="two" prepend-icon="mdi-lock">Item Two</v-tab>
-            <v-tab value="three" prepend-icon="mdi-access-point">Item Three</v-tab>
+            <v-tab value="one" :prepend-icon="mdiAccount">Item One</v-tab>
+            <v-tab value="two" :prepend-icon="mdiLock">Item Two</v-tab>
+            <v-tab value="three" :prepend-icon="mdiAccessPoint">Item Three</v-tab>
           </v-tabs>
         </v-col>
         <v-col>
@@ -83,5 +85,10 @@ export default {
 <style scoped>
 .editor {
   min-width: 0;
+}
+
+/* https://github.com/atularen/ngx-monaco-editor/issues/71#issuecomment-1761733159 */
+:deep(.monaco-editor) {
+  position: absolute !important;
 }
 </style>

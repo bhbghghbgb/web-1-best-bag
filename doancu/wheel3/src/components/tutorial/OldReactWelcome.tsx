@@ -43,7 +43,7 @@ export default defineComponent({
 
     return () => (
       <>
-        <div>
+        <div class="flex justify-center">
           <a href="https://vite.dev" target="_blank">
             <img src={viteLogo} class="logo" alt="Vite logo" />
           </a>

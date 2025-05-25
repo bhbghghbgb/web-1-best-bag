@@ -1,5 +1,6 @@
 import { fileURLToPath, URL } from 'node:url'
 
+import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { VueHooksPlusResolver } from '@vue-hooks-plus/resolvers'
@@ -20,6 +21,7 @@ export default defineConfig({
     vuetify({
       autoImport: true, // Enabled by default,
     }),
+    tailwindcss(),
     Components({
       dts: true, // enabled by default if `typescript` is installed,
       types: [
@@ -36,6 +38,9 @@ export default defineConfig({
   ],
   css: {
     postcss: { plugins: [autoprefixer] },
+  },
+  optimizeDeps: {
+    exclude: ['monaco-editor'],
   },
   resolve: {
     alias: {

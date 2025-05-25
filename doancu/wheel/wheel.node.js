@@ -17,10 +17,10 @@ const { sourceComplete, sourceCompleteObfuscated, sourceUserScriptComplete } =
     // ["Mai", "Hương", "Giang"]
     ["Tuyền"]
   );
-writeFileSync("./wheel.replace.js", sourceComplete, { encoding: "utf-8" });
-writeFileSync("./wheel.complete.js", sourceCompleteObfuscated, {
+writeFileSync("./public/wheel.replace.js", sourceComplete, { encoding: "utf-8" });
+writeFileSync("./public/wheel.complete.js", sourceCompleteObfuscated, {
   encoding: "utf-8",
 });
-writeFileSync("./wheel.userscript.js", sourceUserScriptComplete, {
+writeFileSync("./public/wheel.userscript.js", sourceUserScriptComplete, {
   encoding: "utf-8",
 });
