@@ -9,6 +9,7 @@
     "esbenp.prettier-vscode",
     "sdras.vue-vscode-snippets",
     "antfu.vite",
-    "mrmlnc.vscode-scss"
+    "mrmlnc.vscode-scss",
+    "vuetifyjs.vuetify-vscode"
   ]
 }

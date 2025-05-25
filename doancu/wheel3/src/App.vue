@@ -5,18 +5,25 @@ import MyApp from './components/MyApp.vue'
 </script>
 
 <template>
-  <div class="welcome">
-    <MyApp />
-    <VueWelcome />
-    <!-- Test JSX in Vue -->
-    <OldReactWelcome />
-  </div>
+  <v-app>
+    <v-app-bar title="My Vue App"></v-app-bar>
+
+    <v-navigation-drawer>
+      <v-list>
+        <v-list-item title="Components"></v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-main>
+      <v-container class="pa-0 d-flex flex-column ga-6" fluid>
+        <MyApp />
+        <VueWelcome />
+        <OldReactWelcome />
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <style scoped>
-.welcome {
-  display: flex;
-  flex-direction: column;
-  gap: 4em;
-}
+/* You can keep your custom styles if needed, but Vuetify classes handle most spacing */
 </style>

@@ -80,18 +80,18 @@ import OldReactWelcome from './OldReactWelcome'
     outline: 4px auto -webkit-focus-ring-color;
   }
 
-  @media (prefers-color-scheme: light) {
-    * {
-      color: #213547;
-      background-color: #ffffff;
-    }
-    a:hover {
-      color: #747bff;
-    }
-    button {
-      background-color: #f9f9f9;
-    }
-  }
+  // @media (prefers-color-scheme: light) {
+  //   * {
+  //     color: #213547;
+  //     background-color: #ffffff;
+  //   }
+  //   a:hover {
+  //     color: #747bff;
+  //   }
+  //   button {
+  //     background-color: #f9f9f9;
+  //   }
+  // }
 
   .oldreact-app-root {
     /* max-width: 1280px; */
@@ -153,6 +153,20 @@ import OldReactWelcome from './OldReactWelcome'
     margin-inline-start: 0px;
     margin-inline-end: 0px;
     unicode-bidi: isolate;
+  }
+}
+</style>
+<style lang="css">
+html:not(.dark) .oldreact-root {
+  * {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
   }
 }
 </style>
