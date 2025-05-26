@@ -9,12 +9,14 @@ import AutoImport from 'unplugin-auto-import/vite'
 import { Vuetify3Resolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import topLevelAwait from 'vite-plugin-top-level-await'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import vuetify from 'vite-plugin-vuetify'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: process.env.VITE_BASE_URL ?? './',
   plugins: [
     vue(),
     vueJsx(),
@@ -37,16 +39,20 @@ export default defineConfig({
       dts: true, // or a custom path,
       resolvers: [Vuetify3Resolver(), VueHooksPlusResolver()],
     }),
+    nodePolyfills({ include: ['process', 'path'], protocolImports: true }),
   ],
   css: {
     postcss: { plugins: [autoprefixer] },
   },
+
   optimizeDeps: {
-    exclude: ['monaco-editor'],
+    exclude: ['monaco-editor', 'isolated-vm'],
   },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      fs: 'node-stdlib-browser/mock/empty',
+      'node:fs/promises': 'node-stdlib-browser/mock/empty',
     },
   },
 })

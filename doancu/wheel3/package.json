@@ -17,13 +17,31 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@armit/babel-merge": "^0.2.11",
+    "@babel/core": "^7.27.1",
+    "@babel/generator": "^7.27.1",
+    "@babel/parser": "^7.27.2",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/template": "^7.27.2",
+    "@babel/traverse": "^7.27.1",
+    "@babel/types": "^7.27.1",
+    "@codemod/matchers": "^1.7.1",
     "@guolao/vue-monaco-editor": "^1.5.5",
+    "@jitl/quickjs-wasmfile-release-sync": "^0.31.0",
     "@vueuse/core": "^13.2.0",
+    "axios": "^1.9.0",
+    "debug": "^4.4.1",
+    "jsesc": "^3.1.0",
+    "lz-string": "^1.5.0",
     "pinia": "^3.0.2",
+    "pretty-bytes": "^7.0.0",
+    "quickjs-emscripten-core": "^0.31.0",
+    "terser": "^5.39.2",
     "vue": "^3.5.14",
     "vue-hooks-plus": "^2.3.1",
     "vue-router": "^4.5.1",
-    "vuetify": "^3.8.6"
+    "vuetify": "^3.8.6",
+    "webcrack": "^2.15.1"
   },
   "devDependencies": {
     "@mdi/js": "^7.4.47",
@@ -31,7 +49,14 @@
     "@shikijs/monaco": "^3.4.2",
     "@tailwindcss/vite": "^4.1.7",
     "@tsconfig/node22": "^22.0.2",
+    "@types/babel__core": "^7",
+    "@types/babel__generator": "^7",
+    "@types/babel__preset-env": "^7",
+    "@types/babel__template": "^7",
+    "@types/babel__traverse": "^7",
+    "@types/debug": "^4.1.12",
     "@types/jsdom": "^21.1.7",
+    "@types/jsesc": "^3.0.3",
     "@types/node": "^22.15.21",
     "@vitejs/plugin-vue": "^5.2.4",
     "@vitejs/plugin-vue-jsx": "^4.2.0",
@@ -49,6 +74,7 @@
     "jiti": "^2.4.2",
     "jsdom": "^26.1.0",
     "monaco-editor": "^0.52.2",
+    "node-stdlib-browser": "^1.3.1",
     "npm-run-all2": "^8.0.3",
     "oxlint": "^0.16.12",
     "postcss": "^8.5.3",
@@ -57,16 +83,25 @@
     "shiki": "^3.4.2",
     "shiki-codegen": "^3.4.2",
     "tailwindcss": "^4.1.7",
+    "tsx": "^4.19.4",
     "typescript": "~5.8.3",
     "unplugin-auto-import": "^19.2.0",
     "unplugin-vue-components": "^28.5.0",
     "vite": "^6.3.5",
+    "vite-bundle-visualizer": "^1.2.1",
     "vite-plugin-cdn-import": "^1.0.1",
+    "vite-plugin-node-polyfills": "^0.23.0",
     "vite-plugin-top-level-await": "^1.5.0",
     "vite-plugin-vue-devtools": "^7.7.6",
     "vite-plugin-vuetify": "^2.1.1",
     "vitest": "^3.1.4",
     "vue-tsc": "^2.2.10"
+  },
+  "overrides": {
+    "lz-string@^1.5.0": "1.5.0"
+  },
+  "resolutions": {
+    "isolated-vm": "link:./.yarn/empty-package"
   },
   "packageManager": "yarn@4.9.1"
 }
