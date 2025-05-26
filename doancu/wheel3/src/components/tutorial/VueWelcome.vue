@@ -90,9 +90,7 @@ nav a:first-of-type {
   }
 }
 
-.welcome {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.vue-welcome {
+  background: var(--color-background);
 }
 </style>

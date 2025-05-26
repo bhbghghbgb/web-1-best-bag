@@ -9,6 +9,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import { Vuetify3Resolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
+import topLevelAwait from 'vite-plugin-top-level-await'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import vuetify from 'vite-plugin-vuetify'
 
@@ -17,6 +18,7 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
+    topLevelAwait(),
     vueDevTools(),
     vuetify({
       autoImport: true, // Enabled by default,

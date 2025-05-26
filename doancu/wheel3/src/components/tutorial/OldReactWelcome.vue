@@ -156,7 +156,7 @@ import OldReactWelcome from './OldReactWelcome'
   }
 }
 </style>
-<style lang="css">
+<style>
 html:not(.dark) .oldreact-root {
   * {
     color: #213547;

@@ -59,7 +59,7 @@ export default defineComponent({
         <div class="card">
           <button onClick={incrementCount}>count is {count.value}</button>
           <p>
-            Edit <code>src/App.vue</code> and save to test HMR
+            Edit <code>src/components/tutorial/OldReactWelcome.tsx</code> and save to test HMR
           </p>
         </div>
         <p class="read-the-docs">Click on the Vite and React and Typescript logos to learn more</p>

@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { VueMonacoEditor } from '@guolao/vue-monaco-editor'
+import { setupMonacoEditorWithShiki } from '@/codes/monaco-shiki'
+import type { BundledTheme } from '@/codes/shiki.bundle'
+import { loader, VueMonacoEditor } from '@guolao/vue-monaco-editor'
 import { mdiAccessPoint, mdiAccount, mdiLock, mdiWeatherNight, mdiWhiteBalanceSunny } from '@mdi/js' // Add icons for theme button
 import { useDark, useToggle } from '@vueuse/core'
-import type { editor } from 'monaco-editor'
+import type * as monaco from 'monaco-editor'
 import { computed, ref, shallowRef, watchEffect } from 'vue'
 import { useTheme } from 'vuetify'
 
@@ -15,18 +17,24 @@ watchEffect(() => {
   theme.global.name.value = isDark.value ? 'dark' : 'light'
 })
 
-const MONACO_EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions = {
+const MONACO_EDITOR_OPTIONS: monaco.editor.IStandaloneEditorConstructionOptions = {
   automaticLayout: true,
   formatOnType: true,
   formatOnPaste: true,
 }
-const code = ref('// some code...')
-const monacoeditor = shallowRef<editor.IStandaloneCodeEditor>()
+const code = ref('// some code...\nconst a = 1;\nconsole.log(a);')
+const monacoeditor = shallowRef<monaco.editor.IStandaloneCodeEditor>()
 
-// Computed property that maps your theme to Monaco's theme
-const monacoTheme = computed(() => (isDark.value ? 'vs-dark' : 'vs'))
+// Computed property that maps your theme to Monaco's theme.
+// We will use Shiki themes, but this computed property can still control
+// which Shiki theme is active.
+const shikiThemeName = computed<BundledTheme>(() => (isDark.value ? 'slack-dark' : 'slack-ochin'))
 
-const handleMount = (editorInstance: editor.IStandaloneCodeEditor) => {
+// const handleBeforeMount = async (monacoInstance: typeof monaco) => {
+//   await setupMonacoEditorWithShiki(monacoInstance)
+// }
+
+const handleMount = (editorInstance: monaco.editor.IStandaloneCodeEditor) => {
   monacoeditor.value = editorInstance
   editorInstance.updateOptions({ wordWrap: 'on' })
   formatCode()
@@ -38,6 +46,9 @@ function formatCode() {
 
 // Data for tabs (moved into script setup for consistency with Composition API)
 const tab = ref(null)
+</script>
+<script lang="ts">
+await setupMonacoEditorWithShiki(await loader.init())
 </script>
 
 <template>
@@ -62,7 +73,8 @@ const tab = ref(null)
         <VueMonacoEditor
           v-model:value="code"
           class="editor"
-          :theme="monacoTheme"
+          language="javascript"
+          :theme="shikiThemeName"
           :options="MONACO_EDITOR_OPTIONS"
           @mount="handleMount"
         />

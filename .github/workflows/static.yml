@@ -23,55 +23,85 @@ concurrency:
   # that ra nen cancel vi xai debounce roi
   cancel-in-progress: true
 
-# We are still uploading entire repo, we only need extra steps to build wheel2,
+# We are still uploading entire repo, we only need extra steps to build wheel2 and ưheel3
 # so it's still static in a sense.
 jobs:
-  # Build job
+  # Build job for multiple projects using matrix strategy
   build:
-    # Specify runner +  build & upload the static files as an artifact
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [wheel2, wheel3]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - name: Enable Corepack
         run: corepack enable
-      - name: Run install
+
+      - name: Install dependencies for ${{ matrix.project }}
         uses: borales/actions-yarn@v4
         with:
-          cmd: install # will run `yarn install` command
-          dir: doancu/wheel2
-      - name: Build wheel2 production
+          cmd: install
+          dir: doancu/${{ matrix.project }}
+
+      - name: Build ${{ matrix.project }} production
         uses: borales/actions-yarn@v4
         with:
-          cmd: build # will run `yarn build` command
-          dir: doancu/wheel2
+          cmd: build
+          dir: doancu/${{ matrix.project }}
         env:
-          VITE_BASE_URL: /web-1-best-bag/doancu/wheel2/dist
+          VITE_BASE_URL: /web-1-best-bag/doancu/${{ matrix.project }}/dist
+
       # TODO: write test ci (browser)
-      - name: Remove node_modules
+
+      - name: Remove node_modules for ${{ matrix.project }}
         uses: JesseTG/rm@v1.0.3
         with:
-          path: doancu/wheel2/node_modules
-      - name: Remove yarn local caches
+          path: doancu/${{ matrix.project }}/node_modules
+
+      - name: Remove yarn local caches for ${{ matrix.project }}
         uses: JesseTG/rm@v1.0.3
         with:
-          path: doancu/wheel2/.yarn
+          path: doancu/${{ matrix.project }}/.yarn
+
+      - name: Upload static files for ${{ matrix.project }} as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.project }}-dist
+          path: doancu/${{ matrix.project }}/dist
+
+  # Deploy job
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download wheel2 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: wheel2-dist
+          path: doancu/wheel2/dist
+
+      - name: Download wheel3 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: wheel3-dist
+          path: doancu/wheel3/dist
+
       - name: Upload static files as artifact
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
           path: "."
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

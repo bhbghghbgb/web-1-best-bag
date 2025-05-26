@@ -1,6 +1,49 @@
-@import 'tailwindcss';
-@import './base.css';
+/* main.css */
 
+/* 1. Define the CSS layer order.
+   This MUST be the very first thing in your stylesheet that uses layers.
+   It establishes the global cascade order for all named layers.
+
+   - 'theme': For Tailwind's theme-related styles and variables.
+   - 'base': For general resets (like Tailwind's Preflight) and your foundational styles (your base.css).
+   - 'vuetify': For Vuetify's core styles and components.
+   - 'components': For your own custom components, or if other libraries define components.
+   - 'utilities': For Tailwind's utility classes. By placing this last,
+     we ensure Tailwind's utilities have the highest precedence in the layer cascade.
+*/
+@layer theme, base, vuetify, components, utilities;
+
+/* 2. Import Vuetify styles.
+   Vuetify will internally place its styles into its own layers (e.g., 'vuetify').
+   By importing it here, its styles will be sorted according to our defined layer order.
+   As per Vuetify's docs, it's crucial that these styles are loaded before any components.
+*/
+@import 'vuetify/styles' layer(vuetify);
+
+/* 3. Import Tailwind CSS.
+   Tailwind's build process automatically places its generated CSS into
+   `theme`, `base`, `components`, and `utilities` layers.
+   Because we've defined the layer order with `utilities` after `vuetify`,
+   Tailwind's utility classes (like `p-6`) should now take precedence over
+   conflicting styles from earlier layers (like Vuetify's reset).
+*/
+@import 'tailwindcss';
+
+/* 4. Import your base.css.
+   It's good practice to explicitly place your own foundational styles into a layer,
+   such as 'base', to ensure they are processed early in the cascade.
+   If your `base.css` contains a universal reset like `* { padding: 0; }`,
+   placing it in the 'base' layer will ensure it's processed early,
+   and then Tailwind's `utilities` layer can override it.
+*/
+@import './base.css' layer(base);
+
+/* Your application-specific styles.
+   These styles, if not explicitly assigned to a layer, will fall into an implicit layer
+   that comes *after* all explicitly defined layers. This means they will override
+   both Vuetify and Tailwind styles if they have equal or higher specificity.
+   For general app-level styling, this behavior is often desired.
+*/
 #app {
   max-width: 1280px;
   margin: 0 auto;

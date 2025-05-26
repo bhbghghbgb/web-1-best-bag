@@ -6,18 +6,18 @@ import MyApp from './components/MyApp.vue'
 
 <template>
   <v-app>
-    <v-app-bar title="My Vue App"></v-app-bar>
+    <!-- <v-app-bar title="My Vue App"></v-app-bar>
 
     <v-navigation-drawer>
       <v-list>
         <v-list-item title="Components"></v-list-item>
       </v-list>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
 
     <v-main>
-      <v-container class="pa-0 d-flex flex-column ga-6" fluid>
+      <v-container class="pa-0 d-flex flex-column" fluid>
         <MyApp />
-        <VueWelcome />
+        <VueWelcome class="py-6" />
         <OldReactWelcome />
       </v-container>
     </v-main>
