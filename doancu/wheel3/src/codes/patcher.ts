@@ -1,16 +1,9 @@
 import _generate from '@babel/generator'
 import { parse } from '@babel/parser'
 import _traverse from '@babel/traverse'
-import type { Identifier } from '@babel/types'
-import {
-  capture,
-  CapturedMatcher,
-  identifier,
-  ifStatement,
-  logicalExpression,
-  match,
-  unaryExpression,
-} from '@codemod/matchers'
+import * as t from '@babel/types'
+import * as m from '@codemod/matchers'
+import * as r from './matchers'
 
 // @ts-expect-error https://github.com/babel/babel/issues/13855
 const traverse: typeof _traverse = _traverse.default
@@ -18,19 +11,22 @@ const traverse: typeof _traverse = _traverse.default
 const generate: typeof _generate = _generate.default
 
 export function patchHostnameRedirection() {
+  let currentHostnameId: m.CapturedMatcher<t.Identifier>
+
+  // Match the chained && conditions: rt != someValue
   const ast = parse(
     "if (!rt || rt != b64DecodeUnicode('<a link\\'s b64>') && rt != b64DecodeUnicode('another link\\'s b64')) {\nwindow.location.href = b64DecodeUnicode('another link\\'s b64');\n}",
   )
-  let currentHostnameIdentifier: CapturedMatcher<Identifier>
-  const ifcheck = ifStatement(
-    logicalExpression(
+  // let currentHostnameId: m.CapturedMatcher<Identifier>
+  const ifcheck = m.ifStatement(
+    m.logicalExpression(
       '||',
-      unaryExpression('!', (currentHostnameIdentifier = capture(identifier()))),
+      m.unaryExpression('!', (currentHostnameId = m.capture(m.identifier()))),
     ),
   )
   traverse(ast, {
     IfStatement(path) {
-      match(ifcheck, { id: currentHostnameIdentifier }, path.node, ({ id }) => {
+      m.match(ifcheck, { id: currentHostnameId }, path.node, ({ id }) => {
         console.log(generate(path.node))
         console.log(id)
       })

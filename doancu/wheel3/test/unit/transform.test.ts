@@ -7,10 +7,10 @@ import {
   pipelineUserscript,
   transform,
   type TransformPipelineState,
-} from '../../src/codes/transform'
+} from '@/codes/transform'
 
 describe('transform function', () => {
-  test('should run transform without throwing errors', async () => {
+  test('babel parse/traverse and default transformers', async () => {
     const code = '// some code...\nconst x = 42;\nconsole.log(x);' // Test input
 
     const patch = (state: TransformPipelineState) => {
