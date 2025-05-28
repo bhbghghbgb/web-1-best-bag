@@ -1,8 +1,4 @@
-import {
-  chainedAndNotEqualsAny,
-  notEqualExpression,
-  notOrMultiNotEqualsAny,
-} from '@/codes/matchers'
+import * as r from '@/codes/matchers'
 import * as m from '@codemod/matchers'
 import { describe, expect, it } from 'vitest'
 import { runMatcherTest } from './utils/matcherTestDriver'
@@ -14,19 +10,25 @@ describe('Matcher Tests', () => {
       if (b != 42) { console.log("Also Matched"); }
     `
 
-    const matches = runMatcherTest(testCode, notEqualExpression(m.identifier(), m.anyExpression()))
+    const matches = runMatcherTest(
+      testCode,
+      r.notEqualExpression(m.identifier(), m.anyExpression()),
+    )
 
     expect(matches).toMatchObject(['a !== "test"', 'b != 42'])
   })
 
   it('match chained && expressions involving != or !==', () => {
     const testCode = `
-      if (!rt || rt !== getDomain("backup")) { console.log("Matched"); }
-      if (!rt || rt !== "some-link" && rt !== "another-link") { console.log("Matched"); }
-      if (!domain || domain != getDomain() && domain !== "example.com" && domain !== otherSite) { console.log("Also Matched"); }
-    `
+    if (!rt || rt !== getDomain("backup")) { console.log("Matched"); }
+    if (!rt || rt !== "some-link" && rt !== "another-link") { console.log("Matched"); }
+    if (!domain || domain != getDomain() && domain !== "example.com" && domain !== otherSite) { console.log("Also Matched"); }
+  `
 
-    const matches = runMatcherTest(testCode, chainedAndNotEqualsAny(m.identifier()))
+    const matches = runMatcherTest(
+      testCode,
+      r.chainedAndNotEquals(m.identifier(), m.anyExpression()),
+    )
 
     expect(matches).toMatchObject([
       'rt !== getDomain("backup")',
@@ -43,14 +45,14 @@ describe('Matcher Tests', () => {
 
   it("match '!var || var !== value' patterns", () => {
     const testCode = `
-      if (!rt || rt !== getDomain("backup")) { console.log("Matched"); }
-      if (!state.hostName || state.hostName !== "example.com" && state.hostName !== otherSite) { console.log("Also Matched"); }
-      if (!one || one !== "example.com" && two !== otherSite) { console.log("Not Matched"); }
-    `
+    if (!rt || rt !== getDomain("backup")) { console.log("Matched"); }
+    if (!state.hostName || state.hostName !== "example.com" && state.hostName !== otherSite) { console.log("Also Matched"); }
+    if (!one || one !== "example.com" && two !== otherSite) { console.log("Not Matched"); }
+  `
 
     const matches = runMatcherTest(
       testCode,
-      notOrMultiNotEqualsAny(m.or(m.identifier(), m.memberExpression())),
+      r.notOrMultiNotEquals(m.or(m.identifier(), m.memberExpression()), m.anyExpression()),
     )
 
     expect(matches).toMatchObject([

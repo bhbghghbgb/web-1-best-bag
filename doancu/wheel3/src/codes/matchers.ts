@@ -10,8 +10,8 @@ export function notEqualExpression(
   return notEqual
 }
 
-export function chainedAndNotEqualsAny(left: m.Matcher<t.Expression>) {
-  const leaf = notEqualExpression(left, m.anyExpression())
+export function chainedAndNotEquals(left: m.Matcher<t.Expression>, right: m.Matcher<t.Expression>) {
+  const leaf = notEqualExpression(left, right)
   const branch = m.logicalExpression('&&', m.or(leaf, m.logicalExpression()), leaf)
 
   const chainedAnds: m.Matcher<t.BinaryExpression | t.LogicalExpression> = m.matcher(
@@ -29,15 +29,16 @@ export function chainedAndNotEqualsAny(left: m.Matcher<t.Expression>) {
   return chainedAnds
 }
 
-export function notOrMultiNotEqualsAny(
+export function notOrMultiNotEquals(
   expression: m.Matcher<t.Expression>,
+  right: m.Matcher<t.Expression>,
 ): m.Matcher<t.LogicalExpression> {
   let capturedExpression: m.CapturedMatcher<t.Expression>
 
   const falsyOr = m.logicalExpression(
     '||',
     m.unaryExpression('!', (capturedExpression = m.capture(expression))),
-    chainedAndNotEqualsAny(m.fromCapture(capturedExpression)), // Enforce same expression
+    chainedAndNotEquals(m.fromCapture(capturedExpression), right), // Enforce same expression
   )
 
   return falsyOr

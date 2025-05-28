@@ -11,8 +11,11 @@ import prettyBytes from 'pretty-bytes'
 import { minify_sync } from 'terser'
 
 interface TransformPipelineState {
+  code?: string
+  deobfuscated?: string
+  formatted?: string // this step run prettier formatter to enforce consistent brace style for all control statements
   node?: Node
-  formatted?: string
+  generated?: string
   minified?: string
   compressed?: string
   escaped?: string
@@ -24,7 +27,7 @@ interface TransformParams {
   parserOptions?: ParserOptions
   patch: (transformState: TransformPipelineState) => void // Custom AST patcher
   generate?: {
-    formatted?: (transformState: TransformPipelineState) => string // Custom formatter
+    generated?: (transformState: TransformPipelineState) => string // Custom formatter
     minified?: (transformState: TransformPipelineState) => string // Minifier (works on source)
     compressed?: (transformState: TransformPipelineState) => string
     escaped?: (transformState: TransformPipelineState) => string
@@ -73,7 +76,7 @@ async function transform(params: TransformParams): Promise<TransformPipelineStat
 
   // Ensure `generate` exists, then merge defaults inside it
   const generate = {
-    formatted: pipelineToFormatted,
+    generated: pipelineGenerate,
     minified: pipelineMinify,
     compressed: pipelineCompress,
     escaped: pipelineEscape,
@@ -100,7 +103,7 @@ async function transform(params: TransformParams): Promise<TransformPipelineStat
   const log = Logger.extend('generate')
 
   const steps: ((state: TransformPipelineState) => string)[] = [
-    generate.formatted,
+    generate.generated,
     generate.minified,
     generate.compressed,
     generate.escaped,
@@ -117,10 +120,10 @@ async function transform(params: TransformParams): Promise<TransformPipelineStat
   return state
 }
 
-function pipelineToFormatted(state: TransformPipelineState): string {
+function pipelineGenerate(state: TransformPipelineState): string {
   const { node } = state
   if (!node) {
-    throw new Error('pipelineFormat needs file node')
+    throw new Error('pipelineGenerate needs file node')
   }
   const out = generate(node, {
     compact: false,
@@ -128,12 +131,12 @@ function pipelineToFormatted(state: TransformPipelineState): string {
     minified: false,
     comments: false,
   }).code
-  state.formatted = out
+  state.generated = out
   return out
 }
 
 function pipelineMinify(state: TransformPipelineState): string {
-  const { formatted } = state
+  const { generated: formatted } = state
   if (!formatted) {
     throw new Error('pipelineMinify needs formatted code')
   }
@@ -146,7 +149,7 @@ function pipelineMinify(state: TransformPipelineState): string {
 }
 
 function pipelineCompress(state: TransformPipelineState): string {
-  const { formatted, minified } = state
+  const { generated: formatted, minified } = state
   const inp = minified || formatted
   if (!inp) {
     throw new Error('pipelineCompress needs minifed or formatted code')
@@ -194,7 +197,7 @@ function pipelineUserscript(state: TransformPipelineState): string {
 export {
   pipelineCompress,
   pipelineMinify,
-  pipelineToFormatted,
+  pipelineGenerate as pipelineToFormatted,
   pipelineUserscript,
   transform,
   type TransformPipelineState,

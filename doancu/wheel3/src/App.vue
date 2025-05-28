@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import MyApp from './components/MyApp.vue'
+import TestLogger from './components/TestLogger.vue'
 import OldReactWelcome from './components/tutorial/OldReactWelcome.vue'
 import VueWelcome from './components/tutorial/VueWelcome.vue'
-import MyApp from './components/MyApp.vue'
 </script>
 
 <template>
@@ -17,6 +18,7 @@ import MyApp from './components/MyApp.vue'
     <v-main>
       <v-container class="pa-0 d-flex flex-column" fluid>
         <MyApp />
+        <TestLogger />
         <VueWelcome class="py-6" />
         <OldReactWelcome />
       </v-container>

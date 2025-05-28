@@ -96,6 +96,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/generator@npm:^7.25.7, @babel/generator@npm:^7.27.3":
+  version: 7.27.3
+  resolution: "@babel/generator@npm:7.27.3"
+  dependencies:
+    "@babel/parser": "npm:^7.27.3"
+    "@babel/types": "npm:^7.27.3"
+    "@jridgewell/gen-mapping": "npm:^0.3.5"
+    "@jridgewell/trace-mapping": "npm:^0.3.25"
+    jsesc: "npm:^3.0.2"
+  checksum: 10c0/341622e17c61d008fc746b655ab95ef7febb543df8efb4148f57cf06e60ade1abe091ed7d6811df17b064d04d64f69bb7f35ab0654137116d55c54a73145a61a
+  languageName: node
+  linkType: hard
+
 "@babel/generator@npm:^7.26.0, @babel/generator@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/generator@npm:7.27.1"
@@ -335,6 +348,17 @@ __metadata:
   bin:
     parser: ./bin/babel-parser.js
   checksum: 10c0/ae4a5eda3ada3fd54c9942d9f14385df7a18e71b386cf2652505bb9a40a32250dfde3bdda71fb08af00b1e154f0a6213e6cdaaa88e9941229ec0003f7fead759
+  languageName: node
+  linkType: hard
+
+"@babel/parser@npm:^7.25.8, @babel/parser@npm:^7.27.3":
+  version: 7.27.3
+  resolution: "@babel/parser@npm:7.27.3"
+  dependencies:
+    "@babel/types": "npm:^7.27.3"
+  bin:
+    parser: ./bin/babel-parser.js
+  checksum: 10c0/d96363c7548710ab9c28649cee752e2d0713ed25bf910923da45d2fbc67fed5bbdfb867274fec7d72437f4e910577d27c04e160da52d95f1b63fdf0b19035d26
   languageName: node
   linkType: hard
 
@@ -1213,6 +1237,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/traverse@npm:^7.25.7":
+  version: 7.27.3
+  resolution: "@babel/traverse@npm:7.27.3"
+  dependencies:
+    "@babel/code-frame": "npm:^7.27.1"
+    "@babel/generator": "npm:^7.27.3"
+    "@babel/parser": "npm:^7.27.3"
+    "@babel/template": "npm:^7.27.2"
+    "@babel/types": "npm:^7.27.3"
+    debug: "npm:^4.3.1"
+    globals: "npm:^11.1.0"
+  checksum: 10c0/63edf0755cc7307470fefeca69c5205b259eaf45df79a4f7be0f28d8937d916bfb090ad9ffbc62edd7e1bbc4309c1f202a9a6904ed3af847504bcefd5ac58c16
+  languageName: node
+  linkType: hard
+
 "@babel/traverse@npm:^7.25.9, @babel/traverse@npm:^7.26.9, @babel/traverse@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/traverse@npm:7.27.1"
@@ -1235,6 +1274,16 @@ __metadata:
     "@babel/helper-string-parser": "npm:^7.27.1"
     "@babel/helper-validator-identifier": "npm:^7.27.1"
   checksum: 10c0/ed736f14db2fdf0d36c539c8e06b6bb5e8f9649a12b5c0e1c516fed827f27ef35085abe08bf4d1302a4e20c9a254e762eed453bce659786d4a6e01ba26a91377
+  languageName: node
+  linkType: hard
+
+"@babel/types@npm:^7.27.3":
+  version: 7.27.3
+  resolution: "@babel/types@npm:7.27.3"
+  dependencies:
+    "@babel/helper-string-parser": "npm:^7.27.1"
+    "@babel/helper-validator-identifier": "npm:^7.27.1"
+  checksum: 10c0/bafdfc98e722a6b91a783b6f24388f478fd775f0c0652e92220e08be2cc33e02d42088542f1953ac5e5ece2ac052172b3dadedf12bec9aae57899e92fb9a9757
   languageName: node
   linkType: hard
 
@@ -3905,6 +3954,13 @@ __metadata:
   version: 1.1.0
   resolution: "brorand@npm:1.1.0"
   checksum: 10c0/6f366d7c4990f82c366e3878492ba9a372a73163c09871e80d82fb4ae0d23f9f8924cb8a662330308206e6b3b76ba1d528b4601c9ef73c2166b440b2ea3b7571
+  languageName: node
+  linkType: hard
+
+"browser-or-node@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "browser-or-node@npm:3.0.0"
+  checksum: 10c0/05db930e0a21bfffef74dbc4a27eaa12113e7f43a95f3b80a925f624212d701b86034cdfb5c422bdee061c4ae8442d294feee8996e6ae2555a8e46ea0b830b52
   languageName: node
   linkType: hard
 
@@ -7590,6 +7646,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prettier-plugin-curly@npm:^0.3.2":
+  version: 0.3.2
+  resolution: "prettier-plugin-curly@npm:0.3.2"
+  dependencies:
+    "@babel/generator": "npm:^7.25.7"
+    "@babel/parser": "npm:^7.25.8"
+    "@babel/traverse": "npm:^7.25.7"
+  peerDependencies:
+    prettier: ^2 || ^3
+  checksum: 10c0/4f81eca62d71bd616bdd832b240743a86c8720ddef0422bb958c677a48dec956c59124bdf8f079280160e862961d060b3e7506140ba59f70d571b8270e074121
+  languageName: node
+  linkType: hard
+
+"prettier-standalone@npm:^1.3.1-0":
+  version: 1.3.1-0
+  resolution: "prettier-standalone@npm:1.3.1-0"
+  checksum: 10c0/2219c7e0ea50563b932c797467f6423d14975fb6b597e3a5dfff34c52404ffc81cff183971601acb9386eaf2fa190d3c0505cbc6c3a316d6b139ce02bf143c43
+  languageName: node
+  linkType: hard
+
 "prettier@npm:3.5.3, prettier@npm:^3.5.3":
   version: 3.5.3
   resolution: "prettier@npm:3.5.3"
@@ -9601,6 +9677,7 @@ __metadata:
     "@vueuse/core": "npm:^13.2.0"
     autoprefixer: "npm:^10.4.21"
     axios: "npm:^1.9.0"
+    browser-or-node: "npm:^3.0.0"
     debug: "npm:^4.4.1"
     eslint: "npm:^9.27.0"
     eslint-plugin-oxlint: "npm:^0.16.12"
@@ -9617,6 +9694,8 @@ __metadata:
     pinia: "npm:^3.0.2"
     postcss: "npm:^8.5.3"
     prettier: "npm:3.5.3"
+    prettier-plugin-curly: "npm:^0.3.2"
+    prettier-standalone: "npm:^1.3.1-0"
     pretty-bytes: "npm:^7.0.0"
     quickjs-emscripten-core: "npm:^0.31.0"
     sass-embedded: "npm:^1.89.0"

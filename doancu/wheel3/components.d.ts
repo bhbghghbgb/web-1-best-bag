@@ -18,6 +18,7 @@ declare module 'vue' {
     OldReactWelcome: typeof import('./src/components/tutorial/OldReactWelcome.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TestLogger: typeof import('./src/components/TestLogger.vue')['default']
     TheWelcome: typeof import('./src/components/tutorial/TheWelcome.vue')['default']
     VueWelcome: typeof import('./src/components/tutorial/VueWelcome.vue')['default']
     WelcomeItem: typeof import('./src/components/tutorial/WelcomeItem.vue')['default']
