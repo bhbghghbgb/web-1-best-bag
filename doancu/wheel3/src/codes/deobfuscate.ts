@@ -13,7 +13,7 @@ export async function deobfuscateCode(code: string): Promise<string> {
     unpack: false,
     unminify: true,
     deobfuscate: true,
-    mangle: (id) => id.startsWith('_0x'),
+    mangle: (id) => id.length <= 2 || id.startsWith('_0x'),
     sandbox: safeEval,
   })
 

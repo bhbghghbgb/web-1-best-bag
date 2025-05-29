@@ -1,6 +1,7 @@
 import { transform, type TransformParams, type TransformPipelineState } from '@/codes/transform'
 import traverse from '@babel/traverse'
 import { cloneNode } from '@babel/types'
+import { compressToUTF16 } from 'lz-string'
 import { describe, expect, test } from 'vitest'
 
 describe('transform function', () => {
@@ -24,32 +25,34 @@ describe('transform function', () => {
     }
 
     const result = await transform({ code, patch })
+    let minifiedOutput: string
+    let compressedOutput: string
 
+    expect(result).toHaveProperty('patched.program.body[0].declarations[0].init.value', 69)
+    expect(result).toHaveProperty('parsed.program.body[0].declarations[0].init.value', 420)
     expect(result).toMatchObject({
       code,
-      deobfuscated: `/* some code... */const x = 420;
-if (x === 69) {
-  console.log(x);
+      deobfuscated: `/* some code... */const v = 420;
+if (v === 69) {
+  console.log(v);
 } //more code`,
-      formatted: `/* some code... */ const x = 420;
-if (x === 69) {
-  console.log(x);
+      formatted: `/* some code... */ const v = 420;
+if (v === 69) {
+  console.log(v);
 } //more code
 `,
       parsed: expect.objectContaining({ type: 'File' }),
       patched: expect.objectContaining({ type: 'File' }),
-      generated: `const x = 69;
-if (x === 69) {
-  console.log(x);
+      generated: `const v = 69;
+if (v === 69) {
+  console.log(v);
 }`,
-      minified: 'const x=69;console.log(x);',
-      compressed: 'ᣣ氽䆼̀Ƞ磠常۠✡尢䀲恓ఠ⠴⪊㐤僠ᯫ౒䒤VŬǳᤠ㧑ௐؒ  ',
-      escaped: 'ᣣ氽䆼̀Ƞ磠常۠✡尢䀲恓ఠ⠴⪊㐤僠ᯫ౒䒤VŬǳᤠ㧑ௐؒ  ',
+      minified: (minifiedOutput = 'const v=69;console.log(v);'),
+      compressed: (compressedOutput = compressToUTF16(minifiedOutput)),
+      escaped: compressedOutput,
       userscript: expect.stringContaining(
-        "inject.appendChild(document.createTextNode(LZString.decompressFromUTF16('ᣣ氽䆼̀Ƞ磠常۠✡尢䀲恓ఠ⠴⪊㐤僠ᯫ౒䒤VŬǳᤠ㧑ௐؒ  ')));\n",
+        `inject.appendChild(document.createTextNode(LZString.decompressFromUTF16('${compressedOutput}')));\n`,
       ),
     })
-    expect(result).toHaveProperty('parsed.program.body[0].declarations[0].init.value', 420)
-    expect(result).toHaveProperty('patched.program.body[0].declarations[0].init.value', 69)
   })
 })

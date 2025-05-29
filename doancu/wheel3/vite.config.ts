@@ -54,4 +54,16 @@ export default defineConfig({
       'node:fs/promises': 'node-stdlib-browser/mock/empty',
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // bundle all the shiki themes/langs together
+          if (id.match(/@shikijs\/(langs|themes)/)) {
+            return 'shikires'
+          }
+        },
+      },
+    },
+  },
 })

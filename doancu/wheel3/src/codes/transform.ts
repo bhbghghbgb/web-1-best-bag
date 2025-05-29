@@ -178,7 +178,7 @@ async function pipelineMinify(state: TransformPipelineState): Promise<string | u
 }
 
 function pipelineCompress(state: TransformPipelineState): string | undefined {
-  const code = state.generated ?? state.minified
+  const code = state.minified ?? state.generated
   return code ? defaultCompress(code) : undefined
 }
 
