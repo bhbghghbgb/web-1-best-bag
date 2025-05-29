@@ -1,3 +1,4 @@
+import { BABEL_PARSE_OPTIONS } from '@/codes/options'
 import generate from '@babel/generator'
 import { parse } from '@babel/parser'
 import traverse from '@babel/traverse'
@@ -10,7 +11,7 @@ import * as m from '@codemod/matchers'
  * @returns {Array<string>} - List of matched nodes as generated code strings.
  */
 export function runMatcherTest(code: string, matcher: m.Matcher<unknown>): Array<string> {
-  const ast = parse(code, { sourceType: 'module' })
+  const ast = parse(code, BABEL_PARSE_OPTIONS)
   const matchedNodes: string[] = []
 
   traverse(ast, {
