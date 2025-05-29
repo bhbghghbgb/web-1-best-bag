@@ -1,204 +1,207 @@
 import userscriptTemplate from '@/assets/wheel.scripter.js?raw'
-import { babelMergeAll } from '@armit/babel-merge'
 import generate from '@babel/generator'
-import { parse, type ParserOptions } from '@babel/parser'
+import { parse } from '@babel/parser'
 import template from '@babel/template'
-import type { Node } from '@babel/types'
+import { stringLiteral, type Node } from '@babel/types'
 import debug from 'debug'
 import jsesc from 'jsesc'
 import { compressToUTF16 } from 'lz-string'
-import prettyBytes from 'pretty-bytes'
-import { minify_sync } from 'terser'
+import { format } from 'prettier/standalone'
+import { minify } from 'terser'
+import type { PartialDeep } from 'type-fest'
+import { deobfuscateCode } from './deobfuscate'
+import {
+  BABEL_GENERATE,
+  BABEL_GENERATE_USER,
+  BABEL_PARSE_OPTIONS,
+  BABEL_TEMPLATE_OPTIONS,
+  getPrettierOptions,
+  JSESC_OPTIONS,
+  TERSER_OPTIONS,
+} from './options'
 
-interface TransformPipelineState {
-  code?: string
-  deobfuscated?: string
-  formatted?: string // this step run prettier formatter to enforce consistent brace style for all control statements
-  node?: Node
-  generated?: string
-  minified?: string
-  compressed?: string
-  escaped?: string
-  userscript?: string
-}
-
-interface TransformParams {
+/**
+ * Transformation Pipeline State
+ */
+export type TransformPipelineState = Partial<{
   code: string
-  parserOptions?: ParserOptions
-  patch: (transformState: TransformPipelineState) => void // Custom AST patcher
-  generate?: {
-    generated?: (transformState: TransformPipelineState) => string // Custom formatter
-    minified?: (transformState: TransformPipelineState) => string // Minifier (works on source)
-    compressed?: (transformState: TransformPipelineState) => string
-    escaped?: (transformState: TransformPipelineState) => string
-    userscript?: (transformState: TransformPipelineState) => string
-  }
-}
+  deobfuscated: string
+  formatted: string
+  parsed: Node
+  patched: Node
+  generated: string
+  minified: string
+  compressed: string
+  escaped: string
+  userscript: string
+}>
 
-const BABEL_PARSE_OPTIONS: ParserOptions = {
-  allowImportExportEverywhere: true,
-  allowAwaitOutsideFunction: true,
-  allowYieldOutsideFunction: true,
-  allowNewTargetOutsideFunction: true,
-  allowReturnOutsideFunction: true,
-  allowSuperOutsideMethod: true,
-  allowUndeclaredExports: true,
-  attachComment: false,
-  // Error: The `annexB` option can only be set to `false`.
-  // annexB: true, // Keeping default for broader compatibility
-  createImportExpressions: true, // Opting in for future default
-  createParenthesizedExpressions: false,
-  errorRecovery: true,
-  // plugins: [
-  //   'jsx',
-  //   [
-  //     'typescript',
-  //     {
-  //       dts: true, // Enable parsing within TypeScript ambient contexts
-  //       disallowAmbiguousJSXLike: false, // Allowing potentially ambiguous JSX-like syntax
-  //     },
-  //   ],
-  // ],
-  sourceType: 'unambiguous',
-  sourceFilename: undefined,
-  startColumn: 0,
-  startLine: 1,
-  startIndex: 0,
-  strictMode: false, // Keeping default, can be enabled if strict parsing is desired
-  ranges: false,
-  tokens: false,
-}
+type TransformPipelineFunction<T> = (
+  state: TransformPipelineState,
+) => Promise<T | undefined> | T | undefined
+/**
+ * Transformation Parameters - Allows users to customize the pipeline
+ */
+export type TransformParams = PartialDeep<{
+  code: string
+  parsing: {
+    deobfuscator: TransformPipelineFunction<string>
+    formatter: TransformPipelineFunction<string>
+    parser: TransformPipelineFunction<Node>
+  }
+  patch: TransformPipelineFunction<Node>
+  generation: {
+    generator: TransformPipelineFunction<string>
+    minifier: TransformPipelineFunction<string>
+    compressor: TransformPipelineFunction<string>
+    escaper: TransformPipelineFunction<string>
+    userscripter: TransformPipelineFunction<string>
+  }
+}>
 
 const Logger = debug('transform')
 
+/**
+ * Main transformation function
+ */
 async function transform(params: TransformParams): Promise<TransformPipelineState> {
-  const { code, parserOptions, patch } = params
+  const state: TransformPipelineState = { code: params.code }
 
-  // Ensure `generate` exists, then merge defaults inside it
-  const generate = {
-    generated: pipelineGenerate,
-    minified: pipelineMinify,
-    compressed: pipelineCompress,
-    escaped: pipelineEscape,
-    userscript: pipelineUserscript,
-    ...params.generate, // Merge user-provided functions (overrides defaults if provided)
+  // Helper function to handle async and sync functions uniformly
+  async function executePipelineStep<T>(
+    step: TransformPipelineFunction<T> | undefined,
+    state: TransformPipelineState,
+  ): Promise<T | undefined> {
+    if (!step) {
+      return
+    }
+    const result = step(state)
+    return result instanceof Promise ? await result : result
   }
 
-  const state: TransformPipelineState = {}
+  // Parsing Phase - Directly assign pipeline results
+  state.deobfuscated = await executePipelineStep(
+    params.parsing?.deobfuscator ?? pipelineDeobfuscate,
+    state,
+  )
+  state.formatted = await executePipelineStep(params.parsing?.formatter ?? pipelineFormat, state)
+  state.parsed = await executePipelineStep(params.parsing?.parser ?? pipelineParse, state)
 
-  const mergedParseOptions: ParserOptions = babelMergeAll([
-    BABEL_PARSE_OPTIONS,
-    parserOptions ?? {},
-  ]) as ParserOptions
-  mergedParseOptions.sourceType ??= 'unambiguous'
-  const ast = parse(code, mergedParseOptions)
-  if (ast?.errors?.length) {
-    Logger.extend('parse')('Errors', ast.errors)
-  }
-  state.node = ast
+  if (!state.parsed) throw new Error('Parsing failed')
 
-  patch(state)
+  // Apply AST modifications
+  state.patched = await executePipelineStep(params.patch ?? (() => undefined), state)
 
-  const getByteSize = (str: string) => new Blob([str]).size
-  const log = Logger.extend('generate')
-
-  const steps: ((state: TransformPipelineState) => string)[] = [
-    generate.generated,
-    generate.minified,
-    generate.compressed,
-    generate.escaped,
-    generate.userscript,
-  ]
-
-  for (const step of steps) {
-    log(`${step.name} started`)
-    const output = step(state)
-    const byteSize = prettyBytes(getByteSize(output))
-    log(`${step.name} finished with ${byteSize} output size`)
-  }
+  // Generation Phase - Assign transformed attributes directly
+  state.generated = await executePipelineStep(
+    params.generation?.generator ?? pipelineGenerate,
+    state,
+  )
+  state.minified = await executePipelineStep(params.generation?.minifier ?? pipelineMinify, state)
+  state.compressed = await executePipelineStep(
+    params.generation?.compressor ?? pipelineCompress,
+    state,
+  )
+  state.escaped = await executePipelineStep(params.generation?.escaper ?? pipelineEscape, state)
+  state.userscript = await executePipelineStep(
+    params.generation?.userscripter ?? pipelineUserscript,
+    state,
+  )
 
   return state
 }
 
-function pipelineGenerate(state: TransformPipelineState): string {
-  const { node } = state
-  if (!node) {
-    throw new Error('pipelineGenerate needs file node')
-  }
-  const out = generate(node, {
-    compact: false,
-    concise: false,
-    minified: false,
-    comments: false,
-  }).code
-  state.generated = out
-  return out
+/**
+ * Parsing Step Functions
+ */
+async function defaultDeobfuscator(code: string): Promise<string> {
+  return await deobfuscateCode(code)
 }
 
-function pipelineMinify(state: TransformPipelineState): string {
-  const { generated: formatted } = state
-  if (!formatted) {
-    throw new Error('pipelineMinify needs formatted code')
-  }
-  const out = minify_sync(formatted, { ecma: 2020 }).code
-  if (!out) {
-    throw new Error('pipelineMinify terser minify failed')
-  }
-  state.minified = out
-  return out
+async function defaultFormatter(code: string): Promise<string> {
+  return await format(code, await getPrettierOptions()) // Ensures consistent brace style with
 }
 
-function pipelineCompress(state: TransformPipelineState): string {
-  const { generated: formatted, minified } = state
-  const inp = minified || formatted
-  if (!inp) {
-    throw new Error('pipelineCompress needs minifed or formatted code')
-  }
-  const out = compressToUTF16(inp)
-  state.compressed = out
-  return out
+function defaultParser(code: string): Node | undefined {
+  return parse(code, BABEL_PARSE_OPTIONS)
 }
 
-function pipelineEscape(state: TransformPipelineState): string {
-  const { compressed } = state
-  if (!compressed) {
-    throw new Error('pipelineEscape needs compressed code')
-  }
-  // TODO: rewrite template to allow not using lzstring decompression
-  const out = jsesc(compressed, {
-    quotes: 'single',
-    wrap: true,
-    minimal: true,
-    compact: true,
-    es6: true,
-  })
-  state.escaped = out
-  return out
+async function pipelineDeobfuscate(state: TransformPipelineState): Promise<string | undefined> {
+  return state.code ? defaultDeobfuscator(state.code) : undefined
 }
 
-function pipelineUserscript(state: TransformPipelineState): string {
-  const { escaped } = state
-  if (!escaped) {
-    throw new Error('pipelineUserscript needs escaped code')
-  }
-  const out = generate(
-    template.program(userscriptTemplate, {
-      preserveComments: true,
-      sourceType: 'script',
-    })({
-      COMPRESSED_SOURCE: escaped,
+async function pipelineFormat(state: TransformPipelineState): Promise<string | undefined> {
+  return state.deobfuscated ? defaultFormatter(state.deobfuscated) : undefined
+}
+
+function pipelineParse(state: TransformPipelineState): Node | undefined {
+  return state.formatted ? defaultParser(state.formatted) : undefined
+}
+
+/**
+ * Code Generation Step Functions
+ */
+function defaultGenerate(node: Node): string | undefined {
+  return generate(node, BABEL_GENERATE).code
+}
+
+async function defaultMinify(code: string): Promise<string | undefined> {
+  return (await minify(code, TERSER_OPTIONS)).code
+}
+
+function defaultCompress(code: string): string | undefined {
+  return compressToUTF16(code)
+}
+
+function defaultEscape(code: string): string | undefined {
+  return jsesc(code, JSESC_OPTIONS)
+}
+
+function defaultUserscript(code: string): string | undefined {
+  return generate(
+    template.program(
+      userscriptTemplate,
+      BABEL_TEMPLATE_OPTIONS,
+    )({
+      COMPRESSED_SOURCE: stringLiteral(code),
     }),
-    { comments: true, compact: false, concise: false, minified: false },
+    BABEL_GENERATE_USER,
   ).code
-  state.userscript = out
-  return out
 }
 
+function pipelineGenerate(state: TransformPipelineState): string | undefined {
+  return state.patched ? defaultGenerate(state.patched) : undefined
+}
+
+async function pipelineMinify(state: TransformPipelineState): Promise<string | undefined> {
+  return state.generated ? defaultMinify(state.generated) : undefined
+}
+
+function pipelineCompress(state: TransformPipelineState): string | undefined {
+  const code = state.generated ?? state.minified
+  return code ? defaultCompress(code) : undefined
+}
+
+function pipelineEscape(state: TransformPipelineState): string | undefined {
+  const code = state.compressed ?? state.minified ?? state.generated
+  return code ? defaultEscape(code) : undefined
+}
+
+function pipelineUserscript(state: TransformPipelineState): string | undefined {
+  return state.escaped ? defaultUserscript(state.escaped) : undefined
+}
+
+/**
+ * Export functions
+ */
 export {
   pipelineCompress,
+  pipelineDeobfuscate,
+  pipelineEscape,
+  pipelineFormat,
+  pipelineGenerate,
   pipelineMinify,
-  pipelineGenerate as pipelineToFormatted,
+  pipelineParse,
   pipelineUserscript,
   transform,
-  type TransformPipelineState,
 }

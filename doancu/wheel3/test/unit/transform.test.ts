@@ -1,53 +1,55 @@
+import { transform, type TransformParams, type TransformPipelineState } from '@/codes/transform'
 import traverse from '@babel/traverse'
+import { cloneNode } from '@babel/types'
 import { describe, expect, test } from 'vitest'
-import {
-  pipelineCompress,
-  pipelineMinify,
-  pipelineToFormatted,
-  pipelineUserscript,
-  transform,
-  type TransformPipelineState,
-} from '@/codes/transform'
 
 describe('transform function', () => {
-  test('babel parse/traverse and default transformers', async () => {
-    const code = '// some code...\nconst x = 42;\nconsole.log(x);' // Test input
+  test('default deob, babel parse/traverse and transformers', async () => {
+    const code = '/* some code... */ const x = 420;if(x===69)console.log(x);//more code' // Test input
 
     const patch = (state: TransformPipelineState) => {
-      const { node } = state
-      if (!node) {
+      const { parsed } = state
+      if (!parsed) {
         throw new Error('babel parse failed')
       }
-      traverse(node, {
+      const patched = cloneNode(parsed, true, false)
+      traverse(patched, {
         NumericLiteral(path) {
-          if (path.node.value === 42) {
+          if (path.node.value === 420) {
             path.node.value = 69
           }
         },
       })
+      return patched
     }
 
-    const params = {
-      code,
-      parserOptions: {}, // Provide minimal parser options
-      patch,
-      generate: {
-        formatted: (state: TransformPipelineState) => pipelineToFormatted(state),
-        minified: (state: TransformPipelineState) => pipelineMinify(state),
-        compressed: (state: TransformPipelineState) => pipelineCompress(state),
-        userscript: (state: TransformPipelineState) => pipelineUserscript(state),
-      },
-    }
-
-    const result = await transform(params)
+    const result = await transform({ code, patch })
 
     expect(result).toMatchObject({
-      formatted: 'const x = 69;\nconsole.log(x);',
+      code,
+      deobfuscated: `/* some code... */const x = 420;
+if (x === 69) {
+  console.log(x);
+} //more code`,
+      formatted: `/* some code... */ const x = 420;
+if (x === 69) {
+  console.log(x);
+} //more code
+`,
+      parsed: expect.objectContaining({ type: 'File' }),
+      patched: expect.objectContaining({ type: 'File' }),
+      generated: `const x = 69;
+if (x === 69) {
+  console.log(x);
+}`,
       minified: 'const x=69;console.log(x);',
-      compressed: 'ᣣ氽䆼̀Ƞ砷䁖Ř܅ቀ۠匡槑Y䀪ᰢ⣲  ',
+      compressed: 'ᣣ氽䆼̀Ƞ磠常۠✡尢䀲恓ఠ⠴⪊㐤僠ᯫ౒䒤VŬǳᤠ㧑ௐؒ  ',
+      escaped: 'ᣣ氽䆼̀Ƞ磠常۠✡尢䀲恓ఠ⠴⪊㐤僠ᯫ౒䒤VŬǳᤠ㧑ௐؒ  ',
       userscript: expect.stringContaining(
-        "inject.appendChild(document.createTextNode(LZString.decompressFromUTF16('ᣣ氽䆼̀Ƞ砷䁖Ř܅ቀ۠匡槑Y䀪ᰢ⣲  ')));\n",
+        "inject.appendChild(document.createTextNode(LZString.decompressFromUTF16('ᣣ氽䆼̀Ƞ磠常۠✡尢䀲恓ఠ⠴⪊㐤僠ᯫ౒䒤VŬǳᤠ㧑ௐؒ  ')));\n",
       ),
     })
+    expect(result).toHaveProperty('parsed.program.body[0].declarations[0].init.value', 420)
+    expect(result).toHaveProperty('patched.program.body[0].declarations[0].init.value', 69)
   })
 })

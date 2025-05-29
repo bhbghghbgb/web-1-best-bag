@@ -44,7 +44,6 @@ export default defineConfig({
   css: {
     postcss: { plugins: [autoprefixer] },
   },
-
   optimizeDeps: {
     exclude: ['monaco-editor', 'isolated-vm'],
   },
