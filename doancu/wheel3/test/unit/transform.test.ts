@@ -1,10 +1,11 @@
-import { transform, type TransformParams, type TransformPipelineState } from '@/codes/transform'
+import { defaultFormatter, transform, type TransformPipelineState } from '@/codes/transform'
 import traverse from '@babel/traverse'
 import { cloneNode } from '@babel/types'
+import debug from 'debug'
 import { compressToUTF16 } from 'lz-string'
 import { describe, expect, test } from 'vitest'
 
-describe('transform function', () => {
+describe('transformers and patchers', () => {
   test('default deob, babel parse/traverse and transformers', async () => {
     const code = '/* some code... */ const x = 420;if(x===69)console.log(x);//more code' // Test input
 
@@ -25,6 +26,7 @@ describe('transform function', () => {
     }
 
     const result = await transform({ code, patch })
+
     let minifiedOutput: string
     let compressedOutput: string
 
@@ -54,5 +56,12 @@ if (v === 69) {
         `inject.appendChild(document.createTextNode(LZString.decompressFromUTF16('${compressedOutput}')));\n`,
       ),
     })
+  })
+  test('prettier-plugin-curly', async () => {
+    const code = `if (2) 1\nelse 2`
+
+    const result = await defaultFormatter(code)
+
+    expect(result).toEqual(`if (2) {\n  1;\n} else {\n  2;\n}\n`)
   })
 })

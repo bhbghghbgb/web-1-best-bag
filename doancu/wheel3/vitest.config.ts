@@ -10,11 +10,9 @@ export default mergeConfig(
       environment: 'jsdom',
       exclude: [...configDefaults.exclude, 'test/e2e/**'],
       root: fileURLToPath(new URL('./', import.meta.url)),
+      env: {
+        DEBUG: '-webcrack:*', // silence the webcrack logs
+      },
     },
-    // resolve: {
-    //   alias: {
-    //     '@': path.resolve(__dirname, './src'),
-    //   },
-    // },
   }),
 )

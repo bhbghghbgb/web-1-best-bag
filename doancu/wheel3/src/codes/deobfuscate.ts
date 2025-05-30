@@ -1,5 +1,5 @@
+import { safeEval } from '@/codes/sandbox'
 import { webcrack } from 'webcrack'
-import { safeEval } from './sandbox'
 
 /**
  * Runs WebCrack to deobfuscate JavaScript.

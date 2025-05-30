@@ -1,7 +1,7 @@
 import * as r from '@/codes/matchers'
 import * as m from '@codemod/matchers'
+import { runMatcherTest } from '@test/unit/utils/matcherTestDriver'
 import { describe, expect, it } from 'vitest'
-import { runMatcherTest } from './utils/matcherTestDriver'
 
 describe('Expression matchers', () => {
   it('match expressions involving != or !== cases', () => {

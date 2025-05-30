@@ -81,6 +81,7 @@
     "npm-run-all2": "^8.0.3",
     "oxlint": "^0.16.12",
     "postcss": "^8.5.3",
+    "prettier-plugin-embed": "^0.5.0",
     "sass-embedded": "^1.89.0",
     "shiki": "^3.4.2",
     "shiki-codegen": "^3.4.2",

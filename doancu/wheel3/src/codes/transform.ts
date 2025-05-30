@@ -141,23 +141,23 @@ function pipelineParse(state: TransformPipelineState): Node | undefined {
 /**
  * Code Generation Step Functions
  */
-function defaultGenerate(node: Node): string | undefined {
+function defaultGenerator(node: Node): string | undefined {
   return generate(node, BABEL_GENERATE).code
 }
 
-async function defaultMinify(code: string): Promise<string | undefined> {
+async function defaultMinifier(code: string): Promise<string | undefined> {
   return (await minify(code, TERSER_OPTIONS)).code
 }
 
-function defaultCompress(code: string): string | undefined {
+function defaultCompressor(code: string): string | undefined {
   return compressToUTF16(code)
 }
 
-function defaultEscape(code: string): string | undefined {
+function defaultEscaper(code: string): string | undefined {
   return jsesc(code, JSESC_OPTIONS)
 }
 
-function defaultUserscript(code: string): string | undefined {
+function defaultUserscripter(code: string): string | undefined {
   return generate(
     template.program(
       userscriptTemplate,
@@ -170,31 +170,39 @@ function defaultUserscript(code: string): string | undefined {
 }
 
 function pipelineGenerate(state: TransformPipelineState): string | undefined {
-  return state.patched ? defaultGenerate(state.patched) : undefined
+  return state.patched ? defaultGenerator(state.patched) : undefined
 }
 
 async function pipelineMinify(state: TransformPipelineState): Promise<string | undefined> {
-  return state.generated ? defaultMinify(state.generated) : undefined
+  return state.generated ? defaultMinifier(state.generated) : undefined
 }
 
 function pipelineCompress(state: TransformPipelineState): string | undefined {
   const code = state.minified ?? state.generated
-  return code ? defaultCompress(code) : undefined
+  return code ? defaultCompressor(code) : undefined
 }
 
 function pipelineEscape(state: TransformPipelineState): string | undefined {
   const code = state.compressed ?? state.minified ?? state.generated
-  return code ? defaultEscape(code) : undefined
+  return code ? defaultEscaper(code) : undefined
 }
 
 function pipelineUserscript(state: TransformPipelineState): string | undefined {
-  return state.escaped ? defaultUserscript(state.escaped) : undefined
+  return state.escaped ? defaultUserscripter(state.escaped) : undefined
 }
 
 /**
  * Export functions
  */
 export {
+  defaultCompressor,
+  defaultDeobfuscator,
+  defaultEscaper,
+  defaultFormatter,
+  defaultGenerator,
+  defaultMinifier,
+  defaultParser,
+  defaultUserscripter,
   pipelineCompress,
   pipelineDeobfuscate,
   pipelineEscape,

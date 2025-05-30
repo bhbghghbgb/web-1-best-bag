@@ -2,14 +2,17 @@ import * as t from '@babel/types'
 import * as m from '@codemod/matchers'
 import * as r from '@/codes/matchers'
 
-export function loadWheelFunction() {
+export function loadWheelFunction(
+  capturedFunc?: m.CapturedMatcher<t.Identifier, t.Identifier>,
+  capturedVar?: m.CapturedMatcher<t.Identifier, t.Identifier>,
+): m.Matcher<t.FunctionDeclaration> {
   // Captures for reusable identifiers
-  const capturedVar = m.capture(m.identifier())
-  const capturedFunc = m.capture(m.identifier())
+  capturedFunc ??= m.capture(m.identifier())
+  capturedVar ??= m.capture(m.identifier())
 
   // Matcher for the initial variable declaration assigned by a function call
   const initialVarDecl = m.variableDeclaration('var', [
-    m.variableDeclarator(capturedVar, m.callExpression(capturedFunc, [])),
+    m.variableDeclarator(capturedVar, m.callExpression()),
   ])
 
   // Matcher for the if statement checking if the variable is null and returning false
@@ -36,7 +39,7 @@ export function loadWheelFunction() {
 
   // Final matcher for the function declaration
   const functionMatcher = m.functionDeclaration(
-    m.identifier(),
+    capturedFunc,
     m.anyList(),
     r.blockStatementSubsequence([initialVarDecl, nullCheckIfStmt, entriesVarDecl, durationVarDecl]),
     false,
