@@ -13,6 +13,7 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import topLevelAwait from 'vite-plugin-top-level-await'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import vuetify from 'vite-plugin-vuetify'
+import legacy from '@vitejs/plugin-legacy'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -26,6 +27,8 @@ export default defineConfig({
       autoImport: true, // Enabled by default,
     }),
     tailwindcss(),
+    nodePolyfills({ include: ['process', 'path'], protocolImports: true }),
+    legacy(),
     Components({
       dts: true, // enabled by default if `typescript` is installed,
       types: [
@@ -39,7 +42,6 @@ export default defineConfig({
       dts: true, // or a custom path,
       resolvers: [Vuetify3Resolver(), VueHooksPlusResolver()],
     }),
-    nodePolyfills({ include: ['process', 'path'], protocolImports: true }),
   ],
   css: {
     postcss: { plugins: [autoprefixer] },
@@ -54,6 +56,9 @@ export default defineConfig({
       fs: 'node-stdlib-browser/mock/empty',
       'node:fs/promises': 'node-stdlib-browser/mock/empty',
     },
+  },
+  esbuild: {
+    supported: { using: false, 'top-level-await': false },
   },
   build: {
     rollupOptions: {

@@ -75,4 +75,6 @@ function translate_index_v347(source: string): string {
   return code || source;
 }
 
-translate_index_v347(readFileSync("./public/index-v347-deob-short.js").toString());
+translate_index_v347(
+  readFileSync("./public/index-v347-deob-short.js").toString()
+);

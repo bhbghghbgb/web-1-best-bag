@@ -1,13 +1,14 @@
 import { Container } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
-import "./App.css";
+import "./App.scss";
 import oiiaiM from "./assets/oiiai.webm";
 import oiiaiP from "./assets/oiiai.webp";
 import reactLogo from "./assets/react.svg";
 import tsLogo from "./assets/ts.svg";
 import MyApp from "./MyApp";
 import viteLogo from "/vite.svg";
+import StatsLinks from "./StatsLinks";
 
 const queryClient = new QueryClient();
 
@@ -18,8 +19,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Container>
         <MyApp></MyApp>
-        <>
-          <div>
+        <div className="welcome">
+          <div className="flex justify-center">
             <a href="https://vite.dev" target="_blank">
               <img src={viteLogo} className="logo" alt="Vite logo" />
             </a>
@@ -43,7 +44,8 @@ function App() {
           <p className="read-the-docs">
             Click on the Vite and React and Typescript logos to learn more
           </p>
-        </>
+        </div>
+        <StatsLinks />
       </Container>
     </QueryClientProvider>
   );

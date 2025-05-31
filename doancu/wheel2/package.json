@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc -b && cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build",
+    "build": "tsc -b && vite build",
+    "build2": "tsc -b && cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build",
     "lint": "eslint .",
-    "preview": "vite preview --host",
-    "analyze": "vite-bundle-visualizer --template flamegraph --output ./stats.html"
+    "preview": "vite preview --host"
   },
   "dependencies": {
     "@armit/babel-merge": "^0.2.11",
@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.25.1",
+    "@tailwindcss/vite": "^4.1.8",
     "@tanstack/eslint-plugin-query": "^5.74.7",
     "@types/babel__core": "^7.20.5",
     "@types/babel__generator": "^7",
@@ -63,12 +64,14 @@
     "globals": "^16.0.0",
     "monaco-editor": "^0.52.2",
     "node-stdlib-browser": "^1.3.1",
+    "rollup-plugin-visualizer": "^6.0.1",
+    "sass-embedded": "^1.89.1",
+    "tailwindcss": "^4.1.8",
     "ts-auto-guard": "^5.0.1",
     "tsx": "^4.19.3",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.31.0",
     "vite": "^6.3.3",
-    "vite-bundle-visualizer": "^1.2.1",
     "vite-plugin-monaco-editor-esm": "^2.0.2",
     "vite-plugin-node-polyfills": "^0.23.0"
   },
@@ -78,5 +81,5 @@
   "resolutions": {
     "isolated-vm": "link:./.yarn/empty-package"
   },
-  "packageManager": "yarn@4.6.0"
+  "packageManager": "yarn@4.9.1"
 }

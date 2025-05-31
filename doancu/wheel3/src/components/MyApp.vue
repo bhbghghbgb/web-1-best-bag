@@ -48,7 +48,7 @@ function formatCode() {
 const tab = ref(null)
 </script>
 <script lang="ts">
-await setupMonacoEditorWithShiki(await loader.init())
+;(async () => await setupMonacoEditorWithShiki(await loader.init()))()
 </script>
 
 <template>
