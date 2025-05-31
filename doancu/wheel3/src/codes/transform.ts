@@ -10,11 +10,13 @@ import { format } from 'prettier/standalone'
 import { minify } from 'terser'
 import type { PartialDeep } from 'type-fest'
 import { deobfuscateCode } from './deobfuscate'
+import { Linter } from 'eslint-linter-browserify'
 import {
   BABEL_GENERATE,
   BABEL_GENERATE_USER,
   BABEL_PARSE_OPTIONS,
   BABEL_TEMPLATE_OPTIONS,
+  ESLINT_OPTIONS,
   getPrettierOptions,
   JSESC_OPTIONS,
   TERSER_OPTIONS,
@@ -26,10 +28,11 @@ import {
 export type TransformPipelineState = Partial<{
   code: string
   deobfuscated: string
-  formatted: string
+  linted: string
   parsed: Node
   patched: Node
   generated: string
+  generatedFormatted: string
   minified: string
   compressed: string
   escaped: string
@@ -46,12 +49,13 @@ export type TransformParams = PartialDeep<{
   code: string
   parsing: {
     deobfuscator: TransformPipelineFunction<string>
-    formatter: TransformPipelineFunction<string>
+    linter: TransformPipelineFunction<string>
     parser: TransformPipelineFunction<Node>
   }
   patch: TransformPipelineFunction<Node>
   generation: {
     generator: TransformPipelineFunction<string>
+    formatter: TransformPipelineFunction<string>
     minifier: TransformPipelineFunction<string>
     compressor: TransformPipelineFunction<string>
     escaper: TransformPipelineFunction<string>
@@ -84,10 +88,12 @@ async function transform(params: TransformParams): Promise<TransformPipelineStat
     params.parsing?.deobfuscator ?? pipelineDeobfuscate,
     state,
   )
-  state.formatted = await executePipelineStep(params.parsing?.formatter ?? pipelineFormat, state)
+  state.linted = await executePipelineStep(params.parsing?.linter ?? pipelineLint, state)
   state.parsed = await executePipelineStep(params.parsing?.parser ?? pipelineParse, state)
 
-  if (!state.parsed) throw new Error('Parsing failed')
+  if (!state.parsed) {
+    throw new Error('Parsing failed')
+  }
 
   // Apply AST modifications
   state.patched = await executePipelineStep(params.patch ?? (() => undefined), state)
@@ -95,6 +101,10 @@ async function transform(params: TransformParams): Promise<TransformPipelineStat
   // Generation Phase - Assign transformed attributes directly
   state.generated = await executePipelineStep(
     params.generation?.generator ?? pipelineGenerate,
+    state,
+  )
+  state.generatedFormatted = await executePipelineStep(
+    params.generation?.formatter ?? pipelineFormat,
     state,
   )
   state.minified = await executePipelineStep(params.generation?.minifier ?? pipelineMinify, state)
@@ -114,12 +124,12 @@ async function transform(params: TransformParams): Promise<TransformPipelineStat
 /**
  * Parsing Step Functions
  */
-async function defaultDeobfuscator(code: string): Promise<string> {
+async function defaultDeobfuscator(code: string): Promise<string | undefined> {
   return await deobfuscateCode(code)
 }
 
-async function defaultFormatter(code: string): Promise<string> {
-  return await format(code, await getPrettierOptions()) // Ensures consistent brace style with
+async function defaultLinter(code: string): Promise<string | undefined> {
+  return new Linter().verifyAndFix(code, ESLINT_OPTIONS).output
 }
 
 function defaultParser(code: string): Node | undefined {
@@ -130,12 +140,12 @@ async function pipelineDeobfuscate(state: TransformPipelineState): Promise<strin
   return state.code ? defaultDeobfuscator(state.code) : undefined
 }
 
-async function pipelineFormat(state: TransformPipelineState): Promise<string | undefined> {
-  return state.deobfuscated ? defaultFormatter(state.deobfuscated) : undefined
+async function pipelineLint(state: TransformPipelineState): Promise<string | undefined> {
+  return state.deobfuscated ? defaultLinter(state.deobfuscated) : undefined
 }
 
 function pipelineParse(state: TransformPipelineState): Node | undefined {
-  return state.formatted ? defaultParser(state.formatted) : undefined
+  return state.linted ? defaultParser(state.linted) : undefined
 }
 
 /**
@@ -143,6 +153,15 @@ function pipelineParse(state: TransformPipelineState): Node | undefined {
  */
 function defaultGenerator(node: Node): string | undefined {
   return generate(node, BABEL_GENERATE).code
+}
+
+async function defaultPrettier(code: string): Promise<string | undefined> {
+  return await format(code, await getPrettierOptions())
+}
+
+async function defaultFormatter(code: string): Promise<string | undefined> {
+  const linted = await defaultLinter(code)
+  return linted ? await defaultPrettier(linted) : undefined
 }
 
 async function defaultMinifier(code: string): Promise<string | undefined> {
@@ -173,6 +192,10 @@ function pipelineGenerate(state: TransformPipelineState): string | undefined {
   return state.patched ? defaultGenerator(state.patched) : undefined
 }
 
+async function pipelineFormat(state: TransformPipelineState): Promise<string | undefined> {
+  return state.generated ? defaultFormatter(state.generated) : undefined
+}
+
 async function pipelineMinify(state: TransformPipelineState): Promise<string | undefined> {
   return state.generated ? defaultMinifier(state.generated) : undefined
 }
@@ -198,15 +221,17 @@ export {
   defaultCompressor,
   defaultDeobfuscator,
   defaultEscaper,
-  defaultFormatter,
+  defaultLinter,
   defaultGenerator,
+  defaultPrettier,
+  defaultFormatter,
   defaultMinifier,
   defaultParser,
   defaultUserscripter,
   pipelineCompress,
   pipelineDeobfuscate,
   pipelineEscape,
-  pipelineFormat,
+  pipelineLint,
   pipelineGenerate,
   pipelineMinify,
   pipelineParse,

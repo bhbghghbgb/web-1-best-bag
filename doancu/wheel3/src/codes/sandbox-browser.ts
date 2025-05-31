@@ -12,11 +12,11 @@ import debug from 'debug'
 
 let JsSandbox: QuickJSWASMModule | null = null
 
-export async function safeEval(code: string) {
+export async function safeEvalBrowser(code: string) {
   if (!isBrowser && !isNode) {
     throw new Error('Unknown environment to run sandbox')
   }
-  const log = debug('sandbox')
+  const log = debug('sandbox-browser')
   if (JsSandbox == null) {
     log('lazy loading quickjs wasm started')
     JsSandbox = await newQuickJSWASMModuleFromVariant(

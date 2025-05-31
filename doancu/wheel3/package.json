@@ -72,6 +72,7 @@
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.27.0",
+    "eslint-linter-browserify": "^9.28.0",
     "eslint-plugin-oxlint": "^0.16.12",
     "eslint-plugin-playwright": "^2.2.0",
     "eslint-plugin-vue": "~10.1.0",

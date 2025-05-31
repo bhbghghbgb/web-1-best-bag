@@ -4,6 +4,9 @@ import type { TemplateBuilderOptions } from '@babel/template'
 import type { Opts } from 'jsesc'
 import type { Options } from 'prettier'
 import type { MinifyOptions } from 'terser'
+import { configs } from '@eslint/js'
+
+import { defineConfig } from 'eslint/config'
 
 export const BABEL_PARSE_OPTIONS: ParserOptions = {
   allowImportExportEverywhere: true,
@@ -79,3 +82,5 @@ export async function getPrettierOptions(): Promise<Options> {
     ],
   }
 }
+
+export const ESLINT_OPTIONS = defineConfig([configs.all])
