@@ -6,7 +6,7 @@ import tseslint from "typescript-eslint";
 import pluginQuery from "@tanstack/eslint-plugin-query";
 
 export default tseslint.config(
-  { ignores: ["dist", "public"] },
+  { ignores: ["dist", "public", ".yarn"] },
   {
     extends: [
       js.configs.recommended,

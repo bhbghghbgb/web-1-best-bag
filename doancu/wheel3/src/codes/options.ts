@@ -3,6 +3,7 @@ import type { ParserOptions } from '@babel/parser'
 import type { TemplateBuilderOptions } from '@babel/template'
 import type { Opts } from 'jsesc'
 import type { Options } from 'prettier'
+import type { Options as WOptions } from 'webcrack'
 import type { MinifyOptions } from 'terser'
 import { configs } from '@eslint/js'
 
@@ -84,3 +85,11 @@ export async function getPrettierOptions(): Promise<Options> {
 }
 
 export const ESLINT_OPTIONS = defineConfig([configs.all])
+
+export const WEBCRACK_OPTIONS: WOptions = {
+  jsx: false,
+  unpack: false,
+  unminify: true,
+  deobfuscate: true,
+  mangle: (id) => id.length <= 2 || id.startsWith('_0x'),
+}

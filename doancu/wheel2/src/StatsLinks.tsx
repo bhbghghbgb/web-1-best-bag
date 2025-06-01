@@ -65,7 +65,8 @@ const StatsLinks: React.FC = () => {
           })}
         </div>
         <p className="text-gray-500 text-sm text-center mt-8">
-          All files are generated in the `dist` directory.
+          All files are generated in the `dist` directory. Only availale in
+          production build.
         </p>
       </div>
     </div>

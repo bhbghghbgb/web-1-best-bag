@@ -13,6 +13,11 @@ export default mergeConfig(
       env: {
         DEBUG: '-webcrack:*', // silence the webcrack logs
       },
+      // silent: true,
+      // doesn't work
+      // onConsoleLog(log: string, type: 'stdout' | 'stderr'): boolean | void {
+      //   return !log.includes('webcrack')
+      // },
     },
   }),
 )

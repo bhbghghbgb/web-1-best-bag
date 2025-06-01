@@ -1,6 +1,7 @@
 import { fileURLToPath, URL } from 'node:url'
 
 import tailwindcss from '@tailwindcss/vite'
+import legacy from '@vitejs/plugin-legacy'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { VueHooksPlusResolver } from '@vue-hooks-plus/resolvers'
@@ -13,7 +14,7 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import topLevelAwait from 'vite-plugin-top-level-await'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import vuetify from 'vite-plugin-vuetify'
-import legacy from '@vitejs/plugin-legacy'
+import { visualizerPlugins } from './visualizer-plugin'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -42,12 +43,14 @@ export default defineConfig({
       dts: true, // or a custom path,
       resolvers: [Vuetify3Resolver(), VueHooksPlusResolver()],
     }),
+    // put it last
+    ...visualizerPlugins,
   ],
   css: {
     postcss: { plugins: [autoprefixer] },
   },
   optimizeDeps: {
-    exclude: ['monaco-editor', 'isolated-vm'],
+    exclude: ['monaco-editor', 'isolated-vm', 'quickjs-emscripten'],
   },
   resolve: {
     alias: {
@@ -60,16 +63,16 @@ export default defineConfig({
   esbuild: {
     supported: { using: false, 'top-level-await': false },
   },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          // bundle all the shiki themes/langs together
-          if (id.match(/@shikijs\/(langs|themes)/)) {
-            return 'shikires'
-          }
-        },
-      },
-    },
-  },
+  // build: {
+  //   rollupOptions: {
+  //     output: {
+  //       manualChunks(id) {
+  //         // bundle all the shiki themes/langs together
+  //         if (id.match(/@shikijs\/(langs|themes)/)) {
+  //           return 'shikires'
+  //         }
+  //       },
+  //     },
+  //   },
+  // },
 })

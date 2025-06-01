@@ -1,5 +1,8 @@
+import { deobfuscateCode } from '@/codes/deobfuscate'
+import { safeEvalNode } from '@/codes/sandbox'
 import {
   defaultLinter,
+  defaultMinifier,
   defaultPrettier,
   transform,
   type TransformPipelineState,
@@ -66,19 +69,22 @@ if (v === 69) {
       ),
     })
   })
-  // test('defaultDeobfuscator: webcrack', async () => {
-  //   const code =
-  //     "function w(){var R=['1194777DCSFKp','7508LeSMGe','57nyGxbT','1837NyvKov','292515JluaDA'," +
-  //     "'399334LkFEyA','1403478wVEtox','Hello\x20World!','1442HQRmWZ','log','2488eBNTXE'];w=function()" +
-  //     '{return R;};return w();}(function(i,J){var L=U,n=i();while(!![]){try{var x=parseInt(L(0xea))/0x1+' +
-  //     'parseInt(L(0xec))/0x2+parseInt(L(0xe9))/0x3*(parseInt(L(0xe8))/0x4)+parseInt(L(0xeb))/0x5+-' +
-  //     'parseInt(L(0xed))/0x6+parseInt(L(0xe4))/0x7*(-parseInt(L(0xe6))/0x8)+parseInt(L(0xe7))/0x9;if(x===J)' +
-  //     "break;else n['push'](n['shift']());}catch(l){n['push'](n['shift']());}}}(w,0x1fd8c));function xinchao()" +
-  //     '{var Z=U;console[Z(0xe5)](Z(0xe3));}function U(i,J){var n=w();return U=function(x,l){x=x-0xe3;' +
-  //     'var L=n[x];return L;},U(i,J);}xinchao();'
-  //   const result = await deobfuscateCode(code, safeEvalNode)
-  //   expect(result).toEqual('')
-  // })
+  test('defaultDeobfuscator: webcrack', async () => {
+    const code =
+      "function w(){var R=['1194777DCSFKp','7508LeSMGe','57nyGxbT','1837NyvKov','292515JluaDA'," +
+      "'399334LkFEyA','1403478wVEtox','Hello\x20World!','1442HQRmWZ','log','2488eBNTXE'];w=function()" +
+      '{return R;};return w();}(function(i,J){var L=U,n=i();while(!![]){try{var x=parseInt(L(0xea))/0x1+' +
+      'parseInt(L(0xec))/0x2+parseInt(L(0xe9))/0x3*(parseInt(L(0xe8))/0x4)+parseInt(L(0xeb))/0x5+-' +
+      'parseInt(L(0xed))/0x6+parseInt(L(0xe4))/0x7*(-parseInt(L(0xe6))/0x8)+parseInt(L(0xe7))/0x9;if(x===J)' +
+      "break;else n['push'](n['shift']());}catch(l){n['push'](n['shift']());}}}(w,0x1fd8c));function xinchao()" +
+      '{var Z=U;console[Z(0xe5)](Z(0xe3));}function U(i,J){var n=w();return U=function(x,l){x=x-0xe3;' +
+      'var L=n[x];return L;},U(i,J);}xinchao();'
+    const result = await deobfuscateCode(code, safeEvalNode)
+    expect(result).toEqual(`function xinchao() {
+  console.log("Hello World!");
+}
+xinchao();`)
+  })
   test('defaultLinter: eslint.configs.all', async () => {
     const code = 'a = a ?? b ?? c'
     const result = await defaultLinter(code)
@@ -88,5 +94,10 @@ if (v === 69) {
     const code = 'if (2) 1\nelse 2'
     const result = await defaultPrettier(code)
     expect(result).toEqual('if (2) {\n  1;\n} else {\n  2;\n}\n')
+  })
+  test('defaultMinifier: terser', async () => {
+    const code = '(() => {const x = 69;if (x === 69) console.log(x);})()'
+    const result = await defaultMinifier(code)
+    expect(result).toEqual('console.log(69);')
   })
 })

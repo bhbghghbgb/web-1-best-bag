@@ -1,4 +1,5 @@
-import { safeEvalBrowser } from '@/codes/sandbox-browser'
+import { WEBCRACK_OPTIONS } from '@/codes/options'
+import { safeEvalBrowser } from '@/codes/sandbox'
 import { webcrack, type Sandbox } from 'webcrack'
 
 /**
@@ -8,11 +9,7 @@ import { webcrack, type Sandbox } from 'webcrack'
  */
 export async function deobfuscateCode(code: string, sandbox?: Sandbox): Promise<string> {
   const result = await webcrack(code, {
-    jsx: false,
-    unpack: false,
-    unminify: true,
-    deobfuscate: true,
-    mangle: (id) => id.length <= 2 || id.startsWith('_0x'),
+    ...WEBCRACK_OPTIONS,
     sandbox: sandbox ?? safeEvalBrowser,
   })
 

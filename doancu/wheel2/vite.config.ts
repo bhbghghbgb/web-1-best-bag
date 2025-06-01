@@ -1,10 +1,12 @@
+import tailwindcss from "@tailwindcss/vite";
+import legacy from "@vitejs/plugin-legacy";
 import react from "@vitejs/plugin-react-swc";
-import { defineConfig } from "vite";
-// import monacoEditorEsmPlugin from "vite-plugin-monaco-editor-esm";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
 import { visualizer } from "rollup-plugin-visualizer";
 import type { TemplateType } from "rollup-plugin-visualizer/dist/plugin/template-types";
-import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "vite";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
+
+// import monacoEditorEsmPlugin from "vite-plugin-monaco-editor-esm";
 
 // Define a mapping for specific template types to their desired extensions
 const templateExtensions: Partial<Record<TemplateType, string>> = {
@@ -35,7 +37,7 @@ export default defineConfig({
     //   languageWorkers: ["editorWorkerService", "typescript"],
     //   globalAPI: true,
     // }),
-
+    legacy(),
     // put it last
     ...templates.map((t) => {
       // Determine the file extension based on the template type
