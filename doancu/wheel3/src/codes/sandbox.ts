@@ -20,9 +20,7 @@ export async function safeEvalBrowser(code: string) {
   if (JsSandboxBrowser === undefined) {
     logBrowser('Lazy loading QuickJS WASM started')
 
-    const { QuickJSWASMModule, newQuickJSWASMModuleFromVariant, newVariant } = await import(
-      'quickjs-emscripten-core'
-    )
+    const { newQuickJSWASMModuleFromVariant, newVariant } = await import('quickjs-emscripten-core')
     const QUICKJS_RELEASE_SYNC = (await import('@jitl/quickjs-wasmfile-release-sync')).default
     const QUICKJS_WASM_LOCATION = (await import('@jitl/quickjs-wasmfile-release-sync/wasm?url'))
       .default

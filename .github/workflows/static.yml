@@ -45,6 +45,14 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+      - name: Cache Yarn dependencies
+        uses: actions/cache@v4
+        with:
+          path: doancu/${{ matrix.project }}/.yarn/cache # Path to the Yarn cache directory
+          key: ${{ runner.os }}-yarn-${{ hashFiles('doancu/${{ matrix.project }}/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
       - name: Install dependencies for ${{ matrix.project }}
         uses: borales/actions-yarn@v4
         with:
@@ -59,7 +67,19 @@ jobs:
         env:
           VITE_BASE_URL: /web-1-best-bag/doancu/${{ matrix.project }}/dist
 
-      # TODO: write test ci (browser)
+      - name: Lint ${{ matrix.project }}
+        continue-on-error: true
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: lint
+          dir: doancu/${{ matrix.project }}
+
+      - name: Test ${{ matrix.project }}
+        continue-on-error: true
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: test
+          dir: doancu/${{ matrix.project }}
 
       - name: Remove node_modules for ${{ matrix.project }}
         uses: JesseTG/rm@v1.0.3
