@@ -1,12 +1,14 @@
-import './assets/main.css'
-
-import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { createApp } from 'vue'
 
-import App from './App.vue'
-import router from './router'
+import '@/styles/layers.css'
+import '@/styles/vuetify-css.scss'
+import '@/styles/main.css'
+import vuetify from '@/plugins/vuetify'
 
-import vuetify from './plugins/vuetify'
+import App from '@/App.vue'
+import router from '@/router'
+
 import { install as VueMonacoEditorPlugin } from '@guolao/vue-monaco-editor'
 
 const app = createApp(App)

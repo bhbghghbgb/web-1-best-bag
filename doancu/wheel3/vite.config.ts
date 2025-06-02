@@ -26,6 +26,9 @@ export default defineConfig({
     vueDevTools(),
     vuetify({
       autoImport: true, // Enabled by default,
+      styles: {
+        configFile: 'src/styles/vuetify-settings.scss',
+      },
     }),
     tailwindcss(),
     nodePolyfills({ include: ['process', 'path'], protocolImports: true }),

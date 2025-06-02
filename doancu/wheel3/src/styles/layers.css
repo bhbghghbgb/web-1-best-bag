@@ -1,0 +1,11 @@
+/* Define the CSS layer order.
+   It establishes the global cascade order for all named layers.
+
+   - 'theme': For Tailwind's theme-related styles and variables.
+   - 'base': For general resets (like Tailwind's Preflight) and your foundational styles (your base.css).
+   - 'vuetify': For Vuetify's core styles and components.
+   - 'components': For your own custom components, or if other libraries define components.
+   - 'utilities': For Tailwind's utility classes. By placing this last,
+     we ensure Tailwind's utilities have the highest precedence in the layer cascade.
+*/
+@layer theme, base, vuetify, components, utilities;
