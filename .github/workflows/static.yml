@@ -59,14 +59,6 @@ jobs:
           cmd: install
           dir: doancu/${{ matrix.project }}
 
-      - name: Build ${{ matrix.project }} production
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build
-          dir: doancu/${{ matrix.project }}
-        env:
-          VITE_BASE_URL: /web-1-best-bag/doancu/${{ matrix.project }}/dist
-
       - name: Lint ${{ matrix.project }}
         continue-on-error: true
         uses: borales/actions-yarn@v4
@@ -80,6 +72,14 @@ jobs:
         with:
           cmd: test
           dir: doancu/${{ matrix.project }}
+
+      - name: Build ${{ matrix.project }} production
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
+          dir: doancu/${{ matrix.project }}
+        env:
+          VITE_BASE_URL: /web-1-best-bag/doancu/${{ matrix.project }}/dist
 
       - name: Remove node_modules for ${{ matrix.project }}
         uses: JesseTG/rm@v1.0.3

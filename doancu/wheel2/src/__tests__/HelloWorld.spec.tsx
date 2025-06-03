@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test } from "vitest";
-import { HelloWorldCounter } from "../src/HelloWorld";
+import { HelloWorldCounter } from "../HelloWorld";
 
 test("increments counter when button is clicked", async () => {
   // Arrange: render the component

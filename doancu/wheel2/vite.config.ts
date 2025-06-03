@@ -64,7 +64,7 @@ export default defineConfig({
     exclude: ["isolated-vm"],
   },
   build: {
-    target: "es2022",
+    // target: "es2022",
     rollupOptions: {
       external: ["isolated-vm"],
     },

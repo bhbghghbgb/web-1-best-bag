@@ -1,5 +1,14 @@
 {
-    "vite.autoStart": false,
-    "bookmarks.useWorkaroundForFormatters": true,
-    "bookmarks.saveBookmarksInProject": true
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "tsconfig.json": "tsconfig.*.json, env.d.ts, auto-imports.d.ts, components.d.ts",
+    "vite.config.*": "jsconfig*, vitest.config.*, cypress.config.*, playwright.config.*, postcss.config.*, visualizer-plugin.*",
+    "package.json": "package-lock.json, pnpm*, .yarnrc*, yarn*, .eslint*, eslint*, .oxlint*, oxlint*, .prettier*, prettier*, .editorconfig"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "vite.autoStart": false
 }
