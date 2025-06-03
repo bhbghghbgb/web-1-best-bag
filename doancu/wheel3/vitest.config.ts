@@ -18,6 +18,14 @@ export default mergeConfig(
       // onConsoleLog(log: string, type: 'stdout' | 'stderr'): boolean | void {
       //   return !log.includes('webcrack')
       // },
+      reporters: process.env.GITHUB_ACTIONS
+        ? ['verbose', 'github-actions', 'json', 'junit', 'html']
+        : ['default'],
+      outputFile: {
+        json: './dist/test-results/results.json',
+        junit: './dist/test-results/results.xml',
+        html: './dist/test-results/index.html',
+      },
     },
   }),
 )

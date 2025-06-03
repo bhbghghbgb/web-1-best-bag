@@ -59,6 +59,12 @@ jobs:
           cmd: install
           dir: doancu/${{ matrix.project }}
 
+      - name: Install playwright browsers
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: playwright install --with-deps
+          dir: doancu/${{ matrix.project }}
+
       - name: Lint ${{ matrix.project }}
         continue-on-error: true
         uses: borales/actions-yarn@v4

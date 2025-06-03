@@ -21,6 +21,28 @@ const templates: TemplateType[] = [
   'list',
   'flamegraph',
 ]
+
+// Define data for test reports
+const testReports = [
+  {
+    name: 'Vitest Tests',
+    basePath: 'test-results',
+    files: [
+      { displayName: 'HTML Report', filename: 'index.html' },
+      { displayName: 'JSON Results', filename: 'results.json' },
+      { displayName: 'JUnit XML', filename: 'results.xml' },
+    ],
+  },
+  {
+    name: 'Playwright Tests',
+    basePath: 'playwright-report',
+    files: [
+      { displayName: 'HTML Report', filename: 'index.html' },
+      { displayName: 'JSON Results', filename: 'results.json' },
+      { displayName: 'JUnit XML', filename: 'results.xml' },
+    ],
+  },
+]
 </script>
 
 <template>
@@ -105,6 +127,36 @@ const templates: TemplateType[] = [
         >
           {{ t.replace('-', ' ') }}
         </a>
+      </div>
+      <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-600">
+        <h3
+          class="text-2xl sm:text-3xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 text-center leading-tight"
+        >
+          🚀 Test Reports
+        </h3>
+        <div class="grid grid-cols-1 gap-4">
+          <div
+            v-for="reportSuite in testReports"
+            :key="reportSuite.name"
+            class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-inner"
+          >
+            <h4 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-3 text-center">
+              {{ reportSuite.name }}
+            </h4>
+            <div class="flex flex-wrap justify-center gap-3">
+              <a
+                v-for="file in reportSuite.files"
+                :key="file.filename"
+                :href="`./${reportSuite.basePath}/${file.filename}`"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-75 transition duration-300 ease-in-out transform hover:scale-105 dark:bg-purple-700 dark:hover:bg-purple-800"
+              >
+                {{ file.displayName }}
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
       <!--
         Footer text.
