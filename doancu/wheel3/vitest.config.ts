@@ -18,13 +18,15 @@ export default mergeConfig(
       // onConsoleLog(log: string, type: 'stdout' | 'stderr'): boolean | void {
       //   return !log.includes('webcrack')
       // },
-      reporters: process.env.GITHUB_ACTIONS
-        ? ['verbose', 'github-actions', 'json', 'junit', 'html']
+      reporters: process.env.CI
+        ? ['verbose', 'html', 'json', 'junit'].concat(
+            process.env.GITHUB_ACTIONS ? ['github-actions'] : [],
+          )
         : ['default'],
       outputFile: {
-        json: './public/test-results/results.json',
-        junit: './public/test-results/results.xml',
-        html: './public/test-results/index.html',
+        html: `${process.env.CI ? 'public/vi' : ''}test-results/index.html`,
+        json: `${process.env.CI ? 'public/vi' : ''}test-results/results.json`,
+        junit: `${process.env.CI ? 'public/vi' : ''}test-results/results.xml`,
       },
     },
   }),

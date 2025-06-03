@@ -28,14 +28,35 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: process.env.GITHUB_ACTIONS
+  // @ts-expect-error No overload matches
+  reporter: process.env.CI
     ? [
-        ["list"],
-        ["github"],
-        ["json", { outputFile: "./public/playwright-report/results.json" }],
-        ["junit", { outputFile: "./public/playwright-report/results.xml" }],
-        ["html", { outputFolder: "./public/playwright-report" }],
-      ]
+        ["list", { printSteps: true }],
+        [
+          "html",
+          {
+            outputFolder: `${
+              process.env.CI ? "public/" : ""
+            }playwright-report/`,
+          },
+        ],
+        [
+          "json",
+          {
+            outputFile: `${
+              process.env.CI ? "public/" : ""
+            }playwright-report/results.json`,
+          },
+        ],
+        [
+          "junit",
+          {
+            outputFile: `${
+              process.env.CI ? "public/" : ""
+            }playwright-report/results.xml`,
+          },
+        ],
+      ].concat(process.env.GITHUB_ACTIONS ? [["github"]] : [])
     : [["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -102,7 +123,7 @@ export default defineConfig({
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
-  // outputDir: 'test-results/',
+  outputDir: `${process.env.CI ? "public/" : ""}test-results/`,
 
   /* Run your local dev server before starting the tests */
   webServer: {

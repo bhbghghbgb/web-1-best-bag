@@ -49,9 +49,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: doancu/${{ matrix.project }}/.yarn/cache # Path to the Yarn cache directory
-          key: ${{ runner.os }}-yarn-${{ hashFiles('doancu/${{ matrix.project }}/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ matrix.project }}-${{ hashFiles('doancu/${{ matrix.project }}/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-yarn-${{ matrix.project }}-
+            ${{ runner.os }}-yarn- # Fallback to a more general key if project-specific is not found
 
       - name: Install dependencies for ${{ matrix.project }}
         uses: borales/actions-yarn@v4
@@ -64,6 +65,15 @@ jobs:
         with:
           cmd: playwright install --with-deps
           dir: doancu/${{ matrix.project }}
+
+      # need to build for playwright test, also only lint for errors anyway
+      - name: Build ${{ matrix.project }} production
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
+          dir: doancu/${{ matrix.project }}
+        env:
+          VITE_BASE_URL: /web-1-best-bag/doancu/${{ matrix.project }}/dist
 
       - name: Lint ${{ matrix.project }}
         continue-on-error: true
@@ -78,14 +88,6 @@ jobs:
         with:
           cmd: test
           dir: doancu/${{ matrix.project }}
-
-      - name: Build ${{ matrix.project }} production
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build
-          dir: doancu/${{ matrix.project }}
-        env:
-          VITE_BASE_URL: /web-1-best-bag/doancu/${{ matrix.project }}/dist
 
       # - name: Remove node_modules for ${{ matrix.project }}
       #   uses: JesseTG/rm@v1.0.3

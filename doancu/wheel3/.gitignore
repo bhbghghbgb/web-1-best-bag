@@ -202,3 +202,8 @@ test-results
 .eslintcache
 playwright.env
 /firefox/
+
+# borrowing github pages to host test reports
+public/vitest-results
+public/test-results
+public/playwright-report

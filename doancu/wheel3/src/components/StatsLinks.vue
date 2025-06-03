@@ -26,7 +26,7 @@ const templates: TemplateType[] = [
 const testReports = [
   {
     name: 'Vitest Tests',
-    basePath: 'test-results',
+    basePath: 'vitest-results',
     files: [
       { displayName: 'HTML Report', filename: 'index.html' },
       { displayName: 'JSON Results', filename: 'results.json' },

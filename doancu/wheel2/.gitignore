@@ -163,3 +163,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# borrowing github pages to host test reports
+public/vitest-results
+public/test-results
+public/playwright-report

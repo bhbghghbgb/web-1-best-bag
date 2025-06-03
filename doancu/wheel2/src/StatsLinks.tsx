@@ -22,7 +22,7 @@ const templates: TemplateType[] = [
 const testReports = [
   {
     name: "Vitest Tests",
-    basePath: "test-results",
+    basePath: "vitest-results",
     files: [
       { displayName: "HTML Report", filename: "index.html" },
       { displayName: "JSON Results", filename: "results.json" },
@@ -50,7 +50,7 @@ const testReports = [
  */
 const StatsLinks: React.FC = () => {
   return (
-    <div className="p-4 sm:p-6 bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center font-inter">
+    <div className="p-4 sm:p-6 bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center font-inter relative">
       <div className="bg-white dark:bg-gray-700 p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md lg:max-w-lg border border-gray-200">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-6 text-center leading-tight">
           📊 Generated Rollup Plugin Visualizer
@@ -128,6 +128,12 @@ const StatsLinks: React.FC = () => {
           production build.
         </p>
       </div>
+      <a
+        className="absolute bottom-0.5 right-0.5 text-xs"
+        href="../../wheel3/dist/index.html"
+      >
+        wheel3
+      </a>
     </div>
   );
 };
