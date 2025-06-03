@@ -42,24 +42,53 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: yarn
+          cache-dependency-path: doancu/${{ matrix.project }}/yarn.lock
 
       - name: Enable Corepack
         run: corepack enable
 
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        working-directory: doancu/${{ matrix.project }}
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+      - name: Get yarn lock path
+        id: yarnlock-path
+        run: echo "path=doancu/${{ matrix.project }}/yarn.lock" >> $GITHUB_OUTPUT
+
       - name: Cache Yarn dependencies
         uses: actions/cache@v4
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
-          path: doancu/${{ matrix.project }}/.yarn/cache # Path to the Yarn cache directory
-          key: ${{ runner.os }}-yarn-${{ matrix.project }}-${{ hashFiles('doancu/${{ matrix.project }}/yarn.lock') }}
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ matrix.project }}-${{ hashFiles(steps.yarnlock-path.outputs.path) }}
           restore-keys: |
             ${{ runner.os }}-yarn-${{ matrix.project }}-
-            ${{ runner.os }}-yarn- # Fallback to a more general key if project-specific is not found
+            ${{ runner.os }}-yarn-
 
       - name: Install dependencies for ${{ matrix.project }}
         uses: borales/actions-yarn@v4
         with:
           cmd: install
           dir: doancu/${{ matrix.project }}
+
+      - name: Get installed Playwright version
+        id: playwright-version
+        working-directory: doancu/${{ matrix.project }}
+        run: |
+          version=$(node -e "const pkg=require('./package.json'); 
+          console.log(pkg.dependencies?.['@playwright/test'] || pkg.devDependencies?.['@playwright/test'] || 'unknown')")
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install playwright browsers
         uses: borales/actions-yarn@v4
