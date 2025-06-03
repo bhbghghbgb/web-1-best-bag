@@ -29,6 +29,7 @@ jobs:
   # Build job for multiple projects using matrix strategy
   build:
     runs-on: ubuntu-latest
+    environment: debug
     strategy:
       fail-fast: false
       matrix:
