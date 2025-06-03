@@ -87,15 +87,15 @@ jobs:
         env:
           VITE_BASE_URL: /web-1-best-bag/doancu/${{ matrix.project }}/dist
 
-      - name: Remove node_modules for ${{ matrix.project }}
-        uses: JesseTG/rm@v1.0.3
-        with:
-          path: doancu/${{ matrix.project }}/node_modules
+      # - name: Remove node_modules for ${{ matrix.project }}
+      #   uses: JesseTG/rm@v1.0.3
+      #   with:
+      #     path: doancu/${{ matrix.project }}/node_modules
 
-      - name: Remove yarn local caches for ${{ matrix.project }}
-        uses: JesseTG/rm@v1.0.3
-        with:
-          path: doancu/${{ matrix.project }}/.yarn
+      # - name: Remove yarn local caches for ${{ matrix.project }}
+      #   uses: JesseTG/rm@v1.0.3
+      #   with:
+      #     path: doancu/${{ matrix.project }}/.yarn
 
       - name: Upload static files for ${{ matrix.project }} as artifact
         uses: actions/upload-artifact@v4

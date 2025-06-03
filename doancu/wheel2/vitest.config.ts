@@ -15,9 +15,9 @@ export default mergeConfig(
         ? ["verbose", "github-actions", "json", "junit", "html"]
         : ["default"],
       outputFile: {
-        json: "./dist/test-results/results.json",
-        junit: "./dist/test-results/results.xml",
-        html: "./dist/test-results/index.html",
+        json: "./public/test-results/results.json",
+        junit: "./public/test-results/results.xml",
+        html: "./public/test-results/index.html",
       },
     },
   })

@@ -32,9 +32,9 @@ export default defineConfig({
     ? [
         ['list'],
         ['github'],
-        ['json', { outputFile: './dist/playwright-report/results.json' }],
-        ['junit', { outputFile: './dist/playwright-report/results.xml' }],
-        ['html', { outputFolder: './dist/playwright-report' }],
+        ['json', { outputFile: './public/playwright-report/results.json' }],
+        ['junit', { outputFile: './public/playwright-report/results.xml' }],
+        ['html', { outputFolder: './public/playwright-report' }],
       ]
     : [['list']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
