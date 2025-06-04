@@ -55,7 +55,10 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         working-directory: doancu/${{ matrix.project }}
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+        run: |
+          cache_dir=$(yarn cache dir 2>/dev/null)
+          [ $? -ne 0 ] && cache_dir=$(yarn config get cacheFolder)
+          echo "dir=$cache_dir" >> $GITHUB_OUTPUT
 
       - name: Get yarn lock path
         id: yarnlock-path
