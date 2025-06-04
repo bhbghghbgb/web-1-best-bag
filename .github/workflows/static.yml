@@ -37,13 +37,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            doancu/${{ matrix.project }}
+          sparse-checkout-cone-mode: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: yarn
-          cache-dependency-path: doancu/${{ matrix.project }}/yarn.lock
+          # cache: yarn
+          # cache-dependency-path: doancu/${{ matrix.project }}/yarn.lock
 
       - name: Enable Corepack
         run: corepack enable
@@ -77,8 +81,7 @@ jobs:
         id: playwright-version
         working-directory: doancu/${{ matrix.project }}
         run: |
-          version=$(node -e "const pkg=require('./package.json'); 
-          console.log(pkg.dependencies?.['@playwright/test'] || pkg.devDependencies?.['@playwright/test'] || 'unknown')")
+          version=$(jq -r '.dependencies["@playwright/test"] // .devDependencies["@playwright/test"] // "unknown"' package.json)
           echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Cache Playwright browsers
