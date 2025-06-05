@@ -38,7 +38,7 @@ jobs:
   # Build job for multiple projects using matrix strategy
   build:
     runs-on: ubuntu-latest
-    # environment: debug
+    environment: debug
     needs: setup
     strategy:
       fail-fast: false
@@ -165,23 +165,16 @@ jobs:
           path: artifact
 
       - name: Copy artifacts
-        # It's good practice to define the projects variable just once at the beginning
-        # if you need it across multiple commands in the same run block.
-        # Or, directly pipe the jq output to the while loop.
-        # Pipe the JSON array output from jq line by line to the while loop
-        # -r: raw output, no quotes
-        # IFS=: prevents leading/trailing whitespace trimming
-        # read -r: reads each line without interpreting backslash escapes
-        # Crucially, always quote the variable $project when using it in commands
-        # Ensure the source artifact path also correctly handles spaces
-        # The download-artifact action will create a directory like 'artifact/Project Name-dist'
         run: |
-          echo "${{ needs.setup.outputs.projects }}" | jq -r '.[]' | while IFS= read -r project; do
-            mkdir -p "repo/doancu/$project/dist"
-            if [ -d "artifact/${project}-dist" ]; then
-              cp -r "artifact/${project}-dist"/* "repo/doancu/$project/dist/"
+          json_projects="${{ needs.setup.outputs.projects }}"
+          readarray -t projects_array < <(echo "$json_projects" | jq -r '.[]')
+          for project in "${projects_array[@]}"; do
+            mkdir -p "doancu/$project/dist"
+            source_dir="artifact/${project}-dist"
+            if [ -d "$source_dir" ]; then
+              cp -r "$source_dir"/* "doancu/$project/dist/"
             else
-              echo "Error: Source directory 'artifact/${project}-dist' not found for project '$project'."
+              echo "Error: Source artifact directory '$source_dir' not found for project '$project'."
               exit 1
             fi
           done
