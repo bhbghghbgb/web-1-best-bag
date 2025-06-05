@@ -20,29 +20,39 @@ permissions:
 concurrency:
   group: "pages"
   # cancel-in-progress: false
-  # that ra nen cancel vi xai debounce roi
+  # that ra nen cancel vi cung chi deploy moi nhat
   cancel-in-progress: true
 
-# We are still uploading entire repo, we only need extra steps to build wheel2 and ưheel3
-# so it's still static in a sense.
+# Define reusable matrix for multiple projects
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.set-matrix.outputs.projects }}
+    steps:
+      - name: Define matrix projects
+        id: set-matrix
+        run: |
+          echo "projects=[\"wheel\", \"wheel2\", \"wheel3\"]" >> $GITHUB_OUTPUT
+
   # Build job for multiple projects using matrix strategy
   build:
     runs-on: ubuntu-latest
-    environment: debug
+    # environment: debug
+    needs: setup
     strategy:
       fail-fast: false
       matrix:
-        project: [wheel, wheel2, wheel3]
+        project: ${{ fromJson(needs.setup.outputs.projects) }}
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           sparse-checkout: |
             doancu/${{ matrix.project }}
           sparse-checkout-cone-mode: false
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -55,8 +65,7 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         working-directory: doancu/${{ matrix.project }}
-        run: |
-          echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
 
       - name: Get yarn lock path
         id: yarnlock-path
@@ -64,7 +73,7 @@ jobs:
 
       - name: Cache Yarn dependencies
         uses: actions/cache@v4
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ matrix.project }}-${{ hashFiles(steps.yarnlock-path.outputs.path) }}
@@ -94,7 +103,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-playwright-
 
-      - name: Install playwright browsers
+      - name: Install Playwright browsers
         uses: borales/actions-yarn@v4
         with:
           cmd: playwright install --with-deps
@@ -142,34 +151,46 @@ jobs:
   # Deploy job
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [setup, build]
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          path: repo
 
-      - name: Download wheel artifact
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          name: wheel-dist
-          path: doancu/wheel/dist
+          pattern: "*-dist"
+          path: artifact
 
-      - name: Download wheel2 artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: wheel2-dist
-          path: doancu/wheel2/dist
-
-      - name: Download wheel3 artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: wheel3-dist
-          path: doancu/wheel3/dist
+      - name: Copy artifacts
+        # It's good practice to define the projects variable just once at the beginning
+        # if you need it across multiple commands in the same run block.
+        # Or, directly pipe the jq output to the while loop.
+        # Pipe the JSON array output from jq line by line to the while loop
+        # -r: raw output, no quotes
+        # IFS=: prevents leading/trailing whitespace trimming
+        # read -r: reads each line without interpreting backslash escapes
+        # Crucially, always quote the variable $project when using it in commands
+        # Ensure the source artifact path also correctly handles spaces
+        # The download-artifact action will create a directory like 'artifact/Project Name-dist'
+        run: |
+          echo "${{ needs.setup.outputs.projects }}" | jq -r '.[]' | while IFS= read -r project; do
+            mkdir -p "repo/doancu/$project/dist"
+            if [ -d "artifact/${project}-dist" ]; then
+              cp -r "artifact/${project}-dist"/* "repo/doancu/$project/dist/"
+            else
+              echo "Error: Source directory 'artifact/${project}-dist' not found for project '$project'."
+              exit 1
+            fi
+          done
 
       - name: Upload static files as artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: "."
+          # Upload repository folder
+          path: repo
 
       - name: Deploy to GitHub Pages
         id: deployment
