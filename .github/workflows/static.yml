@@ -27,6 +27,7 @@ concurrency:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    environment: debug
     outputs:
       projects: ${{ steps.set-matrix.outputs.projects }}
     steps:
@@ -151,6 +152,7 @@ jobs:
   # Deploy job
   deploy:
     runs-on: ubuntu-latest
+    environment: debug
     needs: [setup, build]
     steps:
       - name: Checkout repository
@@ -166,7 +168,7 @@ jobs:
 
       - name: Copy artifacts
         run: |
-          json_projects="${{ needs.setup.outputs.projects }}"
+          json_projects='${{ needs.setup.outputs.projects }}'
           readarray -t projects_array < <(echo "$json_projects" | jq -r '.[]')
           for project in "${projects_array[@]}"; do
             mkdir -p "doancu/$project/dist"
