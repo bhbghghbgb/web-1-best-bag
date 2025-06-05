@@ -171,10 +171,11 @@ jobs:
           json_projects='${{ needs.setup.outputs.projects }}'
           readarray -t projects_array < <(echo "$json_projects" | jq -r '.[]')
           for project in "${projects_array[@]}"; do
-            mkdir -p "doancu/$project/dist"
+            dest_dir="repo/doancu/$project/dist"
+            mkdir -pv "$dest_dir"
             source_dir="artifact/${project}-dist"
             if [ -d "$source_dir" ]; then
-              cp -r "$source_dir"/* "doancu/$project/dist/"
+              cp -rv "$source_dir"/* "$dest_dir"/
             else
               echo "Error: Source artifact directory '$source_dir' not found for project '$project'."
               exit 1
