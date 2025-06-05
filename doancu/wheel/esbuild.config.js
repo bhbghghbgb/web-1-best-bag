@@ -1,8 +1,7 @@
-const esbuild = require("esbuild");
-const { htmlPlugin } = require("@craftamap/esbuild-plugin-html");
+import { build } from "esbuild";
+import { htmlPlugin } from "@craftamap/esbuild-plugin-html";
 
-esbuild
-  .build({
+build({
     entryPoints: ["wheel.web.js"], // Your entry point
     bundle: true,
     minify: true,

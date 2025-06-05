@@ -12,7 +12,10 @@ function translate(
   wheelScripter,
   riggedValues
 ) {
-  const wholeFileNode = Parser.parse(wheelDeobJs, { sourceType: "script" });
+  const wholeFileNode = Parser.parse(wheelDeobJs, {
+    sourceType: "script",
+    ecmaVersion: "latest",
+  });
   const wholeFileNode_Body = wholeFileNode.body;
 
   // locate names, identifiers, values, commonly accessed nodes in the original code
@@ -396,6 +399,7 @@ function translate(
   // replace the identifiers and values in the patched function
   const randomizerPatchFunctionExpression = Parser.parse(wheelPatchJs, {
     sourceType: "script",
+    ecmaVersion: "latest",
   }).body[0].expression;
   traverse(randomizerPatchFunctionExpression, {
     // _astreplace_identifier_* is  replaced to an identifier within the scope of the original code
@@ -429,6 +433,7 @@ function translate(
               patchValueMap[name] != null
                 ? Parser.parse(JSON.stringify(patchValueMap[name]), {
                     sourceType: "script",
+                    ecmaVersion: "latest",
                   }).body[0].expression
                 : builders.literal(null)
             )
@@ -460,6 +465,7 @@ function translate(
   // replace the identifiers and values in the patched function
   const sectorIndexPatchFunctionExpression = Parser.parse(wheelPatch2Js, {
     sourceType: "script",
+    ecmaVersion: "latest",
   }).body[0].expression;
   traverse(sectorIndexPatchFunctionExpression, {
     Identifier(path) {
@@ -561,6 +567,7 @@ function translate(
   // replace the identifiers and values in the patched function
   const afterScriptLoadFunctionExpression = Parser.parse(wheelPatch3Js, {
     sourceType: "script",
+    ecmaVersion: "latest",
   }).body[0].expression;
   traverse(afterScriptLoadFunctionExpression, {
     // _astreplace_functions_* is replaced to an array of functions defined locally

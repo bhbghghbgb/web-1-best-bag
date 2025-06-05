@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      textarea {
+        display: block;
+        margin-bottom: 10px;
+        height: 20vh;
+        padding: 10px;
+        font-size: 16px;
+      }
+
+      button {
+        display: block;
+        margin-bottom: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+      }
+
+      div {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
+    </style>
+    <!-- <script src="./wheel.web.js"></script> -->
+    <title>Document</title>
+  </head>
+
+  <body>
+    <div>
+      <h3>
+        wheel v1, input deob & 3 patches & userscripter, output patch & reob &
+        rescripted
+      </h3>
+      <p>Enter wheel.deob.js here</p>
+      <textarea
+        id="inputDeob"
+        placeholder="Enter wheel.deob.js here"
+      ></textarea>
+      <p>Enter wheel.patch.js here</p>
+      <textarea
+        id="inputPatch"
+        placeholder="Enter wheel.patch.js here"
+      ></textarea>
+      <p>Enter wheel.patch2.js here</p>
+      <textarea
+        id="inputPatch2"
+        placeholder="Enter wheel.patch2.js here"
+      ></textarea>
+      <p>Enter wheel.patch3.js here</p>
+      <textarea
+        id="inputPatch3"
+        placeholder="Enter wheel.patch3.js here"
+      ></textarea>
+      <p>Enter wheel.userscripter.js here</p>
+      <textarea
+        id="inputUserscripter"
+        placeholder="Enter wheel.userscripter.js here"
+      ></textarea>
+      <p>Enter names to target here</p>
+      <input
+        type="text"
+        id="inputNames"
+        placeholder="Enter names to target here"
+      />
+      <button id="submitButton">Submit</button>
+      <p>Result wheel.replace.js here</p>
+      <textarea
+        id="resultReplace"
+        placeholder="Result wheel.replace.js here"
+        readonly
+      ></textarea>
+      <p>Result wheel.complete.js here</p>
+      <textarea
+        id="resultComplete"
+        placeholder="Result wheel.complete.js here"
+        readonly
+      ></textarea>
+      <p>Result wheel.userscripted.js here</p>
+      <textarea
+        id="resultUserscripted"
+        placeholder="Result wheel.userscripted.js here"
+        readonly
+      ></textarea>
+    </div>
+    <img src="wheel.png" width="100px" style="float: left" />
+    <span style="float: left">
+      <a
+        href="../../wheel2/dist/index.html"
+        title="wheel2"
+        style="font-size: 10px; writing-mode: vertical-rl"
+        >wheel2</a
+      ></span
+    >
+    <script src="wheel.web.js" type="module"></script>
+  </body>
+</html>

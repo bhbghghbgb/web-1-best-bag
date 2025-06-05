@@ -1,7 +1,11 @@
 {
   "name": "wheel",
   "scripts": {
-    "build": "node esbuild.config.js"
+    "dev": "vite",
+    "build:def": "node wheel.node.js",
+    "build:web": "vite build",
+    "build": "run-s build:web build:def",
+    "preview": "vite preview"
   },
   "dependencies": {
     "acorn": "^8.14.1",
@@ -12,7 +16,8 @@
     "js-string-escape": "^1.0.1"
   },
   "devDependencies": {
-    "@craftamap/esbuild-plugin-html": "^0.9.0",
-    "esbuild": "0.25.4"
-  }
+    "npm-run-all2": "^8.0.4",
+    "vite": "^6.3.5"
+  },
+  "packageManager": "yarn@4.9.2"
 }

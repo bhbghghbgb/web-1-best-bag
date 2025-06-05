@@ -67,7 +67,13 @@ async function generateSprites() {
     const stylesheetName = `sprite-${startRange}-${endRange}.css`;
 
     // Custom stylesheet generator to collect layout data
-    function customStylesheet(layout) {
+    function customStylesheet(
+      layout,
+      _stylesheetPath,
+      _spritePath,
+      _stylesheetOptions,
+      cb
+    ) {
       console.log(
         `Processing sprite ${spriteName} with ${layout.images.length} images | Dimensions: ${layout.width}x${layout.height}px`
       );
@@ -80,6 +86,8 @@ async function generateSprites() {
         width: img.width,
         height: img.height,
       }));
+
+      return cb(null);
     }
 
     console.log(`Processing sprite ${spriteName}`);
