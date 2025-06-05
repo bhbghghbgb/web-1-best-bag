@@ -12,6 +12,7 @@ function translate(
   wheelScripter,
   riggedValues
 ) {
+  console.log("[translate] Parsing original obfuscated source...");
   const wholeFileNode = Parser.parse(wheelDeobJs, {
     sourceType: "script",
     ecmaVersion: "latest",
@@ -19,6 +20,7 @@ function translate(
   const wholeFileNode_Body = wholeFileNode.body;
 
   // locate names, identifiers, values, commonly accessed nodes in the original code
+  console.log("[translate] Locating loadWheel function...");
   const loadWheel_Body = (function () {
     const loadWheel_FunctionDeclaration = wholeFileNode_Body.find(
       (node) =>
@@ -30,6 +32,8 @@ function translate(
     const loadWheel_BlockStatement = loadWheel_FunctionDeclaration.body;
     return loadWheel_BlockStatement.body;
   })();
+
+  console.log("[translate] Extracting key identifiers from loadWheel...");
   const [
     calcCurrentSectorIndex_Name,
     sectorAngles_Name,
@@ -124,6 +128,8 @@ function translate(
       calcCurrentSectorIndex_VariableDeclaration,
     ];
   })();
+
+  console.log("[translate] Locating wheelSectors variable...");
   const wheelSectors_Name = (function () {
     if (!loadWheel_Body) return null;
     const wheelSectors_VariableDeclaration = loadWheel_Body.find((node) => {
@@ -157,6 +163,8 @@ function translate(
       wheelSectors_VariableDeclaration.declarations[0];
     return wheelSectors_VariableDeclarator.id.name;
   })();
+
+  console.log("[translate] Extracting spin acceleration and interval info...");
   const [
     spinAcceleration_Name,
     spinAccelerationRandomizer_Name,
@@ -242,6 +250,10 @@ function translate(
       clearInvervalExpression,
     ];
   })();
+
+  console.log(
+    "[translate] Extracting acceleration factor and stop threshold..."
+  );
   const [accelerationFactor_Name, stopThreshold_Value] = (function () {
     if (!loadWheel_Body) return [null, null];
     for (const node of loadWheel_Body) {
@@ -319,6 +331,8 @@ function translate(
     }
     return [null, null];
   })();
+
+  console.log("[translate] Locating updateWheelDisplay function...");
   const updateWheelDisplay_Name = (function () {
     const updateWheelDisplay_FunctionDeclaration = loadWheel_Body.find(
       (node) => {
@@ -346,6 +360,8 @@ function translate(
     if (!updateWheelDisplay_FunctionDeclaration) return null;
     return updateWheelDisplay_FunctionDeclaration.id.name;
   })();
+
+  console.log("[translate] Locating afterScriptLoad functions...");
   const afterScriptLoadFunctions = wholeFileNode_Body
     .filter(
       (node) =>
@@ -397,6 +413,7 @@ function translate(
   const patchAstNodeMap = { afterScriptLoadFunctions };
 
   // replace the identifiers and values in the patched function
+  console.log("[translate] Patching randomizer function...");
   const randomizerPatchFunctionExpression = Parser.parse(wheelPatchJs, {
     sourceType: "script",
     ecmaVersion: "latest",
@@ -444,6 +461,9 @@ function translate(
   });
 
   // replace spinAccelerationRandomizer declaration with the patched function
+  console.log(
+    "[translate] Replacing spinAccelerationRandomizer with patched function..."
+  );
   (() => {
     for (const node of loadWheel_Body) {
       if (nodeIs.variableDeclaration(node, { kind: "const" })) {
@@ -463,6 +483,7 @@ function translate(
   })();
 
   // replace the identifiers and values in the patched function
+  console.log("[translate] Patching sector index function...");
   const sectorIndexPatchFunctionExpression = Parser.parse(wheelPatch2Js, {
     sourceType: "script",
     ecmaVersion: "latest",
@@ -486,6 +507,9 @@ function translate(
     // patch the code inside spinElementClickListener so it sets the interval id to null
     // after calling clearInterval, this allows us to test it and restore the original functionality
     // of calcCurrentSectorIndex when loadWheel is called again
+    console.log(
+      "[translate] Patching clearInterval to also null interval id..."
+    );
     const clearIntervalCallExpression =
       updateWheelClearInterval_Expression.expression;
     // now we explicitly set it to null after calling clearInterval
@@ -513,6 +537,7 @@ function translate(
       },
     });
     // patches the calcCurrentSectorIndex function
+    console.log("[translate] Patching calcCurrentSectorIndex function...");
     traverse(calcCurrentSectorIndex_VariableDeclaration, {
       ArrowFunctionExpression(path) {
         const declarator = path.findParent((node) =>
@@ -531,6 +556,7 @@ function translate(
     // find a var or let variable declaration and borrow it to initialize
     // _astinsert_identifier_riggedSectorIndexes
     // try to settle it nearby for easy debugging
+    console.log("[translate] Inserting riggedSectorIndexes variable...");
     const indexInBody = loadWheel_Body.findIndex(
       (node) => node === calcCurrentSectorIndex_VariableDeclaration
     );
@@ -565,6 +591,7 @@ function translate(
   })();
 
   // replace the identifiers and values in the patched function
+  console.log("[translate] Patching afterScriptLoad functions...");
   const afterScriptLoadFunctionExpression = Parser.parse(wheelPatch3Js, {
     sourceType: "script",
     ecmaVersion: "latest",
@@ -595,7 +622,9 @@ function translate(
       }
     },
   });
+
   // reobfuscate to make final code looks like original, but minimize techniques used
+  console.log("[translate] Generating and obfuscating final code...");
   const obfuscationOptions = {
     compact: true,
     controlFlowFlattening: false,
@@ -646,7 +675,11 @@ function translate(
   const sourceCompleteObfuscated = obsfucator
     .obfuscate(sourceComplete, obfuscationOptions)
     .getObfuscatedCode();
+
   // an userscript version requires rerunning the DOMContentLoaded listeners
+  console.log(
+    "[translate] Appending afterScriptLoadFunction for userscript..."
+  );
   wholeFileNode_Body.push(afterScriptLoadFunctionExpression);
   const sourceForUserScriptInject = obsfucator
     .obfuscate(
@@ -661,6 +694,7 @@ function translate(
     "_strreplace_completesource",
     sourceForUserScriptInjectEscaped
   );
+  console.log("[translate] Patch complete.");
   return {
     sourceComplete,
     sourceCompleteObfuscated,

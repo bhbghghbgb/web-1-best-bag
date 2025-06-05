@@ -5,7 +5,9 @@
     "build:def": "node wheel.node.js",
     "build:web": "vite build",
     "build": "run-s build:web build:def",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "echo 'No lint specified'",
+    "test": "echo 'No test specified'"
   },
   "dependencies": {
     "acorn": "^8.14.1",

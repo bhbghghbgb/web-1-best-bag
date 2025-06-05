@@ -33,7 +33,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [wheel2, wheel3]
+        project: [wheel, wheel2, wheel3]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -146,6 +146,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Download wheel artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: wheel-dist
+          path: doancu/wheel/dist
 
       - name: Download wheel2 artifact
         uses: actions/download-artifact@v4

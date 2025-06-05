@@ -2,7 +2,7 @@ import { translate } from "./wheel.rig.js";
 import { readFileSync, writeFileSync } from "fs";
 
 console.log("[wheel.node.js] building demo output");
-console.log("Reading files");
+console.log("[wheel.node.js] Reading files");
 const wheelDeobJs = readFileSync("public/wheel.deob.js", { encoding: "utf-8" });
 const wheelPatchJs = readFileSync("public/wheel.patch.js", {
   encoding: "utf-8",
@@ -16,7 +16,7 @@ const wheelPatch3Js = readFileSync("public/wheel.patch3.js", {
 const wheelScripter = readFileSync("public/wheel.userscripter.js", {
   encoding: "utf-8",
 });
-console.log("Translating");
+console.log("[wheel.node.js] Translating");
 const { sourceComplete, sourceCompleteObfuscated, sourceUserScriptComplete } =
   translate(
     wheelDeobJs,
@@ -27,7 +27,7 @@ const { sourceComplete, sourceCompleteObfuscated, sourceUserScriptComplete } =
     ["Mai", "Hương", "Giang"]
     // ["Tuyền"]
   );
-console.log("Writing result files");
+console.log("[wheel.node.js] Writing result files");
 writeFileSync("dist/wheel.replace.js", sourceComplete, { encoding: "utf-8" });
 writeFileSync("dist/wheel.complete.js", sourceCompleteObfuscated, {
   encoding: "utf-8",
@@ -35,4 +35,4 @@ writeFileSync("dist/wheel.complete.js", sourceCompleteObfuscated, {
 writeFileSync("dist/wheel.userscripted.js", sourceUserScriptComplete, {
   encoding: "utf-8",
 });
-console.log("Complete");
+console.log("[wheel.node.js] Complete");
