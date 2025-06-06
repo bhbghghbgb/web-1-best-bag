@@ -8,8 +8,7 @@ function renderItemSanPham(sanPham) {
   const item = document.createElement("div");
   item.classList.add("homepage-grid");
 
-  const img = document.createElement("img");
-  img.src = `../images/${sanPham["image-file"]}`;
+  const img = renderSanPhamImage(sanPham);
   img.className = "homepage-grid-img";
   item.appendChild(img);
 

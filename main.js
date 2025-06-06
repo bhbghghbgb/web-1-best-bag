@@ -16,14 +16,20 @@ const nguoiDungFile = "nguoi-dung.json";
 const gioHangFile = "gio-hang.json";
 const hoaDonFile = "hoa-don.json";
 const theLoaiSanPhamFile = "the-loai.json";
+const spriteMappingFile = "sprite-mapping.json";
 
 // tang bien nay khi muon reset localStorage hoac update du lieu moi tu file
 const dataVersion = 27;
 
 const soSanPhamMoiTrang = 12;
 
-var g_sanPham, g_nguoiDung, g_gioHang, g_hoaDon, g_theLoaiSanPham;
-var i_sanPham, i_nguoiDung, i_gioHang, i_hoaDon;
+var g_sanPham,
+  g_nguoiDung,
+  g_gioHang,
+  g_hoaDon,
+  g_theLoaiSanPham,
+  g_spriteMapping;
+var i_sanPham, i_nguoiDung, i_gioHang, i_hoaDon, i_spriteMapping;
 
 var duLieuDaTinh;
 
@@ -78,6 +84,7 @@ async function taiSanPham(sauKhiTai) {
   );
   g_sanPham = await taiDuLieu(sanPhamKey, sanPhamFile, g_sanPham);
   i_sanPham = taoIndexMapping(g_sanPham, sanPhamImKey, sanPhamIdKey, i_sanPham);
+  await taiSpriteMapping(() => {});
   await sauKhiTai();
 }
 
@@ -113,6 +120,55 @@ function taiHoaDon(sauKhiTai) {
     i_hoaDon = taoIndexMapping(g_hoaDon, hoaDonImKey, hoaDonIdKey, i_hoaDon);
     sauKhiTai();
   });
+}
+
+async function taiSpriteMapping(sauKhiTai) {
+  try {
+    g_spriteMapping = await (
+      await fetch(`${mainJsScriptDirectory}/sprite/${spriteMappingFile}`)
+    ).json();
+    const mapByImgName = {};
+    Object.entries(g_spriteMapping).forEach(([spriteName, spriteData]) => {
+      spriteData.i.forEach((img) => {
+        mapByImgName[img.f] = {
+          f: spriteName,
+          x: img.x,
+          y: img.y,
+          w: img.w,
+          h: img.h,
+        };
+      });
+    });
+    i_spriteMapping = mapByImgName;
+    console.debug("taiSpriteMapping", {
+      sm: g_spriteMapping,
+      indexMapping: i_spriteMapping,
+    });
+  } catch (e) {
+    console.error("taiSpriteMapping khong duoc");
+    g_spriteMapping = null;
+    i_spriteMapping = null;
+  }
+  await sauKhiTai();
+}
+
+function renderSanPhamImage(sanPham, altIndex = 0) {
+  const imgKey = `image-file${altIndex ? altIndex + 1 : ""}`;
+  const spriteData = i_spriteMapping?.[sanPham[imgKey]];
+  let el;
+  if (spriteData) {
+    el = document.createElement("div");
+    el.style.width = spriteData.w + "px";
+    el.style.height = spriteData.h + "px";
+    el.style.backgroundImage = `url('${mainJsScriptDirectory}/sprite/images/${spriteData.f}')`;
+    el.style.backgroundPosition = `-${spriteData.x}px -${spriteData.y}px`;
+    el.style.backgroundRepeat = "no-repeat";
+  } else {
+    el = document.createElement("img");
+    el.src = `${mainJsScriptDirectory}/images/${sanPham[imgKey]}`;
+  }
+  el.classList.add("grid-img");
+  return el;
 }
 
 function taoBoLocSanPham() {
@@ -386,9 +442,7 @@ function renderItemSanPham(sanPham) {
   btn.textContent = "Xem chi tiet";
   item.appendChild(btn);
 
-  const img = document.createElement("img");
-  img.src = `./images/${sanPham["image-file"]}`;
-  img.classList.add("grid-img");
+  const img = renderSanPhamImage(sanPham);
   item.appendChild(img);
   return item;
 }

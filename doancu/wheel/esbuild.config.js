@@ -14,7 +14,7 @@ build({
           {
             entryPoints: ["wheel.web.js"],
             filename: "index.html", // Output HTML file
-            htmlTemplate: "wheel.html",
+            htmlTemplate: "index.html",
             favicon: "./public/favicon.svg",
           },
         ],

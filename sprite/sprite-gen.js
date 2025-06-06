@@ -108,25 +108,20 @@ for (let groupIndex = 0; groupIndex < imageGroups.length; groupIndex++) {
 
   try {
     // Generate the sprite - this writes to mock-fs
-    await writeSpriteTemp(
-      group,
-      spriteTempPath,
-      toBeCreatedSpriteOutPath,
-      stylesheetName
-    );
+    await writeSpriteTemp(group, spriteTempPath, spriteOutPath, stylesheetName);
 
     // Read the temporary sprite file from mock-fs
     console.log(`Reading sprite ${spriteTempPath}`);
     const spriteFile = readFileSync(resolve(__dirname, spriteTempPath));
 
-    // Write debug version (PNG) to real filesystem
-    console.log(`Writing debug sprite ${spriteOutDebugPath}`);
-    mock.bypass(() => {
-      mkdirSync(dirname(resolve(__dirname, spriteOutDebugPath)), {
-        recursive: true,
-      });
-      writeFileSync(resolve(__dirname, spriteOutDebugPath), spriteFile);
-    });
+    // // Write debug version (PNG) to real filesystem
+    // console.log(`Writing debug sprite ${spriteOutDebugPath}`);
+    // mock.bypass(() => {
+    //   mkdirSync(dirname(resolve(__dirname, spriteOutDebugPath)), {
+    //     recursive: true,
+    //   });
+    //   writeFileSync(resolve(__dirname, spriteOutDebugPath), spriteFile);
+    // });
 
     // Delete the temporary sprite file from mock-fs immediately after use
     // Critical because:
@@ -137,9 +132,11 @@ for (let groupIndex = 0; groupIndex < imageGroups.length; groupIndex++) {
     unlinkSync(resolve(__dirname, spriteTempPath));
 
     // Compress the sprite to WebP format
+    // use this tool to experiment with quality https://squoosh.app/
     console.log(`Compressing sprite ${spriteName}`);
     const spriteCompressedBuf = await sharp(spriteFile)
-      .webp({ smartDeblock: true, effort: 6 })
+      .removeAlpha()
+      .webp({ quality: 50, smartDeblock: true, effort: 6 })
       .toBuffer();
 
     // Write final WebP version to real filesystem
@@ -176,13 +173,17 @@ async function writeSpriteTemp(
     );
 
     // Store the layout information in our mapping
-    spriteMapping[toBeCreatedSpriteOutPath] = layout.images.map((img) => ({
-      filename: basename(img.path),
-      x: img.x,
-      y: img.y,
-      width: img.width,
-      height: img.height,
-    }));
+    spriteMapping[basename(toBeCreatedSpriteOutPath)] = {
+      w: layout.width,
+      h: layout.height,
+      i: layout.images.map((img) => ({
+        f: basename(img.path),
+        x: img.x,
+        y: img.y,
+        w: img.width,
+        h: img.height,
+      })),
+    };
 
     return cb(null);
   }
