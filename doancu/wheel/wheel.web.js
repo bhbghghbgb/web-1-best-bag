@@ -8,6 +8,9 @@ const filePaths = {
   patch2: "wheel.patch2.js",
   patch3: "wheel.patch3.js",
   userscripter: "wheel.userscripter.js",
+  demoReplace: "wheel.replace.js",
+  demoComplete: "wheel.complete.js",
+  demoUserscripted: "wheel.userscripted.js",
 };
 
 // Helper to load file content asynchronously
@@ -197,6 +200,43 @@ $(() => {
     $("#inputNames").val("Mai Hương Giang");
   });
 
+  // Demo result reload handlers
+  $("#reloadDemoReplace").on("click", async () => {
+    setLoading("#reloadDemoReplace", true);
+    try {
+      const content = await loadFile(filePaths.demoReplace);
+      $("#resultReplace").val(content);
+    } catch (err) {
+      showError(`Error loading demo replace file: ${err.message}`);
+    } finally {
+      setLoading("#reloadDemoReplace", false);
+    }
+  });
+
+  $("#reloadDemoComplete").on("click", async () => {
+    setLoading("#reloadDemoComplete", true);
+    try {
+      const content = await loadFile(filePaths.demoComplete);
+      $("#resultComplete").val(content);
+    } catch (err) {
+      showError(`Error loading demo complete file: ${err.message}`);
+    } finally {
+      setLoading("#reloadDemoComplete", false);
+    }
+  });
+
+  $("#reloadDemoUserscripted").on("click", async () => {
+    setLoading("#reloadDemoUserscripted", true);
+    try {
+      const content = await loadFile(filePaths.demoUserscripted);
+      $("#resultUserscripted").val(content);
+    } catch (err) {
+      showError(`Error loading demo userscripted file: ${err.message}`);
+    } finally {
+      setLoading("#reloadDemoUserscripted", false);
+    }
+  });
+
   // Submit button handler
   $("#submitButton").on("click", () => {
     setLoading("#submitButton", true);
@@ -236,7 +276,8 @@ $(() => {
         // Scroll to results
         $("html, body").animate(
           {
-            scrollTop: $("#resultReplace").offset().top,
+            scrollTop: $("#resultReplace").parents(".result-group").offset()
+              .top,
           },
           500
         );

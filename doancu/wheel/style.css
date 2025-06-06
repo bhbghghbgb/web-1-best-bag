@@ -52,6 +52,23 @@ div.container {
   color: var(--secondary-color);
 }
 
+.result-group {
+  background-color: #f8f9fa;
+  border-left: 4px solid var(--primary-color);
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.result-group .input-header {
+  margin-bottom: 10px;
+}
+
+.result-group textarea {
+  background-color: #f0f2f5;
+}
+
 .button-group {
   display: flex;
   gap: 10px;

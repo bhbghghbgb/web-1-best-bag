@@ -1,134 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
 
-  <body>
-    <div class="container">
-      <h3>Wheel v1 - JS Patcher</h3>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-      <div class="input-group">
-        <div class="input-header">
-          <p>Enter wheel.deob.js here</p>
-          <div class="button-group">
-            <button class="reload" id="reloadDeob">Reload</button>
-          </div>
+<body>
+  <div class="container">
+    <h3>Wheel v1 - JS Patcher</h3>
+
+    <div class="input-group">
+      <div class="input-header">
+        <p>Enter wheel.deob.js here</p>
+        <div class="button-group">
+          <button class="reload" id="reloadDeob">Reload</button>
         </div>
-        <textarea
-          id="inputDeob"
-          placeholder="Enter wheel.deob.js here"
-        ></textarea>
       </div>
-
-      <div class="input-group">
-        <div class="input-header">
-          <p>Enter wheel.patch.js here</p>
-          <div class="button-group">
-            <button class="reload" id="reloadPatch">Reload</button>
-          </div>
-        </div>
-        <textarea
-          id="inputPatch"
-          placeholder="Enter wheel.patch.js here"
-        ></textarea>
-      </div>
-
-      <div class="input-group">
-        <div class="input-header">
-          <p>Enter wheel.patch2.js here</p>
-          <div class="button-group">
-            <button class="reload" id="reloadPatch2">Reload</button>
-          </div>
-        </div>
-        <textarea
-          id="inputPatch2"
-          placeholder="Enter wheel.patch2.js here"
-        ></textarea>
-      </div>
-
-      <div class="input-group">
-        <div class="input-header">
-          <p>Enter wheel.patch3.js here</p>
-          <div class="button-group">
-            <button class="reload" id="reloadPatch3">Reload</button>
-          </div>
-        </div>
-        <textarea
-          id="inputPatch3"
-          placeholder="Enter wheel.patch3.js here"
-        ></textarea>
-      </div>
-
-      <div class="input-group">
-        <div class="input-header">
-          <p>Enter wheel.userscripter.js here</p>
-          <div class="button-group">
-            <button class="reload" id="reloadUserscripter">Reload</button>
-          </div>
-        </div>
-        <textarea
-          id="inputUserscripter"
-          placeholder="Enter wheel.userscripter.js here"
-        ></textarea>
-      </div>
-
-      <div class="input-group">
-        <div class="input-header">
-          <p>Enter names to target here</p>
-          <div class="button-group">
-            <button class="reload" id="resetNames">Reset</button>
-          </div>
-        </div>
-        <input
-          type="text"
-          id="inputNames"
-          placeholder="Enter names to target here"
-        />
-      </div>
-
-      <button id="submitButton">Process JS Files</button>
-      <div id="errorMessage" class="error-message"></div>
-
-      <div class="result-group">
-        <p>Result wheel.replace.js here</p>
-        <textarea
-          id="resultReplace"
-          placeholder="Result wheel.replace.js here"
-          readonly
-        ></textarea>
-      </div>
-
-      <div class="result-group">
-        <p>Result wheel.complete.js here</p>
-        <textarea
-          id="resultComplete"
-          placeholder="Result wheel.complete.js here"
-          readonly
-        ></textarea>
-      </div>
-
-      <div class="result-group">
-        <p>Result wheel.userscripted.js here</p>
-        <textarea
-          id="resultUserscripted"
-          placeholder="Result wheel.userscripted.js here"
-          readonly
-        ></textarea>
-      </div>
+      <textarea id="inputDeob" placeholder="Enter wheel.deob.js here"></textarea>
     </div>
-    <h6 class="footer-note">
-      wheel v1, input deob & 3 patches & userscripter, output patch & reob &
-      rescripted
-    </h6>
-    <img src="wheel.png" width="100px" class="wheel-image" />
-    <a href="../../wheel2/dist/index.html" title="wheel2" class="wheel-link"
-      >wheel2</a
-    >
 
-    <script src="wheel.web.js" type="module"></script>
-  </body>
+    <div class="input-group">
+      <div class="input-header">
+        <p>Enter wheel.patch.js here</p>
+        <div class="button-group">
+          <button class="reload" id="reloadPatch">Reload</button>
+        </div>
+      </div>
+      <textarea id="inputPatch" placeholder="Enter wheel.patch.js here"></textarea>
+    </div>
+
+    <div class="input-group">
+      <div class="input-header">
+        <p>Enter wheel.patch2.js here</p>
+        <div class="button-group">
+          <button class="reload" id="reloadPatch2">Reload</button>
+        </div>
+      </div>
+      <textarea id="inputPatch2" placeholder="Enter wheel.patch2.js here"></textarea>
+    </div>
+
+    <div class="input-group">
+      <div class="input-header">
+        <p>Enter wheel.patch3.js here</p>
+        <div class="button-group">
+          <button class="reload" id="reloadPatch3">Reload</button>
+        </div>
+      </div>
+      <textarea id="inputPatch3" placeholder="Enter wheel.patch3.js here"></textarea>
+    </div>
+
+    <div class="input-group">
+      <div class="input-header">
+        <p>Enter wheel.userscripter.js here</p>
+        <div class="button-group">
+          <button class="reload" id="reloadUserscripter">Reload</button>
+        </div>
+      </div>
+      <textarea id="inputUserscripter" placeholder="Enter wheel.userscripter.js here"></textarea>
+    </div>
+
+    <div class="input-group">
+      <div class="input-header">
+        <p>Enter names to target here</p>
+        <div class="button-group">
+          <button class="reload" id="resetNames">Reset</button>
+        </div>
+      </div>
+      <input type="text" id="inputNames" placeholder="Enter names to target here" />
+    </div>
+
+    <button id="submitButton">Process JS Files</button>
+    <div id="errorMessage" class="error-message"></div>
+
+    <div class="result-group">
+      <div class="input-header">
+        <p>Result wheel.replace.js here</p>
+        <div class="button-group">
+          <button class="reload" id="reloadDemoReplace">Load Demo</button>
+        </div>
+      </div>
+      <textarea id="resultReplace" placeholder="Result wheel.replace.js here" readonly></textarea>
+    </div>
+
+    <div class="result-group">
+      <div class="input-header">
+        <p>Result wheel.complete.js here</p>
+        <div class="button-group">
+          <button class="reload" id="reloadDemoComplete">Load Demo</button>
+        </div>
+      </div>
+      <textarea id="resultComplete" placeholder="Result wheel.complete.js here" readonly></textarea>
+    </div>
+
+    <div class="result-group">
+      <div class="input-header">
+        <p>Result wheel.userscripted.js here</p>
+        <div class="button-group">
+          <button class="reload" id="reloadDemoUserscripted">Load Demo</button>
+        </div>
+      </div>
+      <textarea id="resultUserscripted" placeholder="Result wheel.userscripted.js here" readonly></textarea>
+    </div>
+  </div>
+  <h6 class="footer-note">
+    wheel v1, input deob & 3 patches & userscripter, output patch & reob &
+    rescripted
+  </h6>
+  <img src="wheel.png" width="100px" class="wheel-image" />
+  <a href="../../wheel2/dist/index.html" title="wheel2" class="wheel-link">wheel2</a>
+
+  <script src="wheel.web.js" type="module"></script>
+</body>
+
 </html>

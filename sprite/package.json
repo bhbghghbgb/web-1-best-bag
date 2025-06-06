@@ -1,13 +1,20 @@
 {
   "name": "sprite",
   "type": "module",
+  "scripts": {
+    "build": "node sprite-gen.js"
+  },
   "packageManager": "yarn@4.9.2",
   "dependencies": {
     "mock-fs": "^5.5.0",
-    "node-sprite-generator": "^0.10.2"
+    "node-sprite-generator": "^0.10.2",
+    "sharp": "^0.34.2"
   },
   "devDependencies": {
     "@types/node-sprite-generator": "^0.10.5",
     "tinyglobby": "^0.2.14"
+  },
+  "resolutions": {
+    "canvas": "link:./.yarn/empty-package"
   }
 }
