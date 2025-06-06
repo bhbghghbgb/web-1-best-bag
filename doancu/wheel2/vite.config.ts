@@ -65,6 +65,7 @@ export default defineConfig({
   },
   build: {
     // target: "es2022",
+    emptyOutDir: !process.env.CI,
     rollupOptions: {
       external: ["isolated-vm"],
     },

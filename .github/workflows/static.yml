@@ -27,7 +27,7 @@ concurrency:
 jobs:
   setup:
     runs-on: ubuntu-latest
-    environment: debug
+    environment: github-pages
     outputs:
       projects: ${{ steps.set-matrix.outputs.projects }}
     steps:
@@ -39,7 +39,7 @@ jobs:
   # Build job for multiple projects using matrix strategy
   build:
     runs-on: ubuntu-latest
-    environment: debug
+    environment: github-pages
     needs: setup
     strategy:
       fail-fast: false
@@ -152,7 +152,7 @@ jobs:
   # Deploy job
   deploy:
     runs-on: ubuntu-latest
-    environment: debug
+    environment: github-pages
     needs: [setup, build]
     steps:
       - name: Checkout repository

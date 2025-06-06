@@ -36,7 +36,7 @@ export default defineConfig({
           "html",
           {
             outputFolder: `${
-              process.env.CI ? "public/" : ""
+              process.env.CI ? "dist/" : ""
             }playwright-report/`,
           },
         ],
@@ -44,7 +44,7 @@ export default defineConfig({
           "json",
           {
             outputFile: `${
-              process.env.CI ? "public/" : ""
+              process.env.CI ? "dist/" : ""
             }playwright-report/results.json`,
           },
         ],
@@ -52,7 +52,7 @@ export default defineConfig({
           "junit",
           {
             outputFile: `${
-              process.env.CI ? "public/" : ""
+              process.env.CI ? "dist/" : ""
             }playwright-report/results.xml`,
           },
         ],
@@ -123,7 +123,7 @@ export default defineConfig({
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
-  outputDir: `${process.env.CI ? "public/" : ""}test-results/`,
+  outputDir: `${process.env.CI ? "dist/" : ""}test-results/`,
 
   /* Run your local dev server before starting the tests */
   webServer: {

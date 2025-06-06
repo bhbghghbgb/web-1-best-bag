@@ -66,16 +66,17 @@ export default defineConfig({
   esbuild: {
     supported: { using: false, 'top-level-await': false },
   },
-  // build: {
-  //   rollupOptions: {
-  //     output: {
-  //       manualChunks(id) {
-  //         // bundle all the shiki themes/langs together
-  //         if (id.match(/@shikijs\/(langs|themes)/)) {
-  //           return 'shikires'
-  //         }
-  //       },
-  //     },
-  //   },
-  // },
+  build: {
+    emptyOutDir: !process.env.CI,
+    // rollupOptions: {
+    //   output: {
+    //     manualChunks(id) {
+    //       // bundle all the shiki themes/langs together
+    //       if (id.match(/@shikijs\/(langs|themes)/)) {
+    //         return 'shikires'
+    //       }
+    //     },
+    //   },
+    // },
+  },
 })

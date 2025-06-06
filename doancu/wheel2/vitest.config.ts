@@ -17,9 +17,9 @@ export default mergeConfig(
           )
         : ["default"],
       outputFile: {
-        html: `${process.env.CI ? "public/vi" : ""}test-results/index.html`,
-        json: `${process.env.CI ? "public/vi" : ""}test-results/results.json`,
-        junit: `${process.env.CI ? "public/vi" : ""}test-results/results.xml`,
+        html: `${process.env.CI ? "dist/vi" : ""}test-results/index.html`,
+        json: `${process.env.CI ? "dist/vi" : ""}test-results/results.json`,
+        junit: `${process.env.CI ? "dist/vi" : ""}test-results/results.xml`,
       },
     },
   })
