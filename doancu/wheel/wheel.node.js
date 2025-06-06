@@ -28,11 +28,11 @@ const { sourceComplete, sourceCompleteObfuscated, sourceUserScriptComplete } =
     // ["Tuyền"]
   );
 console.log("[wheel.node.js] Writing result files");
-writeFileSync("dist/wheel.replace.js", sourceComplete, { encoding: "utf-8" });
-writeFileSync("dist/wheel.complete.js", sourceCompleteObfuscated, {
+writeFileSync("public/wheel.replace.js", sourceComplete, { encoding: "utf-8" });
+writeFileSync("public/wheel.complete.js", sourceCompleteObfuscated, {
   encoding: "utf-8",
 });
-writeFileSync("dist/wheel.userscripted.js", sourceUserScriptComplete, {
+writeFileSync("public/wheel.userscripted.js", sourceUserScriptComplete, {
   encoding: "utf-8",
 });
 console.log("[wheel.node.js] Complete");

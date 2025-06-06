@@ -4,7 +4,7 @@
     "dev": "vite",
     "build:def": "node wheel.node.js",
     "build:web": "vite build",
-    "build": "run-s build:web build:def",
+    "build": "run-s build:def build:web",
     "preview": "vite preview",
     "lint": "echo 'No lint specified'",
     "test": "echo 'No test specified'"
