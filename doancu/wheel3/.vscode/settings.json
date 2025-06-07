@@ -23,5 +23,6 @@
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "files.associations": {
     "main.css": "tailwindcss"
-  }
+  },
+  "vitest.shellType": "terminal"
 }

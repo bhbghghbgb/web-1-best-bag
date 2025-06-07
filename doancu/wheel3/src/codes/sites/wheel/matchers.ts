@@ -1,23 +1,31 @@
 import * as t from '@babel/types'
 import * as m from '@codemod/matchers'
 import * as r from '@/codes/matchers'
+import type { Locator } from '@/codes/locator'
 
-export function loadWheelFunction(
-  capturedFunc?: m.CapturedMatcher<t.Identifier, t.Identifier>,
-  capturedVar?: m.CapturedMatcher<t.Identifier, t.Identifier>,
-): m.Matcher<t.FunctionDeclaration> {
+import { BABEL_PARSE_OPTIONS } from '@/codes/options'
+import generate from '@babel/generator'
+import { parse } from '@babel/parser'
+import traverse from '@babel/traverse'
+
+const mmb = (code: string) => parse(code, BABEL_PARSE_OPTIONS)
+
+export function locateLoadWheelFunction(): Locator<t.FunctionDeclaration> & {
+  funcId: m.CapturedMatcher<t.Identifier, t.Identifier>
+  varId: m.CapturedMatcher<t.Identifier, t.Identifier>
+} {
   // Captures for reusable identifiers
-  capturedFunc ??= m.capture(m.identifier())
-  capturedVar ??= m.capture(m.identifier())
+  const funcId = m.capture(m.identifier())
+  const varId = m.capture(m.identifier())
 
   // Matcher for the initial variable declaration assigned by a function call
   const initialVarDecl = m.variableDeclaration('var', [
-    m.variableDeclarator(capturedVar, m.callExpression()),
+    m.variableDeclarator(varId, m.callExpression()),
   ])
 
   // Matcher for the if statement checking if the variable is null and returning false
   const nullCheckIfStmt = m.ifStatement(
-    m.binaryExpression('==', m.fromCapture(capturedVar), m.nullLiteral()),
+    m.binaryExpression('==', m.fromCapture(varId), m.nullLiteral()),
     m.blockStatement([m.returnStatement(m.booleanLiteral(false))]),
   )
 
@@ -25,7 +33,7 @@ export function loadWheelFunction(
   const entriesVarDecl = m.variableDeclaration('var', [
     m.variableDeclarator(
       m.identifier(),
-      m.memberExpression(m.fromCapture(capturedVar), m.identifier('entries')),
+      m.memberExpression(m.fromCapture(varId), m.identifier('entries')),
     ),
   ])
 
@@ -33,18 +41,131 @@ export function loadWheelFunction(
   const durationVarDecl = m.variableDeclaration('var', [
     m.variableDeclarator(
       m.identifier(),
-      m.memberExpression(m.fromCapture(capturedVar), m.identifier('duration')),
+      m.memberExpression(m.fromCapture(varId), m.identifier('duration')),
     ),
   ])
 
   // Final matcher for the function declaration
   const functionMatcher = m.functionDeclaration(
-    capturedFunc,
+    funcId,
     m.anyList(),
     r.blockStatementSubsequence([initialVarDecl, nullCheckIfStmt, entriesVarDecl, durationVarDecl]),
     false,
     true,
   )
 
-  return functionMatcher
+  return { matcher: functionMatcher, funcId, varId }
+}
+
+// const vF4 = () => {
+//     let v92 = 0;
+//     for (let v93 = 0; v93 < v77.length; v93++) {
+//         v92 += v77[v93];
+//         if (Math.abs(v91) < v92) {
+//             return v93;
+//         }
+//     }
+//     return 0;
+// };
+export function locateCalcCurrentSectorIndex(): Locator<t.VariableDeclaration> & {
+  funcId: m.CapturedMatcher<t.Identifier, t.Identifier>
+  sectorAngleVar: m.CapturedMatcher<t.Identifier, t.Identifier>
+  wheelAngleVar: m.CapturedMatcher<t.Identifier, t.Identifier>
+  rotationAccumVar: m.CapturedMatcher<t.Identifier, t.Identifier>
+  loopIndexVar: m.CapturedMatcher<t.Identifier, t.Identifier>
+} {
+  // Capture all relevant identifiers
+  const funcId = m.capture(m.identifier())
+  const sectorAngleVar = m.capture(m.identifier())
+  const wheelAngleVar = m.capture(m.identifier())
+  const rotationAccumVar = m.capture(m.identifier())
+  const loopIndexVar = m.capture(m.identifier())
+
+  // Matcher for the initial let declaration (v92 = 0)
+  const rotationAccumDecl = r.singleVariableDeclaration(
+    'let',
+    rotationAccumVar,
+    m.numericLiteral(0),
+  )
+
+  // Matcher for the for loop test condition (v93 < v77.length)
+  const forLoopTest = m.binaryExpression(
+    '<',
+    loopIndexVar,
+    m.memberExpression(sectorAngleVar, m.identifier('length')),
+  )
+
+  // Matcher for the for loop initialization (let v93 = 0)
+  const forLoopInit = m.variableDeclaration('let', [
+    m.variableDeclarator(loopIndexVar, m.numericLiteral(0)),
+  ])
+
+  // Matcher for the for loop update (v93++)
+  const forLoopUpdate = m.updateExpression('++', m.fromCapture(loopIndexVar), false)
+
+  // Matcher for the accumulation statement (v92 += v77[v93])
+  const accumulationStmt = m.expressionStatement(
+    m.assignmentExpression(
+      '+=',
+      m.fromCapture(rotationAccumVar),
+      m.memberExpression(
+        m.fromCapture(sectorAngleVar),
+        m.fromCapture(loopIndexVar),
+        true, // computed
+      ),
+    ),
+  )
+
+  // Matcher for the Math.abs condition (Math.abs(v91) < v92)
+  const absCondition = m.binaryExpression(
+    '<',
+    m.callExpression(m.memberExpression(m.identifier('Math'), m.identifier('abs')), [
+      wheelAngleVar,
+    ]),
+    m.fromCapture(rotationAccumVar),
+  )
+
+  // Matcher for the if statement with return
+  const ifReturnStmt = m.ifStatement(
+    absCondition,
+    m.blockStatement([m.returnStatement(m.fromCapture(loopIndexVar))]),
+  )
+
+  // Matcher for the complete for statement
+  const forStmtMatcher = m.forStatement(
+    forLoopInit,
+    forLoopTest,
+    forLoopUpdate,
+    m.blockStatement([accumulationStmt, ifReturnStmt]),
+  )
+
+  // Matcher for the final return statement (return 0)
+  const finalReturn = m.returnStatement(m.numericLiteral(0))
+
+  // Matcher for the complete arrow function body
+  const arrowFunctionBodyMatcher = m.blockStatement([
+    rotationAccumDecl,
+    forStmtMatcher,
+    finalReturn,
+  ])
+
+  // Matcher for the arrow function
+  const arrowFunctionMatcher = m.arrowFunctionExpression(
+    [], // no parameters
+    arrowFunctionBodyMatcher,
+  )
+
+  // Final matcher for the complete variable declaration
+  const varDeclMatcher = m.variableDeclaration('const', [
+    m.variableDeclarator(funcId, arrowFunctionMatcher),
+  ])
+
+  return {
+    matcher: varDeclMatcher,
+    funcId,
+    sectorAngleVar,
+    wheelAngleVar,
+    rotationAccumVar,
+    loopIndexVar,
+  }
 }

@@ -11,6 +11,12 @@
       "runtimeExecutable": "yarn",
       "runtimeArgs": ["exec", "tsx", "${file}"],
       "console": "integratedTerminal"
+    },
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "Launch my cool app",
+      "url": "http://localhost:5173"
     }
   ]
 }

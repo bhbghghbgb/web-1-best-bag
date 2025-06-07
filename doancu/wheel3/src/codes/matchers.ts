@@ -146,3 +146,28 @@ export function blockStatementSubset(
     return remainingMatchers.size === 0 // True if all matchers were found
   })
 }
+
+/**
+ * Matches a variable declaration with exactly one declarator
+ */
+export function singleVariableDeclaration(
+  kind: Parameters<typeof m.variableDeclaration>[0],
+  id?: m.Matcher<t.LVal>,
+  init?: m.Matcher<t.Expression> | null,
+): m.Matcher<t.VariableDeclaration> {
+  return m.variableDeclaration(kind, [m.variableDeclarator(id, init)])
+}
+
+/**
+ * Matches a for statement with specific test operator
+ */
+export function forStatementWithTestOperator(
+  operator: Parameters<typeof m.binaryExpression>[0],
+): m.Matcher<t.ForStatement> {
+  return m.forStatement(
+    m.anyExpression(),
+    m.binaryExpression(operator),
+    m.anyExpression(),
+    m.anyStatement(),
+  )
+}
