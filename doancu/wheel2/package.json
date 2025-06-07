@@ -20,7 +20,7 @@
     "@babel/parser": "^7.27.5",
     "@babel/preset-env": "^7.27.2",
     "@babel/traverse": "^7.27.4",
-    "@babel/types": "^7.27.3",
+    "@babel/types": "^7.27.6",
     "@codemod/matchers": "^1.7.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -28,20 +28,20 @@
     "@monaco-editor/react": "^4.7.0",
     "@mui/icons-material": "^7.1.1",
     "@mui/material": "^7.1.1",
-    "@tanstack/react-query": "^5.80.2",
+    "@tanstack/react-query": "^5.80.6",
     "acorn": "^8.14.1",
     "axios": "^1.9.0",
     "debug": "^4.4.1",
     "escodegen": "^2.1.0",
     "estree-toolkit": "^1.7.13",
     "jsesc": "^3.1.0",
-    "lz-string": "1.5.0",
+    "lz-string": "^1.5.0",
     "pretty-bytes": "^7.0.0",
     "quickjs-emscripten-core": "^0.31.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.57.0",
-    "terser": "^5.40.0",
+    "terser": "^5.41.0",
     "webcrack": "^2.15.1"
   },
   "devDependencies": {
@@ -62,17 +62,17 @@
     "@types/escodegen": "^0.0.10",
     "@types/jsdom": "^21.1.7",
     "@types/jsesc": "^3.0.3",
-    "@types/node": "^22.15.29",
+    "@types/node": "^22.15.30",
     "@types/react": "^19.1.6",
-    "@types/react-dom": "^19.1.5",
+    "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-legacy": "^6.1.1",
     "@vitejs/plugin-react": "^4.5.1",
     "@vitejs/plugin-react-swc": "^3.10.1",
-    "@vitest/browser": "3.1.4",
+    "@vitest/browser": "^3.2.2",
     "@vitest/eslint-plugin": "^1.2.1",
-    "@vitest/ui": "3.1.4",
+    "@vitest/ui": "^3.2.2",
     "cross-env": "^7.0.3",
-    "es-check": "^9.1.2",
+    "es-check": "^9.1.4",
     "eslint": "^9.28.0",
     "eslint-plugin-playwright": "^2.2.0",
     "eslint-plugin-react-hooks": "^5.2.0",
@@ -92,10 +92,10 @@
     "vite": "^6.3.5",
     "vite-plugin-monaco-editor-esm": "^2.0.2",
     "vite-plugin-node-polyfills": "^0.23.0",
-    "vitest": "3.1.4"
+    "vitest": "^3.2.2"
   },
   "resolutions": {
     "isolated-vm": "link:./.yarn/empty-package"
   },
-  "packageManager": "yarn@4.9.1"
+  "packageManager": "yarn@4.9.2"
 }
