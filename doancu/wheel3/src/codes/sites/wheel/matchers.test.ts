@@ -1,5 +1,5 @@
 import * as r from '@/codes/matchers'
-import * as l from '@/codes/sites/wheel/matchers'
+import { MatcherWheelM } from '@/codes/sites/wheel/matchers'
 import * as t from '@babel/types'
 import * as m from '@codemod/matchers'
 import { runMatcherTest } from '@test/unit/utils/matcherTestDriver'
@@ -20,7 +20,7 @@ describe('loadWheel matchers', () => {
         var v59 = vGetWheelSettingInArray.is_stroke
       }
     `
-    const locator = l.locateLoadWheelFunction()
+    const locator = MatcherWheelM.inFile.locateLoadWheelFunction()
 
     const matches = runMatcherTest(testCode, locator.matcher)
 
@@ -47,7 +47,7 @@ describe('calcCurrentSectorIndex matcher', () => {
       }
     `
 
-    const locator = l.locateCalcCurrentSectorIndex()
+    const locator = MatcherWheelM.inFile.inLoadWheelFunction.locateCalcCurrentSectorIndex()
     const matches = runMatcherTest(testCode, locator.matcher)
 
     expect(matches).toHaveLength(1)
@@ -72,7 +72,7 @@ describe('calcCurrentSectorIndex matcher', () => {
       }
     `
 
-    const locator = l.locateCalcCurrentSectorIndex()
+    const locator = MatcherWheelM.inFile.inLoadWheelFunction.locateCalcCurrentSectorIndex()
     const matches = runMatcherTest(testCode, locator.matcher)
 
     expect(matches).toHaveLength(1)
@@ -97,7 +97,7 @@ describe('calcCurrentSectorIndex matcher', () => {
       }
     `
 
-    const locator = l.locateCalcCurrentSectorIndex()
+    const locator = MatcherWheelM.inFile.inLoadWheelFunction.locateCalcCurrentSectorIndex()
     const matches = runMatcherTest(testCode, locator.matcher)
 
     expect(matches).toHaveLength(0)
@@ -106,5 +106,100 @@ describe('calcCurrentSectorIndex matcher', () => {
     expect(m.fromCapture(locator.wheelAngleVar).match(undefined)).toBe(true)
     expect(m.fromCapture(locator.rotationAccumVar).match(t.identifier('total'))).toBe(true)
     expect(m.fromCapture(locator.loopIndexVar).match(t.identifier('i'))).toBe(true)
+  })
+})
+
+describe('wheelSectors matcher', () => {
+  it('matches the standard pattern', () => {
+    const testCode = /* js */ `
+      var wheelSectors = [
+        {
+          text: '',
+          id: 0,
+          color: '#ADB2B0',
+        },
+      ]
+    `
+
+    const locator = MatcherWheelM.inFile.inLoadWheelFunction.locateWheelSectors()
+    const matches = runMatcherTest(testCode, locator.matcher)
+
+    expect(matches).toHaveLength(1)
+    expect(m.fromCapture(locator.varId).match(t.identifier('wheelSectors'))).toBe(true)
+  })
+
+  it('matches with different variable names', () => {
+    const testCode = /* js */ `
+      var v73 = [
+        {
+          text: '',
+          id: 0,
+          color: '#ADB2B0',
+        },
+      ]
+    `
+
+    const locator = MatcherWheelM.inFile.inLoadWheelFunction.locateWheelSectors()
+    const matches = runMatcherTest(testCode, locator.matcher)
+
+    expect(matches).toHaveLength(1)
+    expect(m.fromCapture(locator.varId).match(t.identifier('v73'))).toBe(true)
+  })
+
+  it('does not match incorrect patterns', () => {
+    const testCases = [
+      // Wrong declaration type
+      `let wheelSectors = [{
+        text: '',
+        id: 0,
+        color: '#ADB2B0'
+      }];`,
+
+      // Wrong property values
+      `var wheelSectors = [{
+        text: 'wrong',
+        id: 0,
+        color: '#ADB2B0'
+      }];`,
+
+      // Missing property
+      `var wheelSectors = [{
+        text: '',
+        id: 0
+      }];`,
+
+      // Extra element in array
+      `var wheelSectors = [{
+        text: '',
+        id: 0,
+        color: '#ADB2B0'
+      }, {}];`,
+    ]
+
+    const locator = MatcherWheelM.inFile.inLoadWheelFunction.locateWheelSectors()
+
+    testCases.forEach((testCode) => {
+      const matches = runMatcherTest(testCode, locator.matcher)
+      expect(matches).toHaveLength(0)
+    })
+  })
+
+  it('verifies partial matches', () => {
+    const testCode = /* js */ `
+      var wrongVar = [
+        {
+          text: 'wrong',
+          id: 1,
+          color: '#000000',
+        },
+      ]
+    `
+
+    const locator = MatcherWheelM.inFile.inLoadWheelFunction.locateWheelSectors()
+    const matches = runMatcherTest(testCode, locator.matcher)
+
+    expect(matches).toHaveLength(0)
+    // Verify captures were attempted
+    expect(m.fromCapture(locator.varId).match(t.identifier('wrongVar'))).toBe(true)
   })
 })

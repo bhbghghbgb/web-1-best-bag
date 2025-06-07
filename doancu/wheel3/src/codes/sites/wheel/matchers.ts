@@ -1,16 +1,9 @@
+import type { Locator } from '@/codes/locator'
+import * as r from '@/codes/matchers'
 import * as t from '@babel/types'
 import * as m from '@codemod/matchers'
-import * as r from '@/codes/matchers'
-import type { Locator } from '@/codes/locator'
 
-import { BABEL_PARSE_OPTIONS } from '@/codes/options'
-import generate from '@babel/generator'
-import { parse } from '@babel/parser'
-import traverse from '@babel/traverse'
-
-const mmb = (code: string) => parse(code, BABEL_PARSE_OPTIONS)
-
-export function locateLoadWheelFunction(): Locator<t.FunctionDeclaration> & {
+function locateLoadWheelFunction(): Locator<t.FunctionDeclaration> & {
   funcId: m.CapturedMatcher<t.Identifier, t.Identifier>
   varId: m.CapturedMatcher<t.Identifier, t.Identifier>
 } {
@@ -57,17 +50,17 @@ export function locateLoadWheelFunction(): Locator<t.FunctionDeclaration> & {
   return { matcher: functionMatcher, funcId, varId }
 }
 
-// const vF4 = () => {
-//     let v92 = 0;
-//     for (let v93 = 0; v93 < v77.length; v93++) {
-//         v92 += v77[v93];
-//         if (Math.abs(v91) < v92) {
-//             return v93;
-//         }
+// const calcCurrentSectorIndex = () => {
+//   let rotationAccum = 0
+//   for (let i = 0; i < sectorAngles.length; i++) {
+//     rotationAccum += sectorAngles[i]
+//     if (Math.abs(currentAngle) < rotationAccum) {
+//       return i
 //     }
-//     return 0;
-// };
-export function locateCalcCurrentSectorIndex(): Locator<t.VariableDeclaration> & {
+//   }
+//   return 0
+// }
+function locateCalcCurrentSectorIndex(): Locator<t.VariableDeclaration> & {
   funcId: m.CapturedMatcher<t.Identifier, t.Identifier>
   sectorAngleVar: m.CapturedMatcher<t.Identifier, t.Identifier>
   wheelAngleVar: m.CapturedMatcher<t.Identifier, t.Identifier>
@@ -169,3 +162,46 @@ export function locateCalcCurrentSectorIndex(): Locator<t.VariableDeclaration> &
     loopIndexVar,
   }
 }
+
+// var v73 = [{
+//         text: '',
+//         id: 0,
+//         color: '#ADB2B0'
+//     }];
+export function locateWheelSectors(): Locator<t.VariableDeclaration> & {
+  varId: m.CapturedMatcher<t.Identifier, t.Identifier>
+} {
+  // Capture the variable name
+  const varId = m.capture(m.identifier())
+
+  // Matcher for object property with specific key and value
+  const textProperty = m.objectProperty(m.identifier('text'), m.stringLiteral(''))
+  const idProperty = m.objectProperty(m.identifier('id'), m.numericLiteral(0))
+  const colorProperty = m.objectProperty(m.identifier('color'), m.stringLiteral('#ADB2B0'))
+
+  // Matcher for the wheel sector object
+  const sectorObject = m.objectExpression([textProperty, idProperty, colorProperty])
+
+  // Matcher for the array containing one sector object
+  const sectorArray = m.arrayExpression([sectorObject])
+
+  // Final matcher for the variable declaration
+  const varDeclMatcher = m.variableDeclaration('var', [m.variableDeclarator(varId, sectorArray)])
+
+  return {
+    matcher: varDeclMatcher,
+    varId,
+  }
+}
+
+const MatcherWheelM = {
+  inFile: {
+    locateLoadWheelFunction,
+    inLoadWheelFunction: {
+      locateCalcCurrentSectorIndex,
+      locateWheelSectors,
+    },
+  },
+}
+
+export { MatcherWheelM }
